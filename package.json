@@ -2,10 +2,10 @@
   "name": "micropay-backend",
   "version": "1.0.0",
   "description": "Micropay Backend API",
-  "main": "src/server.js",
+  "main": "block_src/server.js",
   "scripts": {
-    "start": "node src/server.js",
-    "dev": "node src/server.js"
+    "start": "node block_src/server.js",
+    "dev": "node block_src/server.js"
   },
   "dependencies": {
     "@solana/web3.js": "^1.91.0",
