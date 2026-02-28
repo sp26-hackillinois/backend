@@ -1,8 +1,9 @@
 const http = require('http');
 
 const body = JSON.stringify({
-    service_id: "weather_openmeteo",
-    source_wallet: "AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5"
+    amount_usd: 0.05,
+    source_wallet: "AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5",
+    destination_wallet: "2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8"
 });
 
 const options = {
@@ -28,12 +29,11 @@ const req = http.request(options, (res) => {
         }
         console.log('[Response]', JSON.stringify(parsed, null, 2));
         if (res.statusCode === 200) {
-            console.log('\n✅ SUCCESS: Charge created — service_id lookup + Solana tx working!');
-            console.log(`   Service: ${parsed.service_name}`);
-            console.log(`   Amount: $${parsed.amount_usd} → ${parsed.amount_sol} SOL`);
-            console.log(`   Rate: 1 SOL = $${parsed.exchange_rate_sol_usd}`);
-            console.log(`   Network fee: ${parsed.network_fee_sol} SOL`);
-            console.log(`   Status: ${parsed.status}`);
+            console.log('\n✅ SUCCESS: Charge created — Solana tx pipeline working!');
+            console.log(`   Amount USD:  $${parsed.amount_usd}`);
+            console.log(`   SOL Rate:    1 SOL = $${parsed.exchange_rate_sol}`);
+            console.log(`   Amount SOL:  ${parsed.amount_sol_charged} SOL`);
+            console.log(`   Status:      ${parsed.status}`);
         } else {
             console.log('\n❌ FAILED: Check error above.');
         }
