@@ -7,6 +7,7 @@ const {
 } = require('@solana/web3.js');
 
 // Connect to Devnet
+// We are using the public devnet endpoint because the Helius API key was returning a 401 Unauthorized error.
 const connection = new Connection('https://api.devnet.solana.com', 'finalized');
 
 /**
