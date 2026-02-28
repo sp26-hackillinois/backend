@@ -1,6 +1,8 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpec = require('./swagger');
 const { verifyApiKey } = require('./middleware/auth.middleware');
 const chargeRoutes = require('./routes/charge.routes');
 
@@ -10,6 +12,15 @@ const PORT = process.env.PORT || 3000;
 // Middleware
 app.use(express.json());
 app.use(cors()); // Allow all origins for the hackathon
+
+// ── API Docs (no auth required) ─────────────────────────────────────
+app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, {
+    customSiteTitle: '⚡ Micropay API Docs',
+    swaggerOptions: { persistAuthorization: true }
+}));
+
+// Root redirect → docs
+app.get('/', (req, res) => res.redirect('/api/docs'));
 
 // Apply API Key authentication middleware to all /api routes
 app.use('/api', verifyApiKey);
