@@ -1,8 +1,8 @@
 const { buildUnsignedTransaction } = require('./services/solana.service.js');
 
 // TODO: Paste your Phantom wallet public keys here!
-const AI_CONSUMER_WALLET = "2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8";
-const TOOL_DEVELOPER_WALLET = "AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5";
+const AI_CONSUMER_WALLET = process.env.AI_CONSUMER_WALLET;
+const TOOL_DEVELOPER_WALLET = process.env.TOOL_DEVELOPER_WALLET;
 
 // We will test sending exactly 0.05 SOL
 const TEST_AMOUNT_SOL = 0.05;
