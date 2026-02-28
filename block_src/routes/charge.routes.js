@@ -15,7 +15,7 @@ const {
 // ─────────────────────────────────────────
 // GET /api/v1/charges
 // List charges with optional filtering & pagination (auth required)
-// NOTE: Must be defined BEFORE /:id to avoid "list" being swallowed as an id param
+// NOTE: Defined BEFORE /:id to prevent Express treating "list" etc. as an id
 // ─────────────────────────────────────────
 router.get('/', verifyApiKey, (req, res) => {
     let { limit = '10', offset = '0', status, source_wallet } = req.query;
@@ -38,12 +38,12 @@ router.get('/', verifyApiKey, (req, res) => {
 
 // ─────────────────────────────────────────
 // POST /api/v1/charges
-// Create a new charge (auth required)
+// Create a new charge with dynamic amount_usd (auth required)
 // ─────────────────────────────────────────
 router.post('/', verifyApiKey, async (req, res) => {
     const idempotencyKey = req.headers['idempotency-key'];
 
-    // Step 1: Idempotency check
+    // Step 1: Idempotency check — return cached response immediately
     if (idempotencyKey) {
         const cached = getIdempotencyResult(idempotencyKey);
         if (cached) {
@@ -53,7 +53,7 @@ router.post('/', verifyApiKey, async (req, res) => {
     }
 
     // Step 2: Validate inputs
-    const { service_id, source_wallet } = req.body;
+    const { service_id, source_wallet, amount_usd } = req.body;
 
     if (!service_id || typeof service_id !== 'string' || service_id.trim() === '') {
         return res.status(400).json({
@@ -71,8 +71,40 @@ router.post('/', verifyApiKey, async (req, res) => {
             },
         });
     }
+    if (amount_usd === undefined || amount_usd === null) {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'amount_usd' is required.",
+            },
+        });
+    }
+    if (typeof amount_usd !== 'number') {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'amount_usd' must be a number.",
+            },
+        });
+    }
+    if (amount_usd <= 0) {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'amount_usd' must be greater than 0.",
+            },
+        });
+    }
+    if (amount_usd > 100) {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'amount_usd' must not exceed $100.00 (safety cap).",
+            },
+        });
+    }
 
-    // Step 3: Look up the service
+    // Step 3: Look up the service to get developer_wallet and name
     const service = getServiceById(service_id.trim());
     if (!service) {
         return res.status(404).json({
@@ -83,7 +115,7 @@ router.post('/', verifyApiKey, async (req, res) => {
         });
     }
 
-    // Step 4: Get SOL price
+    // Step 4: Fetch live SOL price
     const solPrice = await getSolPriceInUsd();
     if (!solPrice || solPrice <= 0) {
         return res.status(500).json({
@@ -94,8 +126,8 @@ router.post('/', verifyApiKey, async (req, res) => {
         });
     }
 
-    // Step 5: Calculate SOL amount
-    const amount_sol = parseFloat((service.cost_usd / solPrice).toFixed(9));
+    // Step 5: Calculate SOL amount from the request's amount_usd
+    const amount_sol = parseFloat((amount_usd / solPrice).toFixed(9));
     if (amount_sol <= 0) {
         return res.status(400).json({
             error: {
@@ -105,7 +137,7 @@ router.post('/', verifyApiKey, async (req, res) => {
         });
     }
 
-    // Step 6: Build the unsigned transaction
+    // Step 6: Build the unsigned Solana transaction
     let transaction_payload;
     try {
         transaction_payload = await buildUnsignedTransaction(
@@ -122,12 +154,12 @@ router.post('/', verifyApiKey, async (req, res) => {
         });
     }
 
-    // Step 7: Build response object via createCharge
+    // Step 7: Build and store the charge object
     const charge = createCharge({
         status: 'requires_signature',
         service_id: service.id,
         service_name: service.name,
-        amount_usd: service.cost_usd,
+        amount_usd,
         exchange_rate_sol_usd: solPrice,
         amount_sol,
         network_fee_sol: 0.000005,
@@ -136,7 +168,7 @@ router.post('/', verifyApiKey, async (req, res) => {
         transaction_payload,
     });
 
-    // Step 8: Cache idempotency result
+    // Step 8: Cache idempotency result if key was provided
     if (idempotencyKey) {
         setIdempotencyResult(idempotencyKey, charge);
     }
