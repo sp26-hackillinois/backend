@@ -1,841 +1,473 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Micropay Bazaar — API Reference</title>
-<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Sora:wght@300;400;500;600;700&display=swap" rel="stylesheet"/>
-<style>
-:root{
-  --bg:#080a0f;--surface:#0f1117;--surface2:#161b25;--surface3:#1c2232;
-  --border:#1e2538;--border2:#252e45;
-  --accent:#7c6cfa;--accent-glow:rgba(124,108,250,.15);
-  --teal:#3ecfcf;--orange:#f9a23a;
-  --text:#dce4f5;--muted:#6b7898;--muted2:#4a5470;
-  --danger:#f25c5c;--success:#3ecf88;
-  --get-bg:rgba(62,207,207,.1);--get-c:#3ecfcf;--get-b:rgba(62,207,207,.25);
-  --post-bg:rgba(124,108,250,.1);--post-c:#a89cff;--post-b:rgba(124,108,250,.25);
-  --del-bg:rgba(242,92,92,.1);--del-c:#f47f7f;--del-b:rgba(242,92,92,.25);
-  --sidebar:260px;
-  --mono:'IBM Plex Mono',monospace;
-  --sans:'Sora',sans-serif;
-}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);font-size:14.5px;line-height:1.75;display:flex;min-height:100vh}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Micropay Bazaar API</title>
 
-/* ── SIDEBAR ── */
-aside{
-  width:var(--sidebar);min-height:100vh;
-  background:var(--surface);border-right:1px solid var(--border);
-  position:fixed;top:0;left:0;bottom:0;overflow-y:auto;
-  display:flex;flex-direction:column;z-index:50;
-}
-.logo-area{padding:22px 18px 18px;border-bottom:1px solid var(--border)}
-.logo-sub{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
-.logo-name{font-size:17px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin-top:3px}
-.logo-name em{color:var(--accent);font-style:normal}
-.v-pill{
-  display:inline-block;margin-top:7px;
-  background:rgba(124,108,250,.12);border:1px solid rgba(124,108,250,.28);
-  color:var(--accent);font-size:10px;font-family:var(--mono);padding:2px 9px;border-radius:20px
-}
-.base-url{font-family:var(--mono);font-size:10.5px;color:var(--muted);margin-top:6px}
+    <!-- React and ReactDOM -->
+    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
 
-nav{padding:12px 0;flex:1}
-.nav-group{padding:12px 18px 4px;font-size:9.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--muted2)}
-nav a{
-  display:flex;align-items:center;gap:8px;
-  padding:6px 18px;color:var(--muted);text-decoration:none;font-size:13px;
-  border-left:2px solid transparent;transition:all .12s
-}
-nav a:hover{color:var(--text);background:rgba(255,255,255,.025)}
-nav a.active{color:var(--text);border-left-color:var(--accent);background:rgba(124,108,250,.07);font-weight:500}
-.dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-.dg{background:var(--teal)}.dp{background:var(--accent)}.dd{background:var(--danger)}
+    <!-- Babel for parsing JSX -->
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
-/* ── MAIN ── */
-main{margin-left:var(--sidebar);flex:1;min-width:0}
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
 
-/* HERO */
-.hero{
-  padding:56px 60px 44px;
-  background:linear-gradient(145deg,#090c16 0%,#0b0e1a 70%,#08101e 100%);
-  border-bottom:1px solid var(--border);position:relative;overflow:hidden
-}
-.hero::before{
-  content:'';position:absolute;top:-80px;right:-40px;width:420px;height:420px;
-  background:radial-gradient(circle,rgba(124,108,250,.13) 0%,transparent 70%);pointer-events:none
-}
-.hero::after{
-  content:'';position:absolute;bottom:-40px;left:200px;width:280px;height:280px;
-  background:radial-gradient(circle,rgba(62,207,207,.08) 0%,transparent 70%);pointer-events:none
-}
-.eyebrow{font-size:10.5px;font-weight:700;letter-spacing:.15em;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
-.hero h1{font-size:36px;font-weight:700;letter-spacing:-.03em;line-height:1.1;margin-bottom:16px}
-.hero h1 em{font-style:normal;color:var(--teal)}
-.hero-desc{color:var(--muted);max-width:540px;font-size:14px;font-weight:300;margin-bottom:26px}
-.chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{
-  display:inline-flex;align-items:center;gap:6px;
-  background:var(--surface2);border:1px solid var(--border2);
-  border-radius:20px;padding:4px 14px;font-size:11.5px;color:var(--muted);font-family:var(--mono)
-}
-.chip .live{width:6px;height:6px;border-radius:50%;background:var(--success);box-shadow:0 0 6px var(--success)}
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
 
-/* CONTENT */
-.content{padding:0 60px 80px}
-.section{padding-top:60px}
-h2{font-size:21px;font-weight:600;letter-spacing:-.02em;margin-bottom:8px}
-.sdesc{color:var(--muted);max-width:600px;font-size:13.5px;margin-bottom:24px}
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
 
-/* ENDPOINT CARD */
-.ep{
-  background:var(--surface);border:1px solid var(--border);border-radius:12px;
-  margin-bottom:16px;overflow:hidden;transition:border-color .18s
-}
-.ep:hover{border-color:var(--border2)}
-.ep-head{
-  display:flex;align-items:flex-start;gap:12px;
-  padding:18px 22px;cursor:pointer;border-bottom:1px solid transparent;transition:border-color .18s
-}
-.ep.open .ep-head{border-bottom-color:var(--border)}
-.badge{
-  font-family:var(--mono);font-size:10.5px;font-weight:600;
-  padding:3px 10px;border-radius:6px;flex-shrink:0;margin-top:3px;letter-spacing:.05em
-}
-.GET{background:var(--get-bg);color:var(--get-c);border:1px solid var(--get-b)}
-.POST{background:var(--post-bg);color:var(--post-c);border:1px solid var(--post-b)}
-.DELETE{background:var(--del-bg);color:var(--del-c);border:1px solid var(--del-b)}
-.ep-path{font-family:var(--mono);font-size:13.5px;color:var(--text);font-weight:500}
-.ep-path .p{color:var(--orange)}
-.ep-sum{font-size:13px;color:var(--muted);margin-top:3px}
-.chev{width:16px;height:16px;color:var(--muted);transition:transform .18s;flex-shrink:0;margin-top:5px;margin-left:auto}
-.ep.open .chev{transform:rotate(180deg)}
-.ep-body{display:none;padding:22px}
-.ep.open .ep-body{display:block}
+        body {
+            margin: 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
 
-/* PARAMS */
-.ptitle{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--muted2);margin-bottom:8px;margin-top:18px}
-.ptitle:first-child{margin-top:0}
-table{width:100%;border-collapse:collapse;font-size:13px}
-thead th{text-align:left;padding:5px 10px;font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted2);border-bottom:1px solid var(--border)}
-tbody tr{border-bottom:1px solid rgba(30,37,56,.5)}
-tbody tr:last-child{border-bottom:none}
-td{padding:9px 10px;vertical-align:top}
-.pn{font-family:var(--mono);font-size:12.5px;color:var(--text);font-weight:500}
-.pt{font-family:var(--mono);font-size:11.5px;color:var(--orange)}
-.req{font-size:9.5px;color:var(--danger);font-weight:700;letter-spacing:.04em}
-.opt{font-size:9.5px;color:var(--muted2);font-weight:700;letter-spacing:.04em}
-.pd{color:var(--muted);font-size:13px}
-
-/* CODE */
-.code-wrap{margin-top:18px}
-.code-tabs{display:flex;gap:2px;margin-bottom:0}
-.ctab{
-  background:none;border:1px solid var(--border);border-bottom:none;
-  border-radius:6px 6px 0 0;color:var(--muted);font-family:var(--mono);
-  font-size:10.5px;padding:5px 14px;cursor:pointer;transition:all .12s
-}
-.ctab.active{background:var(--surface2);color:var(--text)}
-.code-pane{display:none}
-.code-pane.active{display:block}
-pre{
-  background:var(--surface2);border:1px solid var(--border);
-  border-radius:0 8px 8px 8px;padding:16px 18px;overflow-x:auto;
-  font-family:var(--mono);font-size:12px;line-height:1.65;color:#b8c5e0
-}
-pre .k{color:var(--accent)} pre .s{color:var(--success)} pre .n{color:var(--teal)}
-pre .c{color:var(--muted2);font-style:italic} pre .num{color:var(--orange)}
-pre .key{color:#a89cff} pre .val{color:var(--success)} pre .url{color:var(--teal)}
-
-/* RESPONSE */
-.resp-tabs{display:flex;gap:6px;margin-top:18px;margin-bottom:8px;flex-wrap:wrap}
-.rtab{
-  background:none;border:1px solid var(--border);border-radius:6px;
-  color:var(--muted);font-family:var(--mono);font-size:10.5px;padding:3px 12px;cursor:pointer;transition:all .12s
-}
-.rtab.s2{background:rgba(62,207,136,.1);color:var(--success);border-color:rgba(62,207,136,.3)}
-.rtab.s4{background:rgba(242,92,92,.1);color:var(--danger);border-color:rgba(242,92,92,.3)}
-.rpane{display:none}
-.rpane.active{display:block}
-
-/* NOTICE */
-.notice{display:flex;gap:11px;padding:13px 16px;border-radius:8px;font-size:13px;margin:16px 0;line-height:1.6}
-.notice.info{background:rgba(124,108,250,.08);border:1px solid rgba(124,108,250,.2)}
-.notice.tip{background:rgba(62,207,136,.07);border:1px solid rgba(62,207,136,.2)}
-.notice.warn{background:rgba(249,162,58,.07);border:1px solid rgba(249,162,58,.2)}
-.ni{font-size:15px;flex-shrink:0;margin-top:1px}
-
-/* MISC */
-hr{border:none;border-top:1px solid var(--border);margin:40px 0}
-code{font-family:var(--mono);font-size:11.5px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:1px 6px;color:var(--teal)}
-.status-grid{display:grid;grid-template-columns:80px 1fr;gap:0}
-.sg-row{display:contents}
-.sg-row div{padding:8px 10px;border-bottom:1px solid rgba(30,37,56,.5);font-size:13px}
-.sg-row div:last-child{color:var(--muted)}
-.s200{color:var(--success);font-family:var(--mono);font-size:12px}
-.s201{color:var(--success);font-family:var(--mono);font-size:12px}
-.s400{color:var(--warning,#f9a23a);font-family:var(--mono);font-size:12px}
-.s401{color:var(--danger);font-family:var(--mono);font-size:12px}
-.s402{color:var(--orange);font-family:var(--mono);font-size:12px}
-.s404{color:var(--orange);font-family:var(--mono);font-size:12px}
-.s409{color:var(--danger);font-family:var(--mono);font-size:12px}
-.s422{color:var(--orange);font-family:var(--mono);font-size:12px}
-.s429{color:var(--orange);font-family:var(--mono);font-size:12px}
-.s500{color:var(--danger);font-family:var(--mono);font-size:12px}
-
-.stack-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px;margin-top:14px}
-.sc{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px}
-.sc-icon{font-size:20px;margin-bottom:6px}
-.sc-name{font-size:12.5px;font-weight:600;margin-bottom:3px}
-.sc-desc{font-size:11.5px;color:var(--muted)}
-
-footer{padding:28px 60px;border-top:1px solid var(--border);color:var(--muted);font-size:11.5px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
-
-@media(max-width:860px){aside{display:none}main{margin-left:0}.hero,.content,footer{padding-left:20px;padding-right:20px}}
-</style>
+        /* Simple smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+    </style>
 </head>
+
 <body>
+    <div id="root"></div>
 
-<!-- SIDEBAR -->
-<aside>
-  <div class="logo-area">
-    <div class="logo-sub">API Reference</div>
-    <div class="logo-name">Micropay <em>Bazaar</em></div>
-    <div class="v-pill">v1.0.0 · REST · JSON</div>
-    <div class="base-url">micropay.up.railway.app/api/v1</div>
-  </div>
-  <nav>
-    <div class="nav-group">Getting Started</div>
-    <a href="#overview" class="active">Overview</a>
-    <a href="#authentication">Authentication</a>
-    <a href="#idempotency">Idempotency</a>
-    <a href="#pagination">Pagination</a>
-    <a href="#errors">Errors &amp; Status Codes</a>
+    <script type="text/babel">
+        const { useState, useEffect } = React;
 
-    
-    <div class="nav-group">Registry</div>
-    <a href="#services-post"><span class="dot dp"></span>Register a Service</a>
-    <a href="#services-list"><span class="dot dg"></span>Discover Services</a>
-    <a href="#services-get"><span class="dot dg"></span>Get a Service</a>
+        // A lightweight Lucide Icon wrapper for React without a bundler
+        const Icon = ({ name, size = 24, className = '', color = 'currentColor' }) => {
+            const iconRef = React.useRef(null);
 
-    <div class="nav-group">Charges</div>
-    <a href="#charges-post"><span class="dot dp"></span>Create a Charge</a>
-    <a href="#charges-list"><span class="dot dg"></span>List Charges</a>
-    <a href="#charges-get"><span class="dot dg"></span>Get a Charge</a>
+            useEffect(() => {
+                if (iconRef.current && window.lucide) {
+                    window.lucide.createIcons({
+                        icons: { [name]: window.lucide.icons[name] },
+                        nameAttr: 'data-lucide',
+                        attrs: {
+                            class: className,
+                            width: size,
+                            height: size,
+                            stroke: color,
+                        }
+                    });
+                }
+            }, [name, size, className, color]);
 
-    <div class="nav-group">Chat &amp; AI</div>
-    <a href="#chat-completions"><span class="dot dp"></span>Chat Completions</a>
-    <a href="#ai-chat"><span class="dot dp"></span>Direct AI Chat</a>
-    <a href="#tool-result"><span class="dot dp"></span>Tool Result</a>
+            return <i ref={iconRef} data-lucide={name}></i>;
+        };
 
-    <div class="nav-group">Network</div>
-    <a href="#health"><span class="dot dg"></span>Health Check</a>
-    <a href="#balance"><span class="dot dg"></span>Get Balance</a>
-    <a href="#status"><span class="dot dg"></span>Network Status</a>
+        const MethodBadge = ({ method }) => {
+            const isGet = method === 'GET';
+            const colorClass = isGet ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
+            return (
+                <span className={\`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide \${colorClass}\`}>
+          {method}
+        </span>
+      );
+    };
 
-    <div class="nav-group">Reference</div>
-    <a href="#tech-stack">Tech Stack</a>
-    <a href="#quickstart">Quick Start</a>
-  </nav>
-</aside>
+    const ParamRow = ({ name, type, required, desc }) => (
+      <div className="py-4 border-b border-slate-100 last:border-0">
+        <div className="flex items-center gap-2 mb-1.5">
+          <span className="font-mono text-sm font-bold text-slate-900">{name}</span>
+          <span className="font-mono text-xs text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{type}</span>
+          {required && (
+            <span className="text-[10px] uppercase font-bold tracking-wider text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
+              Required
+            </span>
+          )}
+        </div>
+        <div className="text-sm text-slate-600 leading-relaxed">{desc}</div>
+      </div>
+    );
 
-<!-- MAIN -->
-<main>
-<div class="hero">
-  <div class="eyebrow">HackIllinois 2026 · Stripe Best Web API Track</div>
-  <h1>Micropay <em>Bazaar</em><br>API Reference</h1>
-  <p class="hero-desc">A discovery registry and micro-payment gateway for AI agents. Register services, let agents find them, and settle payments instantly on Solana using the x402 standard — all in one unified REST API.</p>
-  <div class="chips">
-    <span class="chip"><span class="live"></span>micropay.up.railway.app</span>
-    <span class="chip">JSON · REST</span>
-    <span class="chip">Solana · x402</span>
-    <span class="chip">Idempotent POST &amp; DELETE</span>
-    <span class="chip">Cursor pagination</span>
-  </div>
-</div>
+    const NavLink = ({ title, isActive }) => (
+      <a
+        href={\`#\${title.toLowerCase().replace(/\\s+/g, '-')}\`}
+        className={\`block py-1.5 text-sm \${isActive ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-900'} transition-colors duration-150\`}
+      >
+        {title}
+      </a>
+    );
 
-<div class="content">
+    function MicropayDocs() {
+      // Dynamic Services Injection (handled by server.js string replacement)
+      // This will be replaced by the server before serving HTML
+      const DYNAMIC_SERVICES_HTML = \`<!-- DYNAMIC_SERVICES_PLACEHOLDER -->\`;
 
-<!-- ═══════════ OVERVIEW ═══════════ -->
-<div class="section" id="overview">
-  <h2>Overview</h2>
-  <p class="sdesc">Micropay Bazaar solves the cold-start problem for AI agent economies: an agent needs to find and pay for an API tool without a human in the loop. This API provides a two-sided marketplace — providers register their services, agents discover and charge them, and Solana settles the payments in milliseconds for fractions of a cent.</p>
+      return (
+        <div className="flex h-screen w-full bg-slate-900 text-slate-900 font-sans overflow-hidden antialiased selection:bg-blue-100 selection:text-blue-900">
+          
+          <aside className="w-[260px] flex-shrink-0 border-r border-slate-200 overflow-y-auto hidden md:flex flex-col bg-slate-50 relative z-20">
+            <div className="p-6 sticky top-0 bg-slate-50/90 backdrop-blur-md z-10 border-b border-slate-100">
+              <div className="flex items-center gap-2 mb-1">
+                <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
+                  <span className="text-white font-bold text-xs">M</span>
+                </div>
+                <span className="font-bold text-lg tracking-tight">Micropay</span>
+              </div>
+              <p className="text-xs text-slate-500 font-medium">Bazaar API v1.0.0</p>
+            </div>
 
-  <div class="notice info">
-    <span class="ni">📡</span>
-    <span>All requests and responses use <strong>JSON</strong> (<code>Content-Type: application/json</code>). All endpoints live under the <code>/api/v1</code> namespace. All timestamps are ISO 8601 UTC strings.</span>
-  </div>
+            <nav className="flex-1 px-6 pt-6 pb-8 space-y-8">
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  <Icon name="Book" size={14} className="text-slate-400" /> Getting Started
+                </div>
+                <div className="space-y-1">
+                  <NavLink title="Authentication" isActive />
+                </div>
+              </div>
 
-  <div class="notice tip">
-    <span class="ni">🤖</span>
-    <span><strong>Designed for agents.</strong> Every resource has a consistent <code>id</code>, <code>object</code>, <code>created_at</code>, and <code>livemode</code> field so autonomous agents can reliably parse and act on responses without custom logic per endpoint.</span>
-  </div>
-</div>
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  <Icon name="Server" size={14} className="text-slate-400" /> Registry
+                </div>
+                <div className="space-y-1">
+                  <NavLink title="Register a Service" />
+                  <NavLink title="Discover Services" />
+                  <NavLink title="Get a Service" />
+                </div>
+              </div>
 
-<hr/>
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  <Icon name="CreditCard" size={14} className="text-slate-400" /> Charges
+                </div>
+                <div className="space-y-1">
+                  <NavLink title="Create a Charge" />
+                  <NavLink title="List Charges" />
+                  <NavLink title="Get a Charge" />
+                </div>
+              </div>
 
-<!-- ═══════════ AUTHENTICATION ═══════════ -->
-<div class="section" id="authentication">
-  <h2>Authentication</h2>
-  <p class="sdesc">All API requests require a Bearer token passed in the <code>Authorization</code> header. Unauthenticated requests receive a <code>401</code> response.</p>
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  <Icon name="Cpu" size={14} className="text-slate-400" /> AI Gateway
+                </div>
+                <div className="space-y-1">
+                  <NavLink title="Chat Completions" />
+                  <NavLink title="Direct AI Chat" />
+                </div>
+              </div>
 
-  <div style="background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:18px 22px;margin-bottom:16px">
-    <div class="ptitle" style="margin-top:0">Header</div>
-    <pre><span class="key">Authorization</span>: Bearer <span class="s">YOUR_API_KEY</span></pre>
-  </div>
+              <div>
+                <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
+                  <Icon name="Activity" size={14} className="text-slate-400" /> Network
+                </div>
+                <div className="space-y-1">
+                  <NavLink title="Get Balance" />
+                  <NavLink title="Health Check" />
+                </div>
+              </div>
+            </nav>
+          </aside>
 
-  <div class="notice warn">
-    <span class="ni">⚠️</span>
-    <span>Never expose your API key in client-side code. Rotate keys immediately if compromised. Keys are scoped per agent identity and carry full write access.</span>
-  </div>
+          <main className="flex-1 flex overflow-hidden relative bg-white">
+            <div className="absolute inset-0 pointer-events-none flex z-0 hidden lg:flex">
+              <div className="w-[55%] bg-white h-full" />
+              <div className="w-[45%] bg-slate-900 border-l border-slate-800" />
+            </div>
 
-  <div class="code-wrap">
-    <div class="code-tabs">
-      <button class="ctab active" onclick="switchTab(this,'auth-curl')">cURL</button>
-      <button class="ctab" onclick="switchTab(this,'auth-node')">Node.js</button>
-      <button class="ctab" onclick="switchTab(this,'auth-python')">Python</button>
-    </div>
-    <div id="auth-curl" class="code-pane active">
-<pre><span class="c"># Pass your API key as a Bearer token</span>
-curl -G <span class="url">http://micropay.up.railway.app/api/v1/registry/discover</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123xyz"</span></pre>
-    </div>
-    <div id="auth-node" class="code-pane">
-<pre><span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'http://micropay.up.railway.app/api/v1/registry/discover'</span>, {
-  headers: {
-    <span class="key">'Authorization'</span>: <span class="s">`Bearer ${process.env.MPB_API_KEY}`</span>,
-    <span class="key">'Content-Type'</span>: <span class="s">'application/json'</span>
-  }
-});
-<span class="k">const</span> data = <span class="k">await</span> res.json();</pre>
-    </div>
-    <div id="auth-python" class="code-pane">
-<pre><span class="k">import</span> requests
+            <div className="relative flex-1 overflow-y-auto scroll-smooth z-10 w-full lg:w-full" id="scroll-container">
+              <div className="flex flex-col">
+                
+                {/* Authentication */}
+                <section id="authentication" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-4">Authentication</h1>
+                    <p className="text-slate-600 mb-6 leading-relaxed">
+                      Micropay Bazaar uses API keys for authentication. Protected routes require your API key in the Authorization header.
+                    </p>
+                    <div className="bg-amber-50 rounded-lg p-5 border border-amber-200">
+                      <div className="flex items-start gap-3">
+                        <Icon name="Key" size={18} className="text-amber-500 mt-0.5 shrink-0" />
+                        <p className="text-sm text-amber-900 leading-relaxed">
+                          <strong>Keep your keys safe.</strong> Avoid sharing your secret keys in publicly accessible areas such as GitHub or client-side code.
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0 lg:pt-28">
+                    <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Example Request</div>
+                    <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto">
+                      <pre className="text-slate-300">
+                        <span className="text-sky-400">Authorization:</span> Bearer <span className="text-emerald-300">&lt;YOUR_API_KEY&gt;</span>
+                      </pre>
+                    </div>
+                  </div>
+                </section>
 
-headers = {<span class="s">"Authorization"</span>: <span class="s">f"Bearer {api_key}"</span>}
-res = requests.get(<span class="s">"http://micropay.up.railway.app/api/v1/registry/discover"</span>, headers=headers)
-data = res.json()</pre>
-    </div>
-  </div>
-</div>
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
 
-<hr/>
+                {/* Registry Section */}
+                {/* Dynamically inserted services table will go right here via innerHTML */}
+                <div dangerouslySetInnerHTML={{ __html: DYNAMIC_SERVICES_HTML }} />
 
-<!-- ═══════════ IDEMPOTENCY ═══════════ -->
-<div class="section" id="idempotency">
-  <h2>Idempotency</h2>
-  <p class="sdesc">All <code>POST</code> and <code>DELETE</code> requests support idempotency keys. Send the same key twice and the API returns the original response without side effects — critical for agents that may retry on network failure.</p>
+                <section id="register-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Register a Service</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="POST" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/register</code>
+                    </div>
+                    <p className="text-slate-600 mb-8 leading-relaxed">
+                      Registers an AI tool into the active global Micropay Bazaar discovery index. Agents can dynamically discover your service and execute it paying via x402 protocols.
+                    </p>
+                    
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Body Parameters</h3>
+                    <ParamRow name="name" type="string" required desc="The human-readable name of your service." />
+                    <ParamRow name="description" type="string" required desc="Detailed description of what the service does, used heavily during agent semantic search." />
+                    <ParamRow name="endpoint" type="string" required desc="The fully qualified URL where your service API resides." />
+                    <ParamRow name="cost_usd" type="number" required desc="The exact cost per execution in USD." />
+                    <ParamRow name="developer_wallet" type="string" required desc="Your Solana wallet base58 address where settlement funds will be directed." />
+                  </div>
 
-  <div class="notice info">
-    <span class="ni">🔁</span>
-    <span>If a prior request <strong>succeeded</strong>, the cached response is returned immediately. If it <strong>failed</strong>, the request is re-executed. Keys expire after <strong>24 hours</strong>.</span>
-  </div>
+                  <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                    <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Request</div>
+                    <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose mb-8">
+                      <pre>
+<span className="text-pink-400">curl</span> -X POST https://micropay.up.railway.app/api/v1/registry/register \
+  <span className="text-sky-400">-H</span> <span className="text-amber-200">"Authorization: Bearer &lt;YOUR_API_KEY&gt;"</span> \
+  <span className="text-sky-400">-H</span> <span className="text-amber-200">"Content-Type: application/json"</span> \
+  <span className="text-sky-400">-d</span> <span className="text-amber-200">'{'{'}</span>
+    <span className="text-blue-300">"name"</span>: <span className="text-emerald-300">"Weather Oracle"</span>,
+    <span className="text-blue-300">"description"</span>: <span className="text-emerald-300">"Detailed real-time meteorological data."</span>,
+    <span className="text-blue-300">"endpoint"</span>: <span className="text-emerald-300">"https://api.example.com/weather"</span>,
+    <span className="text-blue-300">"cost_usd"</span>: <span className="text-orange-300">0.05</span>,
+    <span className="text-blue-300">"developer_wallet"</span>: <span className="text-emerald-300">"2Hn6ES...xG9"</span>
+  <span className="text-amber-200">{'}'}'</span>
+                      </pre>
+                    </div>
 
-  <table style="margin-bottom:16px">
-    <thead><tr><th>Header</th><th>Format</th><th>Required</th></tr></thead>
-    <tbody>
-      <tr><td class="pn">Idempotency-Key</td><td class="pt">string (UUID recommended)</td><td class="opt">Optional</td></tr>
-    </tbody>
-  </table>
+                    <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Response</div>
+                    <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
+                      <pre>
+<span className="text-slate-400">{'{'}</span>
+  <span className="text-blue-300">"id"</span>: <span className="text-emerald-300">"srv_ak392nf9d21"</span>,
+  <span className="text-blue-300">"object"</span>: <span className="text-emerald-300">"service"</span>,
+  <span className="text-blue-300">"created_at"</span>: <span className="text-emerald-300">"2026-02-28T12:00:00Z"</span>,
+  <span className="text-blue-300">"name"</span>: <span className="text-emerald-300">"Weather Oracle"</span>,
+  <span className="text-blue-300">"cost_usd"</span>: <span className="text-orange-300">0.05</span>
+<span className="text-slate-400">{'}'}</span>
+                      </pre>
+                    </div>
+                  </div>
+                </section>
 
-  <pre><span class="c"># Safe to retry — will not double-charge</span>
-curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/charges</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123xyz"</span> \
-  -H <span class="s">"Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000"</span> \
-  -H <span class="s">"Content-Type: application/json"</span> \
-  -d <span class="s">'{"service_id":"svc_xyz","source_wallet":"AgentWallet111..."}'</span></pre>
-</div>
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
 
-<hr/>
+                <section id="discover-services" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Discover Services</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="GET" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/discover</code>
+                    </div>
+                    <p className="text-slate-600 mb-8 leading-relaxed">
+                      Retrieve a list of available services. This request is unauthenticated. Use the query parameter to search services dynamically by intent or keywords.
+                    </p>
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Query Parameters</h3>
+                    <ParamRow name="query" type="string" desc="Optional. An intent-based search term (e.g., 'weather', 'crypto')." />
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                    <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Request</div>
+                    <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
+                      <pre>
+<span className="text-pink-400">curl</span> -G https://micropay.up.railway.app/api/v1/registry/discover \
+  <span className="text-sky-400">--data-urlencode</span> <span className="text-amber-200">"query=weather"</span>
+                      </pre>
+                    </div>
+                  </div>
+                </section>
 
-<!-- ═══════════ PAGINATION ═══════════ -->
-<div class="section" id="pagination">
-  <h2>Pagination</h2>
-  <p class="sdesc">List endpoints use cursor-based pagination. The response includes <code>next_page_url</code> and <code>previous_page_url</code> — follow them directly without reconstructing query strings.</p>
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
 
-  <table>
-    <thead><tr><th>Query Param</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
-    <tbody>
-      <tr><td class="pn">query</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Full-text search across name, description, and tags.</td></tr>
-        <!-- REMOVED --><td class="pt">boolean</td><td class="opt">optional</td><td class="pd">Filter by active status. Default: returns all.</td></tr>
-      </tbody>
-    </table>
+                <section id="get-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get a Service</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="GET" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/services/:id</code>
+                    </div>
+                    <p className="text-slate-600">Retrieves the specifics of an existing service by its unique service ID.</p>
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                </section>
 
-    <div class="code-wrap">
-<pre><span class="c"># Search for cheap NLP services</span>
-curl <span class="url">"http://micropay.up.railway.app/api/v1/registry/discover?query=nlp"</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
-    </div>
+                {/* Charges */}
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
 
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'sl-200')">200 OK</button>
-    </div>
-    <div id="sl-200" class="rpane active">
-<pre>{
-  <span class="key">"object"</span>: <span class="s">"list"</span>,
-  <span class="key">"data"</span>: [
-    {
-      <span class="key">"object"</span>: <span class="s">"service"</span>,
-      <span class="key">"id"</span>: <span class="s">"svc_9Kp2mNqRxT"</span>,
-      <span class="key">"name"</span>: <span class="s">"GPT-4o Summarizer"</span>,
-      <span class="key">"price_usd"</span>: <span class="num">0.002</span>,
-      <span class="key">"price_sol"</span>: <span class="num">0.0000284</span>,
-      <span class="key">"tags"</span>: [<span class="s">"nlp"</span>, <span class="s">"summarization"</span>],
-      <span class="key">"active"</span>: <span class="num">true</span>,
-      <span class="key">"total_charges"</span>: <span class="num">42</span>,
-      <span class="key">"created_at"</span>: <span class="s">"2026-02-28T03:12:44Z"</span>
+                <section id="create-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Create a Charge</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="POST" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges</code>
+                    </div>
+                    <p className="text-slate-600 mb-8 leading-relaxed">
+                      Initiates an x402 payment flow. Returns a base64 encoded Solana transaction payload representing the cost of the requested service, ready for a wallet (e.g., Phantom) to sign and broadcast.
+                    </p>
+
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Headers</h3>
+                    <ParamRow name="Idempotency-Key" type="string" desc="Optional. Guarantees that the same charge is not created twice if requests are retried." />
+                    
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3 mt-8">Body Parameters</h3>
+                    <ParamRow name="service_id" type="string" required desc="The ID of the service you intend to consume (e.g., srv_ak392nf9d21)." />
+                    <ParamRow name="source_wallet" type="string" required desc="The public address of the consumer wallet that will pay the invoice." />
+                  </div>
+
+                  <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                    <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Request</div>
+                    <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose mb-8">
+                      <pre>
+<span className="text-pink-400">curl</span> -X POST https://micropay.up.railway.app/api/v1/charges \
+  <span className="text-sky-400">-H</span> <span className="text-amber-200">"Authorization: Bearer &lt;YOUR_API_KEY&gt;"</span> \
+  <span className="text-sky-400">-H</span> <span className="text-amber-200">"Idempotency-Key: idemp_11928"</span> \
+  <span className="text-sky-400">-d</span> <span className="text-amber-200">'{'{'}</span>
+    <span className="text-blue-300">"service_id"</span>: <span className="text-emerald-300">"srv_ak392nf9d21"</span>,
+    <span className="text-blue-300">"source_wallet"</span>: <span className="text-emerald-300">"CxM...4gV"</span>
+  <span className="text-amber-200">{'}'}'</span>
+                      </pre>
+                    </div>
+
+                    <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Response</div>
+                    <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
+                      <pre>
+<span className="text-slate-400">{'{'}</span>
+  <span className="text-blue-300">"id"</span>: <span className="text-emerald-300">"ch_wb4bedrhxh1q"</span>,
+  <span className="text-blue-300">"object"</span>: <span className="text-emerald-300">"charge"</span>,
+  <span className="text-blue-300">"service_id"</span>: <span className="text-emerald-300">"srv_ak392nf9d21"</span>,
+  <span className="text-blue-300">"amount_sol"</span>: <span className="text-orange-300">0.00035</span>,
+  <span className="text-blue-300">"status"</span>: <span className="text-emerald-300">"pending"</span>,
+  <span className="text-blue-300">"transaction_base64"</span>: <span className="text-emerald-300">"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..."</span>
+<span className="text-slate-400">{'}'}</span>
+                      </pre>
+                    </div>
+                  </div>
+                </section>
+
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
+
+                <section id="list-charges" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">List Charges</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="GET" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges</code>
+                    </div>
+                    <p className="text-slate-600 mb-8 leading-relaxed">Returns a cursor-paginated list of charges.</p>
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Query Parameters</h3>
+                    <ParamRow name="limit" type="int" desc="A limit on the number of objects to be returned." />
+                    <ParamRow name="offset" type="int" desc="Pagination offset index." />
+                    <ParamRow name="status" type="string" desc="Filter by charge status (e.g., 'pending', 'succeeded')." />
+                    <ParamRow name="source_wallet" type="string" desc="Filter by the wallet that initiated the transaction." />
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                </section>
+
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
+
+                <section id="get-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get a Charge</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="GET" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges/:id</code>
+                    </div>
+                    <p className="text-slate-600">Retrieves the details of a charge that has previously been created.</p>
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                </section>
+
+                {/* AI Gateway */}
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
+
+                <section id="chat-completions" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Chat Completions</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="POST" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/chat/completions</code>
+                    </div>
+                    <p className="text-slate-600 leading-relaxed">
+                      OpenRouter proxy. This endpoint intercepts messages and auto-injects Micropay Bazaar tools transparently to perform dynamic capabilities.
+                    </p>
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                </section>
+
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
+
+                <section id="direct-ai-chat" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Direct AI Chat</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="POST" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/ai/chat</code>
+                    </div>
+                    <p className="text-slate-600 mb-8 leading-relaxed">
+                      Passthrough plain-text chat to the underlying OpenAI layer.
+                    </p>
+                    <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Body Parameters</h3>
+                    <ParamRow name="message" type="string" required desc="The text message intended for the assistant." />
+                    <ParamRow name="model" type="string" desc="Defaults to 'gpt-4o-mini'." />
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                </section>
+
+                {/* Network Utils */}
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
+
+                <section id="get-balance" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get Balance</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="GET" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/balance/:wallet</code>
+                    </div>
+                    <p className="text-slate-600">Returns the real-time SOL balance for a specified Solana wallet address via the Solana Devnet RPC.</p>
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                </section>
+
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
+
+                <section id="health-check" className="flex flex-col lg:flex-row w-full lg:border-none">
+                  <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                    <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Health Check</h2>
+                    <div className="flex items-center gap-3 mb-6">
+                      <MethodBadge method="GET" />
+                      <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/health</code>
+                    </div>
+                    <p className="text-slate-600">Public endpoint to ping the orchestrator and determine its uptime, version, and server time.</p>
+                  </div>
+                  <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                </section>
+
+                <div className="w-full h-64 bg-slate-50" />
+                
+              </div>
+            </div>
+          </main>
+        </div>
+      );
     }
-  ],
-  <span class="key">"has_more"</span>: <span class="num">false</span>,
-  <span class="key">"next_page_url"</span>: <span class="num">null</span>,
-  <span class="key">"previous_page_url"</span>: <span class="num">null</span>,
-  <span class="key">"total_count"</span>: <span class="num">1</span>
-}</pre>
-    </div>
-  </div>
-</div>
 
-<!-- GET /services/:id -->
-<div class="ep" id="services-get">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge GET">GET</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/registry/services/<span class="p">:id</span></div>
-      <div class="ep-sum">Retrieve a single service by its ID. Returns full detail including lifetime charge stats.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="ptitle">Path Parameters</div>
-    <table>
-      <thead><tr><th>Param</th><th>Type</th><th></th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td class="pn">service_id</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">The unique ID of the service (prefix: <code>svc_</code>).</td></tr>
-      </tbody>
-    </table>
-
-    <div class="code-wrap">
-<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/registry/discover/svc_9Kp2mNqRxT</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
-    </div>
-
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'sg-200')">200 OK</button>
-      <button class="rtab s4" onclick="switchResp(this,'sg-404')">404 Not Found</button>
-    </div>
-    <div id="sg-200" class="rpane active">
-<pre>{
-  <span class="key">"object"</span>: <span class="s">"service"</span>,
-  <span class="key">"id"</span>: <span class="s">"svc_9Kp2mNqRxT"</span>,
-  <span class="key">"name"</span>: <span class="s">"GPT-4o Summarizer"</span>,
-  <span class="key">"endpoint_url"</span>: <span class="s">"https://myapi.com/summarize"</span>,
-  <span class="key">"price_usd"</span>: <span class="num">0.002</span>,
-  <span class="key">"price_sol"</span>: <span class="num">0.0000284</span>,
-  <span class="key">"wallet_address"</span>: <span class="s">"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"</span>,
-  <span class="key">"description"</span>: <span class="s">"Summarizes text up to 10,000 tokens using GPT-4o."</span>,
-  <span class="key">"tags"</span>: [<span class="s">"nlp"</span>, <span class="s">"summarization"</span>, <span class="s">"gpt4"</span>],
-  <span class="key">"metadata"</span>: { <span class="key">"version"</span>: <span class="s">"2.1"</span> },
-  <span class="key">"active"</span>: <span class="num">true</span>,
-  <span class="key">"total_charges"</span>: <span class="num">42</span>,
-  <span class="key">"total_revenue_usd"</span>: <span class="num">0.084</span>,
-  <span class="key">"created_at"</span>: <span class="s">"2026-02-28T03:12:44Z"</span>,
-  <span class="key">"livemode"</span>: <span class="num">true</span>
-}</pre>
-    </div>
-    <div id="sg-404" class="rpane">
-<pre>{
-  <span class="key">"error"</span>: {
-    <span class="key">"type"</span>: <span class="s">"not_found_error"</span>,
-    <span class="key">"code"</span>: <span class="s">"service_not_found"</span>,
-    <span class="key">"message"</span>: <span class="s">"No service found with id 'svc_bad_id'."</span>,
-    <span class="key">"request_id"</span>: <span class="s">"req_2cMpXz"</span>
-  }
-}</pre>
-    </div>
-  </div>
-</div>
-
-<hr/>
-
-<!-- ══════════════════════════════
-     CHARGES
-══════════════════════════════ -->
-<div class="section" id="charges-section">
-  <h2>Charges</h2>
-  <p class="sdesc">A charge represents a single on-chain micropayment from an agent's wallet to a service provider's wallet. The API resolves the <code>service_id</code> to its current SOL price using live CoinGecko data, builds the Solana transaction, and returns the on-chain signature.</p>
-</div>
-
-<!-- POST /charges -->
-<div class="ep" id="charges-post">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge POST">POST</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/charges</div>
-      <div class="ep-sum">Create a new charge — initiates an on-chain Solana micropayment for a registered service.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="notice info"><span class="ni">🔐</span><span>Requires authentication. Strongly recommended to use <code>Idempotency-Key</code> to prevent double-charges on network retry.</span></div>
-
-    <div class="ptitle">Request Body</div>
-    <table>
-      <thead><tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td class="pn">service_id</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">ID of the registered service to charge for (prefix: <code>svc_</code>). API resolves wallet and price automatically.</td></tr>
-        <tr><td class="pn">source_wallet</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Solana wallet address of the paying agent (base58, 32–44 chars).</td></tr>
-        <tr><td class="pn">payer_secret</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Base58-encoded private key of the payer wallet to sign the transaction. Transmitted over TLS, never stored.</td></tr>
-        <tr><td class="pn">metadata</td><td class="pt">object</td><td class="opt">optional</td><td class="pd">Arbitrary key-value pairs for your records (e.g. <code>{"job_id":"abc"}</code>). Max 16 keys.</td></tr>
-      </tbody>
-    </table>
-
-    <div class="notice warn"><span class="ni">🔑</span><span><strong>Security note:</strong> <code>payer_secret</code> is used only to sign the transaction in-process. It is never logged or persisted. Use a dedicated agent wallet with only the SOL balance needed.</span></div>
-
-    <div class="code-wrap">
-      <div class="code-tabs">
-        <button class="ctab active" onclick="switchTab(this,'cp-curl')">cURL</button>
-        <button class="ctab" onclick="switchTab(this,'cp-node')">Node.js</button>
-      </div>
-      <div id="cp-curl" class="code-pane active">
-<pre>curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/charges</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span> \
-  -H <span class="s">"Content-Type: application/json"</span> \
-  -H <span class="s">"Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000"</span> \
-  -d <span class="s">'{
-    "service_id": "svc_9Kp2mNqRxT",
-    "source_wallet": "AgentWallet111aaa222bbb333ccc",
-    "payer_secret": "5Kb8kLf9..."
-  }'</span></pre>
-      </div>
-      <div id="cp-node" class="code-pane">
-<pre><span class="k">const</span> charge = <span class="k">await</span> fetch(<span class="s">'http://micropay.up.railway.app/api/v1/charges'</span>, {
-  method: <span class="s">'POST'</span>,
-  headers: {
-    <span class="key">'Authorization'</span>: <span class="s">'Bearer mpb_live_abc123'</span>,
-    <span class="key">'Content-Type'</span>: <span class="s">'application/json'</span>,
-    <span class="key">'Idempotency-Key'</span>: crypto.randomUUID()
-  },
-  body: JSON.stringify({
-    service_id: <span class="s">'svc_9Kp2mNqRxT'</span>,
-    payer_wallet: agentWallet.publicKey.toBase58(),
-    
-    metadata: { job_id: <span class="s">'inference_run_77'</span> }
-  })
-}).then(r =&gt; r.json());</pre>
-      </div>
-    </div>
-
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'cp-201')">201 Created</button>
-      <button class="rtab s4" onclick="switchResp(this,'cp-402')">402 Payment Required</button>
-      <button class="rtab s4" onclick="switchResp(this,'cp-422')">422 Unprocessable</button>
-    </div>
-    <div id="cp-201" class="rpane active">
-<pre>{
-  <span class="key">"object"</span>: <span class="s">"charge"</span>,
-  <span class="key">"id"</span>: <span class="s">"ch_4Rm9pQxKvL"</span>,
-  <span class="key">"service_id"</span>: <span class="s">"svc_9Kp2mNqRxT"</span>,
-  <span class="key">"service_name"</span>: <span class="s">"GPT-4o Summarizer"</span>,
-  <span class="key">"payer_wallet"</span>: <span class="s">"AgentWallet111aaa222bbb333ccc"</span>,
-  <span class="key">"receiver_wallet"</span>: <span class="s">"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"</span>,
-  <span class="key">"amount_usd"</span>: <span class="num">0.002</span>,
-  <span class="key">"amount_sol"</span>: <span class="num">0.0000284</span>,
-  <span class="key">"sol_price_usd"</span>: <span class="num">70.42</span>,
-  <span class="key">"tx_signature"</span>: <span class="s">"5j7mn...Xq2P"</span>,
-  <span class="key">"status"</span>: <span class="s">"confirmed"</span>,
-  <span class="key">"network"</span>: <span class="s">"mainnet-beta"</span>,
-  <span class="key">"metadata"</span>: { <span class="key">"job_id"</span>: <span class="s">"inference_run_77"</span> },
-  <span class="key">"created_at"</span>: <span class="s">"2026-02-28T03:15:00Z"</span>,
-  <span class="key">"livemode"</span>: <span class="num">true</span>
-}</pre>
-    </div>
-    <div id="cp-402" class="rpane">
-<pre>{
-  <span class="key">"error"</span>: {
-    <span class="key">"type"</span>: <span class="s">"payment_error"</span>,
-    <span class="key">"code"</span>: <span class="s">"insufficient_balance"</span>,
-    <span class="key">"message"</span>: <span class="s">"Payer wallet has 0.000010 SOL but 0.0000284 SOL is required."</span>,
-    <span class="key">"required_sol"</span>: <span class="num">0.0000284</span>,
-    <span class="key">"available_sol"</span>: <span class="num">0.000010</span>,
-    <span class="key">"request_id"</span>: <span class="s">"req_8xNmPq"</span>
-  }
-}</pre>
-    </div>
-    <div id="cp-422" class="rpane">
-<pre>{
-  <span class="key">"error"</span>: {
-    <span class="key">"type"</span>: <span class="s">"invalid_request_error"</span>,
-    <span class="key">"code"</span>: <span class="s">"invalid_wallet"</span>,
-    <span class="key">"message"</span>: <span class="s">"'payer_wallet' is not a valid base58 Solana address."</span>,
-    <span class="key">"param"</span>: <span class="s">"payer_wallet"</span>,
-    <span class="key">"request_id"</span>: <span class="s">"req_3cLkPm"</span>
-  }
-}</pre>
-    </div>
-  </div>
-</div>
-
-<!-- GET /charges -->
-<div class="ep" id="charges-list">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge GET">GET</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/charges</div>
-      <div class="ep-sum">List all charges. Filter by service, payer wallet, status, or date range.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="ptitle">Query Parameters</div>
-    <table>
-      <thead><tr><th>Param</th><th>Type</th><th></th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td class="pn">service_id</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Filter charges for a specific service.</td></tr>
-        <tr><td class="pn">source_wallet</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Filter charges by payer wallet address.</td></tr>
-        <tr><td class="pn">status</td><td class="pt">string</td><td class="opt">optional</td><td class="pd"><code>confirmed</code>, <code>pending</code>, or <code>failed</code>.</td></tr>
-        <tr><td class="pn">created_after</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">ISO 8601 datetime. Return charges created at or after this time.</td></tr>
-        <tr><td class="pn">created_before</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">ISO 8601 datetime. Return charges created at or before this time.</td></tr>
-        <tr><td class="pn">limit</td><td class="pt">integer</td><td class="opt">optional</td><td class="pd">Default: <code>20</code>. Max: <code>100</code>.</td></tr>
-        <tr><td class="pn">cursor</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Pagination cursor.</td></tr>
-      </tbody>
-    </table>
-
-    <div class="code-wrap">
-<pre><span class="c"># All confirmed charges for a specific service</span>
-curl <span class="url">"http://micropay.up.railway.app/api/v1/charges?service_id=svc_9Kp2mNqRxT&amp;status=confirmed"</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
-    </div>
-  </div>
-</div>
-
-<!-- GET /charges/:id -->
-<div class="ep" id="charges-get">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge GET">GET</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/charges/<span class="p">:charge_id</span></div>
-      <div class="ep-sum">Retrieve a single charge by ID, including its on-chain transaction signature.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="code-wrap">
-<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/charges/ch_4Rm9pQxKvL</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
-    </div>
-  </div>
-</div>
-
-<hr/>
-
-<!-- ══════════════════════════════
-     NETWORK
-══════════════════════════════ -->
-<div class="section" id="network-section">
-  <h2>Network Utilities</h2>
-  <p class="sdesc">Utility endpoints for health checks, Solana wallet balance queries, and live SOL/USD pricing. No authentication required for health; auth required for balance and price endpoints.</p>
-</div>
-
-<!-- GET /health -->
-<div class="ep" id="health">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge GET">GET</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/health</div>
-      <div class="ep-sum">Returns API health status and Solana RPC connectivity. No authentication required.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="code-wrap">
-<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/health</span></pre>
-    </div>
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'h-200')">200 OK</button>
-    </div>
-    <div id="h-200" class="rpane active">
-<pre>{
-  <span class="key">"status"</span>: <span class="s">"ok"</span>,
-  <span class="key">"version"</span>: <span class="s">"1.0.0"</span>,
-  <span class="key">"solana_rpc"</span>: <span class="s">"connected"</span>,
-  <span class="key">"solana_network"</span>: <span class="s">"mainnet-beta"</span>,
-  <span class="key">"latency_ms"</span>: <span class="num">42</span>,
-  <span class="key">"timestamp"</span>: <span class="s">"2026-02-28T03:15:00Z"</span>
-}</pre>
-    </div>
-  </div>
-</div>
-
-<!-- GET /network/balance -->
-<div class="ep" id="balance">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge GET">GET</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/network/balance/<span class="p">:wallet_address</span></div>
-      <div class="ep-sum">Fetch the current SOL balance of any Solana wallet address.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="code-wrap">
-<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/network/balance/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
-    </div>
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'bal-200')">200 OK</button>
-    </div>
-    <div id="bal-200" class="rpane active">
-<pre>{
-  <span class="key">"object"</span>: <span class="s">"balance"</span>,
-  <span class="key">"wallet_address"</span>: <span class="s">"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"</span>,
-  <span class="key">"balance_sol"</span>: <span class="num">2.4815</span>,
-  <span class="key">"balance_usd"</span>: <span class="num">174.81</span>,
-  <span class="key">"sol_price_usd"</span>: <span class="num">70.42</span>,
-  <span class="key">"network"</span>: <span class="s">"mainnet-beta"</span>,
-  <span class="key">"fetched_at"</span>: <span class="s">"2026-02-28T03:15:00Z"</span>
-}</pre>
-    </div>
-  </div>
-</div>
-
-<!-- GET /network/price -->
-<div class="ep" id="status">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge GET">GET</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/network/status</div>
-      <div class="ep-sum">Returns the current SOL/USD price from CoinGecko. Cached with a 60-second TTL.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="code-wrap">
-<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/network/status</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
-    </div>
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'pr-200')">200 OK</button>
-    </div>
-    <div id="pr-200" class="rpane active">
-<pre>{
-  <span class="key">"object"</span>: <span class="s">"price"</span>,
-  <span class="key">"sol_usd"</span>: <span class="num">70.42</span>,
-  <span class="key">"source"</span>: <span class="s">"coingecko"</span>,
-  <span class="key">"cache_ttl_seconds"</span>: <span class="num">60</span>,
-  <span class="key">"fetched_at"</span>: <span class="s">"2026-02-28T03:14:30Z"</span>
-}</pre>
-    </div>
-  </div>
-</div>
-
-<hr/>
-
-<!-- ══════════════════════════════
-     TECH STACK
-══════════════════════════════ -->
-<div class="section" id="tech-stack">
-  <h2>Tech Stack</h2>
-  <p class="sdesc">Micropay Bazaar is built with a focused, production-aligned stack chosen for reliability in the Solana ecosystem.</p>
-  <div class="stack-grid">
-    <div class="sc"><div class="sc-icon">🟩</div><div class="sc-name">Node.js + Express</div><div class="sc-desc">HTTP server, routing, middleware pipeline</div></div>
-    <div class="sc"><div class="sc-icon">🌐</div><div class="sc-name">Solana web3.js</div><div class="sc-desc">Transaction building, RPC calls, balance lookups</div></div>
-    <div class="sc"><div class="sc-icon">💱</div><div class="sc-name">CoinGecko API</div><div class="sc-desc">Live SOL/USD pricing with in-memory TTL cache</div></div>
-    <div class="sc"><div class="sc-icon">🗄️</div><div class="sc-name">SQLite / Postgres</div><div class="sc-desc">Service registry and charge history persistence</div></div>
-    <div class="sc"><div class="sc-icon">🔐</div><div class="sc-name">JWT Auth Middleware</div><div class="sc-desc">Bearer token validation on protected routes</div></div>
-    <div class="sc"><div class="sc-icon">⚡</div><div class="sc-name">x402 Standard</div><div class="sc-desc">Micropayment protocol for AI agent transactions</div></div>
-  </div>
-</div>
-
-<hr/>
-
-<!-- ══════════════════════════════
-     QUICK START
-══════════════════════════════ -->
-<div class="section" id="quickstart">
-  <h2>Quick Start</h2>
-  <p class="sdesc">From zero to a live charge in under 2 minutes.</p>
-
-  <div class="ptitle">Step 1 — Start the server</div>
-<pre>git clone https://github.com/your-team/micropay-bazaar
-cd micropay-bazaar
-npm install
-cp .env.example .env  <span class="c"># add your SOLANA_RPC_URL and API key seed</span>
-npm start
-<span class="c"># Server running on http://micropay.up.railway.app</span></pre>
-
-  <div class="ptitle" style="margin-top:20px">Step 2 — Register a service</div>
-<pre>curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/registry/discover</span> \
-  -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
-  -H <span class="s">"Content-Type: application/json"</span> \
-  -d <span class="s">'{"name":"My AI Tool","endpoint":"https://myapp.com/infer","cost_usd":0.001,"developer_wallet":"YOUR_SOLANA_WALLET"}'</span>
-<span class="c"># → Returns service with id: "svc_..."</span></pre>
-
-  <div class="ptitle" style="margin-top:20px">Step 3 — Discover services</div>
-<pre>curl <span class="url">"http://micropay.up.railway.app/api/v1/registry/discover?tag=nlp&amp;limit=5"</span> \
-  -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span>
-<span class="c"># → Returns paginated list of matching services</span></pre>
-
-  <div class="ptitle" style="margin-top:20px">Step 4 — Pay and call</div>
-<pre>curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/charges</span> \
-  -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
-  -H <span class="s">"Content-Type: application/json"</span> \
-  -H <span class="s">"Idempotency-Key: $(uuidgen)"</span> \
-  -d <span class="s">'{"service_id":"svc_...","source_wallet":"AGENT_WALLET","payer_secret":"AGENT_SECRET"}'</span>
-<span class="c"># → Returns confirmed charge with tx_signature on Solana</span></pre>
-
-  <div class="notice tip" style="margin-top:20px">
-    <span class="ni">✅</span>
-    <span>That's it. Your agent just discovered and paid for an API call on Solana — no human in the loop, no credit card, no gas faucet. Sub-cent, sub-second.</span>
-  </div>
-</div>
-
-</div><!-- /content -->
-
-<footer>
-  <span>Micropay Bazaar · HackIllinois 2026 · Stripe Best Web API Track</span>
-  <span>Built with Node.js · Solana web3.js · x402 · CoinGecko</span>
-</footer>
-</main>
-
-<script>
-function toggle(head) {
-  const ep = head.closest('.ep');
-  ep.classList.toggle('open');
-}
-
-function switchTab(btn, paneId) {
-  const wrap = btn.closest('.code-wrap') || btn.closest('.ep-body');
-  wrap.querySelectorAll('.ctab').forEach(b => b.classList.remove('active'));
-  wrap.querySelectorAll('.code-pane').forEach(p => p.classList.remove('active'));
-  btn.classList.add('active');
-  document.getElementById(paneId).classList.add('active');
-}
-
-function switchResp(btn, paneId) {
-  const ep = btn.closest('.ep-body');
-  ep.querySelectorAll('.rtab').forEach(b => { b.classList.remove('s2','s4'); });
-  ep.querySelectorAll('.rpane').forEach(p => p.classList.remove('active'));
-  btn.classList.add(paneId.endsWith('200') || paneId.endsWith('201') ? 's2' : 's4');
-  document.getElementById(paneId).classList.add('active');
-}
-
-// Highlight nav on scroll
-const sections = document.querySelectorAll('[id]');
-const navLinks = document.querySelectorAll('nav a');
-
-const obs = new IntersectionObserver((entries) => {
-  entries.forEach(e => {
-    if (e.isIntersecting) {
-      navLinks.forEach(a => a.classList.remove('active'));
-      const match = document.querySelector(`nav a[href="#${e.target.id}"]`);
-      if (match) match.classList.add('active');
-    }
-  });
-}, { rootMargin: '-20% 0px -70% 0px' });
-
-sections.forEach(s => obs.observe(s));
-</script>
+    const domNode = document.getElementById('root');
+    const root = ReactDOM.createRoot(domNode);
+    root.render(<MicropayDocs />);
+    </script>
 </body>
+
 </html>
