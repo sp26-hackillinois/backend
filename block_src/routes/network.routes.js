@@ -55,7 +55,7 @@ router.get('/network/status', async (req, res) => {
 // ─────────────────────────────────────────
 // GET /api/v1/transactions/:wallet
 // Get last 20 transactions for a wallet (public — no auth)
-// Returns both incoming and outgoing with direction field
+// Returns both incoming and outgoing with stable direction field
 // ─────────────────────────────────────────
 router.get('/transactions/:wallet', async (req, res) => {
     const { wallet } = req.params;
@@ -83,12 +83,23 @@ router.get('/transactions/:wallet', async (req, res) => {
                         maxSupportedTransactionVersion: 0,
                     });
 
-                    const preBalance = tx?.meta?.preBalances?.[0] ?? 0;
-                    const postBalance = tx?.meta?.postBalances?.[0] ?? 0;
-                    const amount_sol = parseFloat(
-                        (Math.abs(preBalance - postBalance) / 1_000_000_000).toFixed(9)
+                    // Find the index of the queried wallet in this transaction's account keys
+                    const accountKeys = tx.transaction.message.accountKeys.map(k =>
+                        k.pubkey ? k.pubkey.toString() : k.toString()
                     );
-                    const direction = preBalance > postBalance ? 'outgoing' : 'incoming';
+                    const walletIndex = accountKeys.findIndex(k => k === wallet);
+
+                    let direction = 'unknown';
+                    let amount_sol = 0;
+
+                    if (walletIndex !== -1) {
+                        const pre = tx.meta.preBalances[walletIndex];
+                        const post = tx.meta.postBalances[walletIndex];
+                        amount_sol = parseFloat(
+                            (Math.abs(pre - post) / 1_000_000_000).toFixed(9)
+                        );
+                        direction = post > pre ? 'incoming' : 'outgoing';
+                    }
 
                     return {
                         signature: sigInfo.signature,
@@ -98,7 +109,7 @@ router.get('/transactions/:wallet', async (req, res) => {
                         time: sigInfo.blockTime
                             ? new Date(sigInfo.blockTime * 1000).toISOString()
                             : null,
-                        description: direction === 'outgoing' ? 'Payment Sent' : 'Payment Received',
+                        description: direction === 'outgoing' ? 'Payment Sent' : direction === 'incoming' ? 'Payment Received' : 'Solana Transfer',
                     };
                 } catch {
                     return {
