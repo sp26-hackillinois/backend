@@ -3,441 +3,881 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Micropay Bazaar API Docs</title>
+<title>Micropay Bazaar — API Reference</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Berkeley+Mono&family=Geist:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-html{scroll-behavior:smooth;font-size:15px}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#0f172a;display:flex;height:100vh;overflow:hidden}
-
-/* SIDEBAR */
-aside{width:260px;flex-shrink:0;border-right:1px solid #e2e8f0;background:#f8fafc;display:flex;flex-direction:column;overflow-y:auto}
-.sb-brand{padding:24px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;background:#f8fafc;z-index:10}
-.sb-logo{display:flex;align-items:center;gap:8px;margin-bottom:4px}
-.sb-icon{width:24px;height:24px;background:#4f46e5;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px}
-.sb-name{font-weight:700;font-size:18px}
-.sb-version{font-size:11px;color:#94a3b8}
-nav{padding:24px;flex:1}
-.nav-group{margin-bottom:28px}
-.nav-group-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
-nav a{display:block;padding:6px 0;font-size:13.5px;color:#64748b;text-decoration:none;transition:color .15s}
-nav a:hover,nav a.active{color:#0f172a;font-weight:600}
-
-/* MAIN */
-main{flex:1;overflow-y:auto}
-
-/* SECTION */
-.doc-section{display:flex;border-bottom:1px solid #e2e8f0}
-.doc-left{width:55%;padding:64px 48px;background:#fff;flex-shrink:0}
-.doc-right{width:45%;padding:64px 40px;background:#0f172a;flex-shrink:0}
-@media(max-width:900px){.doc-section{flex-direction:column}.doc-left,.doc-right{width:100%}}
-
-h1{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
-h2{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:12px}
-.section-desc{color:#475569;line-height:1.7;margin-bottom:28px}
-
-/* METHOD BADGE */
-.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:700;font-family:monospace;letter-spacing:.05em}
-.badge-get{background:#dbeafe;color:#1d4ed8}
-.badge-post{background:#d1fae5;color:#065f46}
-.endpoint-row{display:flex;align-items:center;gap:10px;margin-bottom:24px}
-.endpoint-path{font-family:monospace;font-size:13px;color:#475569;background:#f8fafc;padding:3px 8px;border-radius:4px;border:1px solid #e2e8f0}
-
-/* PARAMS */
-.param-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid #f1f5f9;padding-bottom:10px;margin-bottom:0}
-.param{padding:14px 0;border-bottom:1px solid #f1f5f9}
-.param:last-child{border:none}
-.param-name{font-family:monospace;font-size:13px;font-weight:700;color:#0f172a}
-.param-type{font-family:monospace;font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 6px;border-radius:3px;margin-left:6px}
-.param-req{font-size:9px;font-weight:700;text-transform:uppercase;color:#e11d48;background:#fff1f2;padding:2px 6px;border-radius:3px;margin-left:4px;letter-spacing:.05em}
-.param-desc{font-size:13px;color:#475569;margin-top:6px;line-height:1.6}
-
-/* CODE BLOCKS */
-.code-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
-.code-block{background:#020617;border:1px solid #1e293b;border-radius:10px;padding:18px;font-family:'SFMono-Regular',Menlo,Monaco,monospace;font-size:12px;color:#cbd5e1;overflow-x:auto;line-height:1.7;margin-bottom:24px;white-space:pre}
-.t-pink{color:#f472b6}
-.t-sky{color:#38bdf8}
-.t-green{color:#86efac}
-.t-amber{color:#fde68a}
-.t-orange{color:#fdba74}
-.t-muted{color:#64748b}
-
-/* OVERVIEW GRID */
-.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:0}
-.overview-col h3{font-size:14px;font-weight:700;margin-bottom:14px}
-.overview-col a{display:block;font-size:13px;color:#4f46e5;text-decoration:none;margin-bottom:10px}
-.overview-col a:hover{color:#3730a3;text-decoration:underline}
-.hero-btns{display:flex;gap:16px;align-items:center;margin-bottom:48px}
-.btn-primary{background:#4f46e5;color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;font-weight:600;text-decoration:none;transition:background .15s}
-.btn-primary:hover{background:#4338ca}
-.btn-ghost{font-size:14px;font-weight:600;color:#475569;text-decoration:none}
-.btn-ghost:hover{color:#0f172a}
-.hero-sub{font-size:18px;color:#64748b;font-weight:300;margin-bottom:28px}
-
-/* TERMINAL */
-.terminal{background:#020617;border:1px solid #1e293b;border-radius:10px;overflow:hidden;margin-bottom:12px}
-.terminal-bar{background:#1e293b;padding:10px 16px;display:flex;gap:6px;align-items:center}
-.dot{width:10px;height:10px;border-radius:50%}
-.dot-r{background:rgba(239,68,68,.6)}
-.dot-y{background:rgba(234,179,8,.6)}
-.dot-g{background:rgba(34,197,94,.6)}
-.terminal-label{font-size:11px;color:#64748b;font-family:monospace;margin-left:8px}
-.terminal-body{padding:18px;font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.8}
-.cursor{display:inline-block;width:8px;height:14px;background:#4f46e5;animation:blink 1s step-end infinite;vertical-align:middle}
-@keyframes blink{50%{opacity:0}}
-
-/* ALERT */
-.alert-amber{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:16px;font-size:13px;color:#78350f;line-height:1.6}
-.alert-amber code{background:#fef3c7;padding:2px 6px;border-radius:3px;font-family:monospace}
-
-/* DIVIDER */
-.divider{height:1px;background:#f1f5f9}
-
-/* FOOTER SPACE */
-.footer-space{height:128px;background:#f8fafc}
+:root{
+  --bg:#ffffff;--bg-subtle:#f6f8fa;--bg-muted:#eef0f3;
+  --border:#e1e4e8;--border-subtle:#eef0f3;
+  --text:#0d1117;--text-secondary:#57606a;--text-muted:#8c959f;
+  --accent:#5046e5;--accent-hover:#3d35c4;--accent-subtle:#ede9fe;
+  --green:#22c55e;--green-subtle:#dcfce7;
+  --blue:#3b82f6;--blue-subtle:#dbeafe;
+  --amber:#f59e0b;--amber-subtle:#fef3c7;
+  --red:#ef4444;--red-subtle:#fee2e2;
+  --sky:#38bdf8;--emerald:#4ade80;--orange:#fb923c;--pink:#ec4899;
+  --slate-300:#cbd5e1;--slate-400:#94a3b8;--slate-500:#64748b;
+  --slate-700:#334155;--slate-800:#1e293b;--slate-900:#0f172a;--slate-950:#020617;
+  --font:'Geist',system-ui,sans-serif;
+  --mono:'Berkeley Mono','SFMono-Regular',Menlo,monospace;
+  --sidebar-w:268px;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+aside{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--bg-subtle);display:flex;flex-direction:column;overflow-y:auto}
+.sb-header{padding:20px 20px 16px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg-subtle);z-index:10}
+.sb-logo{display:flex;align-items:center;gap:10px;margin-bottom:2px}
+.sb-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:11px;flex-shrink:0}
+.sb-name{font-size:15px;font-weight:700;letter-spacing:-.3px}
+.sb-tagline{font-size:11px;color:var(--text-muted);margin-top:1px}
+nav{padding:14px 0 24px;flex:1}
+.nav-label{padding:6px 20px;font-size:10px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.09em}
+nav a{display:flex;align-items:center;gap:8px;padding:5px 20px;font-size:13px;color:var(--text-secondary);text-decoration:none;border-left:2px solid transparent;transition:all .15s;line-height:1.4}
+nav a:hover{color:var(--text);background:var(--bg-muted)}
+nav a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);background:var(--accent-subtle)}
+.nb{font-size:9px;font-weight:700;letter-spacing:.06em;padding:1px 5px;border-radius:3px;text-transform:uppercase}
+.nb-get{background:var(--blue-subtle);color:#1d4ed8}
+.nb-post{background:var(--green-subtle);color:#15803d}
+main{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+.hero{background:linear-gradient(135deg,#0d0f1a 0%,#1a1040 40%,#0d1117 100%);padding:64px 56px 56px;position:relative;overflow:hidden;flex-shrink:0}
+.hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 700px 350px at 65% 50%,rgba(80,70,229,.22) 0%,transparent 70%);pointer-events:none}
+.hero-chip{display:inline-flex;align-items:center;gap:6px;background:rgba(80,70,229,.2);border:1px solid rgba(80,70,229,.4);border-radius:999px;padding:4px 12px;font-size:10.5px;font-weight:600;color:#a5b4fc;margin-bottom:18px;letter-spacing:.05em;text-transform:uppercase}
+.hero-chip::before{content:'';width:6px;height:6px;background:#818cf8;border-radius:50%;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.35}}
+.hero h1{font-size:38px;font-weight:800;color:#fff;letter-spacing:-.03em;line-height:1.1;margin-bottom:14px;max-width:560px}
+.hero h1 span{color:#a5b4fc}
+.hero-desc{font-size:16px;color:rgba(255,255,255,.5);max-width:500px;line-height:1.65;margin-bottom:32px}
+.hero-btns{display:flex;gap:12px;align-items:center}
+.btn-p{background:var(--accent);color:#fff;padding:9px 20px;border-radius:8px;font-size:13.5px;font-weight:600;text-decoration:none;display:inline-flex;align-items:center;gap:5px;transition:background .15s}
+.btn-p:hover{background:var(--accent-hover)}
+.btn-g{color:rgba(255,255,255,.55);font-size:13.5px;font-weight:500;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+.btn-g:hover{color:#fff}
+.hero-stats{display:flex;gap:44px;margin-top:44px;padding-top:28px;border-top:1px solid rgba(255,255,255,.08)}
+.sv{font-size:24px;font-weight:700;color:#fff;letter-spacing:-.02em}
+.sl{font-size:11px;color:rgba(255,255,255,.38);margin-top:2px}
+.doc-sec{display:flex;border-bottom:1px solid var(--border);flex-shrink:0}
+.doc-sec:last-of-type{border-bottom:none}
+.dl{width:55%;flex-shrink:0;padding:48px 52px;background:var(--bg)}
+.dr{width:45%;flex-shrink:0;padding:48px 36px;background:var(--slate-900)}
+.sticky-r{position:sticky;top:0;max-height:100vh;overflow-y:auto;padding:0}
+.sec-tag{font-size:10.5px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:var(--accent);margin-bottom:8px;display:block}
+h2.st{font-size:21px;font-weight:700;letter-spacing:-.02em;color:var(--text);margin-bottom:10px}
+h3.ss{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--text-muted);margin:26px 0 10px;padding-bottom:8px;border-bottom:1px solid var(--border-subtle)}
+.desc{font-size:14px;color:var(--text-secondary);line-height:1.75}
+.desc code{font-family:var(--mono);font-size:12px;background:var(--bg-muted);padding:1px 5px;border-radius:4px;border:1px solid var(--border)}
+.ep{display:flex;align-items:center;gap:10px;margin:14px 0 24px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:9px 14px}
+.mth{font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.04em;flex-shrink:0}
+.mget{background:var(--blue-subtle);color:#1d4ed8}
+.mpost{background:var(--green-subtle);color:#15803d}
+.ep-path{font-family:var(--mono);font-size:13px;color:var(--text-secondary);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ep-auth{margin-left:auto;font-size:10px;font-weight:600;color:var(--text-muted);background:var(--bg-muted);padding:2px 7px;border-radius:4px;white-space:nowrap;flex-shrink:0}
+.pm{padding:12px 0;border-bottom:1px solid var(--border-subtle)}
+.pm:last-child{border-bottom:none}
+.pmh{display:flex;align-items:center;gap:6px;margin-bottom:5px;flex-wrap:wrap}
+.pname{font-family:var(--mono);font-size:13px;font-weight:600;color:var(--text)}
+.ptype{font-family:var(--mono);font-size:11px;color:var(--text-muted);background:var(--bg-muted);padding:1px 6px;border-radius:3px}
+.preq{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--red);background:var(--red-subtle);padding:1px 6px;border-radius:3px}
+.popt{font-size:9px;font-weight:600;color:var(--text-muted);background:var(--bg-muted);padding:1px 6px;border-radius:3px}
+.pdesc{font-size:13.5px;color:var(--text-secondary);line-height:1.6}
+.pdesc code{font-family:var(--mono);font-size:11.5px;background:var(--bg-muted);padding:0 4px;border-radius:3px}
+.alert{border-radius:8px;padding:14px 16px;font-size:13.5px;line-height:1.65;margin:18px 0}
+.alert a{color:var(--accent)}
+.a-amber{background:var(--amber-subtle);border:1px solid #fde68a;color:#78350f}
+.a-amber strong{color:#92400e}
+.a-amber code{background:#fef3c7;font-family:var(--mono);font-size:12px;padding:1px 5px;border-radius:3px}
+.a-blue{background:var(--blue-subtle);border:1px solid #bfdbfe;color:#1e3a5f}
+.a-green{background:var(--green-subtle);border:1px solid #bbf7d0;color:#14532d}
+.a-purple{background:var(--accent-subtle);border:1px solid #c4b5fd;color:#3b1f8c}
+.a-purple a{color:var(--accent)}
+.cl{font-size:10px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--slate-400);margin-bottom:8px;display:flex;align-items:center;justify-content:space-between}
+.clang{font-size:9.5px;color:var(--slate-500);background:var(--slate-800);padding:2px 6px;border-radius:3px}
+pre.c{background:var(--slate-950);border:1px solid #21262d;border-radius:9px;padding:16px;font-family:var(--mono);font-size:12px;color:var(--slate-300);line-height:1.8;overflow-x:auto;margin-bottom:20px;white-space:pre}
+.k{color:var(--sky)}.s{color:var(--emerald)}.n{color:var(--orange)}.cm{color:var(--pink)}.fl{color:var(--sky)}.mu{color:var(--slate-400)}.co{color:var(--slate-500)}.id{color:#a78bfa}.pu{color:var(--slate-400)}.bo{color:var(--orange)}
+.flow-box{background:var(--bg-subtle);border:1px solid var(--border);border-radius:10px;padding:22px;margin:18px 0}
+.flow-title{font-size:11px;font-weight:600;color:var(--text-muted);margin-bottom:14px;letter-spacing:.07em;text-transform:uppercase}
+.fs{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.fs:last-child{margin-bottom:0}
+.fn{width:22px;height:22px;border-radius:50%;background:var(--accent);color:#fff;font-size:11px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.fl-l{font-size:13px;font-weight:600;color:var(--text);line-height:1.3}
+.fl-s{font-size:12.5px;color:var(--text-secondary);margin-top:2px;line-height:1.5}
+.fl-s code{font-family:var(--mono);font-size:11px;background:var(--bg-muted);padding:0 4px;border-radius:3px}
+.fc{width:2px;height:14px;background:var(--border);margin-left:10px;margin-top:-2px;margin-bottom:2px}
+.dtbl{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px}
+.dtbl th{text-align:left;padding:7px 11px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);border-bottom:1px solid var(--border)}
+.dtbl td{padding:9px 11px;border-bottom:1px solid var(--border-subtle);vertical-align:top}
+.dtbl tr:last-child td{border-bottom:none}
+.dtbl code{font-family:var(--mono);font-size:11px}
+.pill{display:inline-block;padding:2px 8px;border-radius:4px;font-family:var(--mono);font-size:10.5px;font-weight:600}
+.p-ok{background:var(--green-subtle);color:#15803d}
+.p-need{background:var(--red-subtle);color:#b91c1c}
+.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.pcard{background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:12px 14px}
+.pcard.feat{background:var(--accent-subtle);border-color:#c4b5fd}
+.pc-cat{font-size:11.5px;font-weight:600;color:var(--text-secondary);margin-bottom:4px}
+.pc-val{font-family:var(--mono);font-size:19px;font-weight:700;color:var(--text)}
+.pc-val span{font-size:11px;font-weight:400;color:var(--text-muted)}
+.pc-tags{margin-top:6px;display:flex;flex-wrap:wrap;gap:3px}
+.pc-tag{font-size:9.5px;background:var(--bg-muted);color:var(--text-muted);padding:1px 5px;border-radius:3px;border:1px solid var(--border)}
+.egrid{display:grid;grid-template-columns:auto 1fr;gap:0;margin-top:12px;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:13px}
+.ec{background:var(--bg-subtle);padding:9px 13px;font-family:var(--mono);font-weight:600;border-bottom:1px solid var(--border);border-right:1px solid var(--border)}
+.ed{padding:9px 13px;border-bottom:1px solid var(--border);color:var(--text-secondary)}
+.ec.last,.ed.last{border-bottom:none}
+.ov-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:32px}
+.ov-card{background:var(--bg-subtle);border:1px solid var(--border);border-radius:10px;padding:16px}
+.ov-icon{width:30px;height:30px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:10px}
+.ov-card h3{font-size:13px;font-weight:600;margin-bottom:9px}
+.ov-card a{display:block;font-size:12.5px;color:var(--accent);text-decoration:none;margin-bottom:7px}
+.ov-card a:hover{text-decoration:underline}
+.divr{height:1px;background:var(--border);flex-shrink:0}
+.end{height:120px;background:var(--bg-subtle);flex-shrink:0}
 </style>
 </head>
 <body>
 
 <aside>
-  <div class="sb-brand">
-    <div class="sb-logo">
-      <div class="sb-icon">M</div>
-      <span class="sb-name">Micropay</span>
-    </div>
-    <div class="sb-version">Bazaar API v1.0.0</div>
+<div class="sb-header">
+  <div class="sb-logo">
+    <div class="sb-icon">MP</div>
+    <div><div class="sb-name">Micropay Bazaar</div><div class="sb-tagline">API Reference v1.0.0</div></div>
   </div>
-  <nav>
-    <div class="nav-group">
-      <div class="nav-group-label">Getting Started</div>
-      <a href="#overview">Overview</a>
-      <a href="#authentication">Authentication</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-group-label">Registry</div>
-      <a href="#register-a-service">Register a Service</a>
-      <a href="#discover-services">Discover Services</a>
-      <a href="#get-a-service">Get a Service</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-group-label">Charges</div>
-      <a href="#create-a-charge">Create a Charge</a>
-      <a href="#list-charges">List Charges</a>
-      <a href="#get-a-charge">Get a Charge</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-group-label">AI Gateway</div>
-      <a href="#chat-completions">Chat Completions</a>
-      <a href="#direct-ai-chat">Direct AI Chat</a>
-    </div>
-    <div class="nav-group">
-      <div class="nav-group-label">Network</div>
-      <a href="#get-balance">Get Balance</a>
-      <a href="#health-check">Health Check</a>
-    </div>
-  </nav>
+</div>
+<nav>
+  <div class="nav-label">Getting Started</div>
+  <a href="#overview">Overview</a>
+  <a href="#authentication">Authentication</a>
+  <a href="#errors">Errors &amp; Status Codes</a>
+  <a href="#pricing">Pricing</a>
+  <div class="nav-label" style="margin-top:10px">Registry</div>
+  <a href="#reg-register"><span class="nb nb-post">POST</span> Register a Service</a>
+  <a href="#reg-discover"><span class="nb nb-get">GET</span> Discover Services</a>
+  <a href="#reg-get"><span class="nb nb-get">GET</span> Get a Service</a>
+  <div class="nav-label" style="margin-top:10px">Charges</div>
+  <a href="#ch-create"><span class="nb nb-post">POST</span> Create a Charge</a>
+  <a href="#ch-list"><span class="nb nb-get">GET</span> List Charges</a>
+  <a href="#ch-get"><span class="nb nb-get">GET</span> Get a Charge</a>
+  <div class="nav-label" style="margin-top:10px">AI Chat Gateway</div>
+  <a href="#chat-completions"><span class="nb nb-post">POST</span> Chat Completions</a>
+  <a href="#chat-tool-result"><span class="nb nb-post">POST</span> Submit Tool Result</a>
+  <a href="#ai-chat"><span class="nb nb-post">POST</span> Direct AI Chat</a>
+  <div class="nav-label" style="margin-top:10px">Network</div>
+  <a href="#balance"><span class="nb nb-get">GET</span> Get Balance</a>
+  <a href="#transactions"><span class="nb nb-get">GET</span> Get Transactions</a>
+  <a href="#net-status"><span class="nb nb-get">GET</span> Network Status</a>
+  <a href="#health"><span class="nb nb-get">GET</span> Health Check</a>
+</nav>
 </aside>
 
 <main>
 
-  <!-- OVERVIEW -->
-  <div class="doc-section" id="overview">
-    <div class="doc-left">
-      <h1>Documentation</h1>
-      <p class="hero-sub">Explore guides and examples to integrate Micropay Bazaar.</p>
-      <div class="hero-btns">
-        <a href="#create-a-charge" class="btn-primary">Get started →</a>
-        <a href="#discover-services" class="btn-ghost">Explore all services</a>
-      </div>
-      <div class="overview-grid">
-        <div class="overview-col">
-          <h3>Payments</h3>
-          <a href="#create-a-charge">Accept x402 payments</a>
-          <a href="#list-charges">Verify blockchain transactions</a>
-          <a href="#get-balance">Check wallet balances</a>
-        </div>
-        <div class="overview-col">
-          <h3>AI Gateway</h3>
-          <a href="#chat-completions">Build agents with tools</a>
-          <a href="#register-a-service">Monetize AI skills</a>
-          <a href="#discover-services">Discover registry services</a>
-        </div>
-        <div class="overview-col">
-          <h3>Developers</h3>
-          <a href="#authentication">Set up API keys</a>
-          <a href="#health-check">Monitor network health</a>
-          <a href="#discover-services">26 prebuilt services</a>
-        </div>
-      </div>
-    </div>
-    <div class="doc-right" style="display:flex;flex-direction:column;justify-content:center">
-      <div style="font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:14px">Quick Start</div>
-      <div class="terminal">
-        <div class="terminal-bar">
-          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
-          <span class="terminal-label">terminal</span>
-        </div>
-        <div class="terminal-body">
-<span class="t-muted"># 1. Create a charge</span>
-<span class="t-green">curl -X POST https://micropay.up.railway.app/api/v1/charges \</span>
-  -H <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
-  -d <span class="t-amber">'{"service_id":"finance_stocks","source_wallet":"YOUR_WALLET","amount_usd":0.05}'</span>
-
-<span class="t-muted"># 2. Sign returned transaction_payload with Phantom</span>
-<span class="t-muted"># 3. Done — payment settled on Solana Devnet ✓</span>
-$ <span class="cursor"></span></div>
-      </div>
-      <a href="#create-a-charge" style="text-align:right;font-size:11px;font-weight:600;color:#818cf8;text-decoration:none">Learn more about Charges →</a>
-    </div>
+<!-- HERO -->
+<div class="hero" id="overview">
+  <div class="hero-chip">● Live on Solana Devnet</div>
+  <h1>Micropay Bazaar<br><span>API Reference</span></h1>
+  <p class="hero-desc">A micropayment gateway for AI agents. Pay per call in SOL, discover data services, and settle on-chain — all with one API.</p>
+  <div class="hero-btns">
+    <a href="#ch-create" class="btn-p">Start with a Charge →</a>
+    <a href="#reg-discover" class="btn-g">Browse 26 services ↓</a>
   </div>
-  <div class="divider"></div>
-
-  <!-- AUTHENTICATION -->
-  <div class="doc-section" id="authentication">
-    <div class="doc-left">
-      <h1 style="font-size:26px">Authentication</h1>
-      <p class="section-desc">Micropay Bazaar uses API keys for authentication. Protected routes require your key in the <code style="background:#f1f5f9;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:13px">Authorization</code> header.</p>
-      <div class="alert-amber">
-        <strong>Demo key:</strong> <code>mp_live_demo_key</code> — use this for all hackathon testing.
-      </div>
-    </div>
-    <div class="doc-right" style="padding-top:100px">
-      <div class="code-label">Header</div>
-      <div class="code-block"><span class="t-sky">Authorization:</span> Bearer <span class="t-green">mp_live_demo_key</span></div>
-    </div>
+  <div class="hero-stats">
+    <div><div class="sv">26</div><div class="sl">Prebuilt services</div></div>
+    <div><div class="sv">$0.01</div><div class="sl">Starting price / call</div></div>
+    <div><div class="sv">&lt;1s</div><div class="sl">Devnet settlement</div></div>
+    <div><div class="sv">x402</div><div class="sl">Protocol standard</div></div>
   </div>
-  <div class="divider"></div>
+</div>
 
-  <!-- REGISTER A SERVICE -->
-  <div class="doc-section" id="register-a-service">
-    <div class="doc-left">
-      <h2>Register a Service</h2>
-      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/v1/registry/register</code></div>
-      <p class="section-desc">Registers an AI tool into the global Micropay Bazaar discovery index. Agents can dynamically discover your service and pay via x402 protocols.</p>
-      <div class="param-label">Body Parameters</div>
-      <div class="param"><span class="param-name">name</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">The human-readable name of your service.</div></div>
-      <div class="param"><span class="param-name">description</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">Detailed description used for agent semantic search.</div></div>
-      <div class="param"><span class="param-name">endpoint</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">The fully qualified URL where your service API resides.</div></div>
-      <div class="param"><span class="param-name">cost_usd</span><span class="param-type">number</span><span class="param-req">required</span><div class="param-desc">The exact cost per execution in USD.</div></div>
-      <div class="param"><span class="param-name">developer_wallet</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">Your Solana base58 wallet address for settlement.</div></div>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/v1/registry/register \
-  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
-  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
-  <span class="t-sky">-d</span> <span class="t-amber">'{
-    "name": "Weather Oracle",
-    "description": "Real-time meteorological data.",
-    "endpoint": "https://api.example.com/weather",
-    "cost_usd": 0.05,
-    "developer_wallet": "2Hn6ES...xG9"
-  }'</span></div>
-      <div class="code-label">Response</div>
-      <div class="code-block">{
-  <span class="t-sky">"id"</span>: <span class="t-green">"srv_ak392nf9d21"</span>,
-  <span class="t-sky">"object"</span>: <span class="t-green">"service"</span>,
-  <span class="t-sky">"created_at"</span>: <span class="t-green">"2026-02-28T12:00:00Z"</span>,
-  <span class="t-sky">"name"</span>: <span class="t-green">"Weather Oracle"</span>,
-  <span class="t-sky">"cost_usd"</span>: <span class="t-orange">0.05</span>
-}</div>
-    </div>
+<!-- QUICK START -->
+<div class="doc-sec">
+<div class="dl">
+  <span class="sec-tag">Quick Start</span>
+  <h2 class="st">3 steps to your first payment</h2>
+  <p class="desc" style="margin-bottom:18px">Micropay Bazaar turns any API call into a Solana micropayment. Your AI agent pays only for what it uses — no subscriptions, no credit cards, no minimums.</p>
+  <div class="flow-box">
+    <div class="flow-title">The x402 Payment Flow</div>
+    <div class="fs"><div class="fn">1</div><div><div class="fl-l">POST /api/v1/charges</div><div class="fl-s">Send your <code>service_id</code> + <code>source_wallet</code>. Receive a Base64 unsigned Solana transaction.</div></div></div>
+    <div class="fc"></div>
+    <div class="fs"><div class="fn">2</div><div><div class="fl-l">Sign with Phantom (or keypair)</div><div class="fl-s">Decode <code>transaction_payload</code>, refresh blockhash, sign, and broadcast to Solana Devnet.</div></div></div>
+    <div class="fc"></div>
+    <div class="fs"><div class="fn">3</div><div><div class="fl-l">Access your data</div><div class="fl-s">Payment settles on-chain in under a second. Your agent receives the service response.</div></div></div>
   </div>
-  <div class="divider"></div>
-
-  <!-- DISCOVER SERVICES -->
-  <div class="doc-section" id="discover-services">
-    <div class="doc-left">
-      <h2>Discover Services</h2>
-      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/registry/discover</code></div>
-      <p class="section-desc">Returns all registered services. Unauthenticated. 26 services preloaded covering weather, finance, news, sports, AI, blockchain, and more. Use <code style="font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">query</code> to search by intent.</p>
-      <div class="param-label">Query Parameters</div>
-      <div class="param"><span class="param-name">query</span><span class="param-type">string</span><div class="param-desc">Optional. Search by intent (e.g., 'weather', 'crypto', 'stocks').</div></div>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/registry/discover?query=finance</div>
-      <div class="code-label">Response</div>
-      <div class="code-block">[
-  {
-    <span class="t-sky">"id"</span>: <span class="t-green">"finance_stocks"</span>,
-    <span class="t-sky">"name"</span>: <span class="t-green">"Stock Price Feed"</span>,
-    <span class="t-sky">"category"</span>: <span class="t-green">"Finance"</span>,
-    <span class="t-sky">"description"</span>: <span class="t-green">"Live equity prices from NYSE and NASDAQ."</span>,
-    <span class="t-sky">"developer_wallet"</span>: <span class="t-green">"2Hn6ES...zv8"</span>
-  },
-  ...
-]</div>
-    </div>
+  <div class="ov-grid">
+    <div class="ov-card"><div class="ov-icon" style="background:#ede9fe">💳</div><h3>Payments</h3><a href="#ch-create">Create a charge</a><a href="#ch-list">List all charges</a><a href="#balance">Check wallet balance</a></div>
+    <div class="ov-card"><div class="ov-icon" style="background:#dcfce7">🤖</div><h3>AI Gateway</h3><a href="#chat-completions">Agentic chat</a><a href="#chat-tool-result">Submit tool results</a><a href="#ai-chat">Direct AI chat</a></div>
+    <div class="ov-card"><div class="ov-icon" style="background:#dbeafe">🔍</div><h3>Registry</h3><a href="#reg-discover">Discover 26 services</a><a href="#reg-register">Publish your service</a><a href="#reg-get">Get service by ID</a></div>
   </div>
-  <div class="divider"></div>
-
-  <!-- GET A SERVICE -->
-  <div class="doc-section" id="get-a-service">
-    <div class="doc-left">
-      <h2>Get a Service</h2>
-      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/registry/services/:id</code></div>
-      <p class="section-desc">Retrieves a single service by its ID. Use IDs from the discover endpoint (e.g., <code style="font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">finance_stocks</code>, <code style="font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">weather_openmeteo</code>).</p>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/registry/services/finance_stocks</div>
-    </div>
-  </div>
-  <div class="divider"></div>
-
-  <!-- CREATE A CHARGE -->
-  <div class="doc-section" id="create-a-charge">
-    <div class="doc-left">
-      <h2>Create a Charge</h2>
-      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/v1/charges</code></div>
-      <p class="section-desc">Initiates an x402 payment flow. Returns a Base64-encoded unsigned Solana transaction ready for Phantom to sign and broadcast. The <code style="font-family:monospace;font-size:12px">developer_wallet</code> is pulled automatically from the service registry.</p>
-      <div class="param-label">Headers</div>
-      <div class="param"><span class="param-name">Idempotency-Key</span><span class="param-type">string</span><div class="param-desc">Optional. Prevents duplicate charges on retry.</div></div>
-      <div class="param-label" style="margin-top:24px">Body Parameters</div>
-      <div class="param"><span class="param-name">service_id</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">ID of the service to consume (e.g., <code style="font-family:monospace">finance_stocks</code>, <code style="font-family:monospace">weather_openmeteo</code>).</div></div>
-      <div class="param"><span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">Public Solana address of the wallet paying the charge.</div></div>
-      <div class="param"><span class="param-name">amount_usd</span><span class="param-type">number</span><span class="param-req">required</span><div class="param-desc">Amount in USD (e.g., 0.05). Converted to SOL at live oracle price.</div></div>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/v1/charges \
-  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
-  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
-  <span class="t-sky">-d</span> <span class="t-amber">'{
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Base URL</div>
+  <pre class="c"><span class="s">https://micropay.up.railway.app</span></pre>
+  <div class="cl">Quickest test — create a charge <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="fl">-X POST</span> <span class="mu">https://micropay.up.railway.app/api/v1/charges</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="fl">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="fl">-d</span> <span class="s">'{
     "service_id": "finance_stocks",
-    "source_wallet": "AuofYo21...Nt5",
-    "amount_usd": 0.05
-  }'</span></div>
-      <div class="code-label">Response</div>
-      <div class="code-block">{
-  <span class="t-sky">"id"</span>: <span class="t-green">"ch_wb4bedrhxh1q"</span>,
-  <span class="t-sky">"object"</span>: <span class="t-green">"charge"</span>,
-  <span class="t-sky">"status"</span>: <span class="t-green">"requires_signature"</span>,
-  <span class="t-sky">"service_id"</span>: <span class="t-green">"finance_stocks"</span>,
-  <span class="t-sky">"service_name"</span>: <span class="t-green">"Stock Price Feed"</span>,
-  <span class="t-sky">"amount_usd"</span>: <span class="t-orange">0.05</span>,
-  <span class="t-sky">"exchange_rate_sol_usd"</span>: <span class="t-orange">150.0</span>,
-  <span class="t-sky">"amount_sol"</span>: <span class="t-orange">0.000333</span>,
-  <span class="t-sky">"source_wallet"</span>: <span class="t-green">"AuofYo21...Nt5"</span>,
-  <span class="t-sky">"destination_wallet"</span>: <span class="t-green">"2Hn6ES...zv8"</span>,
-  <span class="t-sky">"transaction_payload"</span>: <span class="t-green">"AQAAAAAAAAAA..."</span>
-}</div>
-    </div>
-  </div>
-  <div class="divider"></div>
+    "source_wallet": "YOUR_SOLANA_WALLET"
+  }'</span></pre>
+  <div class="cl">Response</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"id"</span><span class="pu">:</span> <span class="s">"ch_wb4bedrhxh1q"</span><span class="pu">,</span>
+  <span class="k">"status"</span><span class="pu">:</span> <span class="s">"requires_signature"</span><span class="pu">,</span>
+  <span class="k">"amount_usd"</span><span class="pu">:</span> <span class="n">0.01</span><span class="pu">,</span>
+  <span class="k">"amount_sol"</span><span class="pu">:</span> <span class="n">0.000067</span><span class="pu">,</span>
+  <span class="k">"transaction_payload"</span><span class="pu">:</span> <span class="s">"AQAAAAAAA..."</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
 
-  <!-- LIST CHARGES -->
-  <div class="doc-section" id="list-charges">
-    <div class="doc-left">
-      <h2>List Charges</h2>
-      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/charges</code></div>
-      <p class="section-desc">Returns a paginated list of charges, optionally filtered.</p>
-      <div class="param-label">Query Parameters</div>
-      <div class="param"><span class="param-name">limit</span><span class="param-type">int</span><div class="param-desc">Max records to return (1–100, default 10).</div></div>
-      <div class="param"><span class="param-name">offset</span><span class="param-type">int</span><div class="param-desc">Pagination offset.</div></div>
-      <div class="param"><span class="param-name">status</span><span class="param-type">string</span><div class="param-desc">Filter by status: requires_signature, confirmed, failed.</div></div>
-      <div class="param"><span class="param-name">source_wallet</span><span class="param-type">string</span><div class="param-desc">Filter by payer wallet address.</div></div>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> "https://micropay.up.railway.app/api/v1/charges?limit=5" \
-  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span></div>
-    </div>
-  </div>
-  <div class="divider"></div>
+<div class="divr"></div>
 
-  <!-- GET A CHARGE -->
-  <div class="doc-section" id="get-a-charge">
-    <div class="doc-left">
-      <h2>Get a Charge</h2>
-      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/charges/:id</code></div>
-      <p class="section-desc">Retrieves the full details of a previously created charge by its ID.</p>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/charges/ch_wb4bedrhxh1q \
-  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span></div>
-    </div>
-  </div>
-  <div class="divider"></div>
+<!-- AUTHENTICATION -->
+<div class="doc-sec" id="authentication">
+<div class="dl">
+  <span class="sec-tag">Authentication</span>
+  <h2 class="st">API Keys</h2>
+  <p class="desc">All protected routes require a Bearer token in the <code>Authorization</code> header. Public endpoints (discover, balance, health, transactions) require no authentication.</p>
+  <h3 class="ss">Demo Key</h3>
+  <div class="alert a-amber"><strong>Hackathon demo key:</strong> <code>mp_live_demo_key</code> — already set in all code examples on this page.</div>
+  <h3 class="ss">Auth requirements by endpoint</h3>
+  <table class="dtbl">
+    <tr><th>Endpoint</th><th>Auth</th></tr>
+    <tr><td><code>POST /api/v1/registry/register</code></td><td><span class="pill p-need">Required</span></td></tr>
+    <tr><td><code>GET /api/v1/registry/discover</code></td><td><span class="pill p-ok">Public</span></td></tr>
+    <tr><td><code>GET /api/v1/registry/services/:id</code></td><td><span class="pill p-ok">Public</span></td></tr>
+    <tr><td><code>POST /api/v1/charges</code></td><td><span class="pill p-need">Required</span></td></tr>
+    <tr><td><code>GET /api/v1/charges</code></td><td><span class="pill p-need">Required</span></td></tr>
+    <tr><td><code>GET /api/v1/charges/:id</code></td><td><span class="pill p-need">Required</span></td></tr>
+    <tr><td><code>POST /api/v1/chat/completions</code></td><td><span class="pill p-need">Required</span></td></tr>
+    <tr><td><code>POST /api/v1/chat/tool-result</code></td><td><span class="pill p-need">Required</span></td></tr>
+    <tr><td><code>POST /api/ai/chat</code></td><td><span class="pill p-ok">Public</span></td></tr>
+    <tr><td><code>GET /api/v1/balance/:wallet</code></td><td><span class="pill p-ok">Public</span></td></tr>
+    <tr><td><code>GET /api/v1/transactions/:wallet</code></td><td><span class="pill p-ok">Public</span></td></tr>
+    <tr><td><code>GET /api/v1/network/status</code></td><td><span class="pill p-ok">Public</span></td></tr>
+    <tr><td><code>GET /api/v1/health</code></td><td><span class="pill p-ok">Public</span></td></tr>
+  </table>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Authorization Header</div>
+  <pre class="c"><span class="k">Authorization:</span> Bearer <span class="s">mp_live_demo_key</span></pre>
+  <div class="cl">401 — Missing header</div>
+  <pre class="c"><span class="pu">{</span> <span class="k">"error"</span><span class="pu">:</span> <span class="s">"Unauthorized: Missing or invalid Authorization header format"</span> <span class="pu">}</span></pre>
+  <div class="cl">401 — Bad key</div>
+  <pre class="c"><span class="pu">{</span> <span class="k">"error"</span><span class="pu">:</span> <span class="s">"Unauthorized: Invalid API Key"</span> <span class="pu">}</span></pre>
+</div></div>
+</div>
 
-  <!-- CHAT COMPLETIONS -->
-  <div class="doc-section" id="chat-completions">
-    <div class="doc-left">
-      <h2>Chat Completions</h2>
-      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/v1/chat/completions</code></div>
-      <p class="section-desc">OpenRouter proxy with Micropay Bazaar tools auto-injected. Agents use this to discover and invoke registry services dynamically. Compatible with the OpenAI Chat Completions API format.</p>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/v1/chat/completions \
-  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
-  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
-  <span class="t-sky">-d</span> <span class="t-amber">'{
-    "model": "gpt-4o-mini",
-    "messages": [
-      {"role": "user", "content": "What is the price of AAPL?"}
-    ]
-  }'</span></div>
-    </div>
-  </div>
-  <div class="divider"></div>
+<div class="divr"></div>
 
-  <!-- DIRECT AI CHAT -->
-  <div class="doc-section" id="direct-ai-chat">
-    <div class="doc-left">
-      <h2>Direct AI Chat</h2>
-      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/ai/chat</code></div>
-      <p class="section-desc">Passthrough plain-text chat to the underlying AI layer.</p>
-      <div class="param-label">Body Parameters</div>
-      <div class="param"><span class="param-name">message</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">The text message for the assistant.</div></div>
-      <div class="param"><span class="param-name">model</span><span class="param-type">string</span><div class="param-desc">Defaults to 'gpt-4o-mini'.</div></div>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/ai/chat \
-  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
-  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
-  <span class="t-sky">-d</span> <span class="t-amber">'{"message": "Summarize the Micropay x402 protocol"}'</span></div>
-    </div>
+<!-- ERRORS -->
+<div class="doc-sec" id="errors">
+<div class="dl">
+  <span class="sec-tag">Errors</span>
+  <h2 class="st">Error Responses</h2>
+  <p class="desc">All errors return a consistent JSON object with a machine-readable <code>type</code> and a human-readable <code>message</code>.</p>
+  <h3 class="ss">Error Object Fields</h3>
+  <div class="pm"><div class="pmh"><span class="pname">error.type</span><span class="ptype">string</span></div><div class="pdesc">One of: <code>invalid_request_error</code> · <code>not_found_error</code> · <code>api_error</code> · <code>gateway_error</code></div></div>
+  <div class="pm"><div class="pmh"><span class="pname">error.message</span><span class="ptype">string</span></div><div class="pdesc">Human-readable description. Safe to display to end users.</div></div>
+  <h3 class="ss">HTTP Status Codes</h3>
+  <div class="egrid">
+    <div class="ec">200</div><div class="ed">Success — request completed normally</div>
+    <div class="ec">201</div><div class="ed">Created — service successfully registered</div>
+    <div class="ec">400</div><div class="ed">Bad Request — missing or invalid parameters</div>
+    <div class="ec">401</div><div class="ed">Unauthorized — missing or invalid API key</div>
+    <div class="ec">404</div><div class="ed">Not Found — service or charge ID doesn't exist</div>
+    <div class="ec">500</div><div class="ed">Internal Server Error — unexpected server failure</div>
+    <div class="ec last">502</div><div class="ed last">Gateway Error — upstream AI service unavailable, retry</div>
   </div>
-  <div class="divider"></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">400 — Missing field</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"error"</span><span class="pu">: {</span>
+    <span class="k">"type"</span><span class="pu">:</span> <span class="s">"invalid_request_error"</span><span class="pu">,</span>
+    <span class="k">"message"</span><span class="pu">:</span> <span class="s">"'service_id' is required and must be a non-empty string."</span>
+  <span class="pu">}</span>
+<span class="pu">}</span></pre>
+  <div class="cl">404 — Not found</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"error"</span><span class="pu">: {</span>
+    <span class="k">"type"</span><span class="pu">:</span> <span class="s">"not_found_error"</span><span class="pu">,</span>
+    <span class="k">"message"</span><span class="pu">:</span> <span class="s">"Service 'bad_id' not found in registry."</span>
+  <span class="pu">}</span>
+<span class="pu">}</span></pre>
+  <div class="cl">502 — AI gateway down</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"error"</span><span class="pu">: {</span>
+    <span class="k">"type"</span><span class="pu">:</span> <span class="s">"gateway_error"</span><span class="pu">,</span>
+    <span class="k">"message"</span><span class="pu">:</span> <span class="s">"AI service temporarily unavailable. Please retry."</span>
+  <span class="pu">}</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
 
-  <!-- GET BALANCE -->
-  <div class="doc-section" id="get-balance">
-    <div class="doc-left">
-      <h2>Get Balance</h2>
-      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/balance/:wallet</code></div>
-      <p class="section-desc">Returns the real-time SOL balance for any Solana wallet address via Devnet RPC.</p>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/balance/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</div>
-    </div>
+<div class="divr"></div>
+
+<!-- PRICING -->
+<div class="doc-sec" id="pricing">
+<div class="dl">
+  <span class="sec-tag">Pricing</span>
+  <h2 class="st">Per-call pricing in USD</h2>
+  <p class="desc" style="margin-bottom:14px">Prices are set per service category. USD is converted to SOL at live oracle price at charge time — the USD cost is always fixed, the SOL amount varies with the market.</p>
+  <div class="alert a-blue"><strong>How it works:</strong> Pass a <code>service_id</code> when creating a charge. The backend automatically looks up the category and sets the cost. You never need to pass a price.</div>
+  <div class="pgrid">
+    <div class="pcard"><div class="pc-cat">Weather · Finance · NLP · Food · Blockchain</div><div class="pc-val">$0.01 <span>/ call</span></div><div class="pc-tags"><span class="pc-tag">weather_openmeteo</span><span class="pc-tag">finance_stocks</span><span class="pc-tag">nlp_sentiment</span><span class="pc-tag">blockchain_wallet</span></div></div>
+    <div class="pcard"><div class="pc-cat">News · Sports · Data</div><div class="pc-val">$0.02 <span>/ call</span></div><div class="pc-tags"><span class="pc-tag">news_breaking</span><span class="pc-tag">sports_scores</span><span class="pc-tag">data_github</span></div></div>
+    <div class="pcard feat"><div class="pc-cat">Search · Travel · AI</div><div class="pc-val">$0.05 <span>/ call</span></div><div class="pc-tags"><span class="pc-tag">search_web</span><span class="pc-tag">travel_flights</span><span class="pc-tag">openai_chat</span></div></div>
+    <div class="pcard"><div class="pc-cat">Solana Network Fee</div><div class="pc-val">0.000005 <span>SOL</span></div><div class="pc-tags"><span class="pc-tag">added to each tx</span></div></div>
   </div>
-  <div class="divider"></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">All 26 service IDs &amp; prices</div>
+  <pre class="c"><span class="co"># Weather ($0.01)</span>
+<span class="id">weather_openmeteo</span>    <span class="n">$0.01</span>
+<span class="id">weather_openweather</span>  <span class="n">$0.01</span>
+<span class="id">weather_forecast</span>     <span class="n">$0.01</span>
 
-  <!-- HEALTH CHECK -->
-  <div class="doc-section" id="health-check">
-    <div class="doc-left">
-      <h2>Health Check</h2>
-      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/health</code></div>
-      <p class="section-desc">Public endpoint. Returns server uptime, version, and current time. No authentication required.</p>
-    </div>
-    <div class="doc-right">
-      <div class="code-label">Request</div>
-      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/health</div>
-      <div class="code-label">Response</div>
-      <div class="code-block">{
-  <span class="t-sky">"status"</span>: <span class="t-green">"ok"</span>,
-  <span class="t-sky">"version"</span>: <span class="t-green">"1.0.0"</span>,
-  <span class="t-sky">"timestamp"</span>: <span class="t-green">"2026-02-28T18:00:00Z"</span>
-}</div>
-    </div>
+<span class="co"># Finance ($0.01)</span>
+<span class="id">finance_stocks</span>       <span class="n">$0.01</span>
+<span class="id">finance_crypto</span>       <span class="n">$0.01</span>
+<span class="id">finance_forex</span>        <span class="n">$0.01</span>
+
+<span class="co"># NLP ($0.01)</span>
+<span class="id">nlp_sentiment</span>        <span class="n">$0.01</span>
+<span class="id">nlp_summarize</span>        <span class="n">$0.01</span>
+<span class="id">nlp_translate</span>        <span class="n">$0.01</span>
+<span class="id">nlp_extract</span>          <span class="n">$0.01</span>
+
+<span class="co"># Food ($0.01)</span>
+<span class="id">food_recipes</span>         <span class="n">$0.01</span>
+<span class="id">food_nutrition</span>       <span class="n">$0.01</span>
+
+<span class="co"># Blockchain ($0.01)</span>
+<span class="id">blockchain_wallet</span>    <span class="n">$0.01</span>
+<span class="id">blockchain_nft</span>       <span class="n">$0.01</span>
+<span class="id">blockchain_defi</span>      <span class="n">$0.01</span>
+
+<span class="co"># News ($0.02)</span>
+<span class="id">news_breaking</span>        <span class="n">$0.02</span>
+<span class="id">news_search</span>          <span class="n">$0.02</span>
+
+<span class="co"># Sports ($0.02)</span>
+<span class="id">sports_scores</span>        <span class="n">$0.02</span>
+<span class="id">sports_stats</span>         <span class="n">$0.02</span>
+
+<span class="co"># Data ($0.02)</span>
+<span class="id">data_demographics</span>    <span class="n">$0.02</span>
+<span class="id">data_github</span>          <span class="n">$0.02</span>
+
+<span class="co"># Search ($0.05)</span>
+<span class="id">search_web</span>           <span class="n">$0.05</span>
+<span class="id">search_images</span>        <span class="n">$0.05</span>
+
+<span class="co"># Travel ($0.05)</span>
+<span class="id">travel_flights</span>       <span class="n">$0.05</span>
+<span class="id">travel_hotels</span>        <span class="n">$0.05</span>
+
+<span class="co"># AI ($0.05)</span>
+<span class="id">openai_chat</span>          <span class="n">$0.05</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- REGISTER -->
+<div class="doc-sec" id="reg-register">
+<div class="dl">
+  <span class="sec-tag">Registry</span>
+  <h2 class="st">Register a Service</h2>
+  <div class="ep"><span class="mth mpost">POST</span><span class="ep-path">/api/v1/registry/register</span><span class="ep-auth">🔑 Auth required</span></div>
+  <p class="desc">Registers your API as a paid service in the discovery index. Once registered, AI agents can discover and call it, paying you in SOL per request via Phantom.</p>
+  <h3 class="ss">Body Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">name</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">Human-readable name. Shown in discovery results and AI agent responses.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">description</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">What your service does. Used for semantic search — write this like a tool description for an AI agent.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">endpoint</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">Fully-qualified URL where your API lives.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">cost_usd</span><span class="ptype">number</span><span class="preq">required</span></div><div class="pdesc">Price per call in USD. Must be a positive number (e.g. <code>0.05</code>).</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">developer_wallet</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">Your Solana wallet address (base58). Payments are sent here when agents call your service.</div></div>
+  <h3 class="ss">Returns</h3>
+  <p class="desc"><code>201 Created</code> with the full service object including auto-generated <code>id</code>. Save this — you'll need it when creating charges.</p>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="fl">-X POST</span> <span class="mu">https://micropay.up.railway.app/api/v1/registry/register</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="fl">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="fl">-d</span> <span class="s">'{
+    "name": "My Weather API",
+    "description": "Real-time temperature, humidity, and wind speed for any city worldwide.",
+    "endpoint": "https://my-api.com/weather",
+    "cost_usd": 0.01,
+    "developer_wallet": "2Hn6ESeMRqfVDTpt...zv8"
+  }'</span></pre>
+  <div class="cl">Response — 201 Created</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"id"</span><span class="pu">:</span> <span class="s">"srv_a2k9xb3m7"</span><span class="pu">,</span>
+  <span class="k">"object"</span><span class="pu">:</span> <span class="s">"service"</span><span class="pu">,</span>
+  <span class="k">"created_at"</span><span class="pu">:</span> <span class="s">"2026-02-28T18:00:00.000Z"</span><span class="pu">,</span>
+  <span class="k">"name"</span><span class="pu">:</span> <span class="s">"My Weather API"</span><span class="pu">,</span>
+  <span class="k">"description"</span><span class="pu">:</span> <span class="s">"Real-time temperature..."</span><span class="pu">,</span>
+  <span class="k">"endpoint"</span><span class="pu">:</span> <span class="s">"https://my-api.com/weather"</span><span class="pu">,</span>
+  <span class="k">"cost_usd"</span><span class="pu">:</span> <span class="n">0.01</span><span class="pu">,</span>
+  <span class="k">"developer_wallet"</span><span class="pu">:</span> <span class="s">"2Hn6ESe...zv8"</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- DISCOVER -->
+<div class="doc-sec" id="reg-discover">
+<div class="dl">
+  <span class="sec-tag">Registry</span>
+  <h2 class="st">Discover Services</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/registry/discover</span><span class="ep-auth">🌐 Public</span></div>
+  <p class="desc" style="margin-bottom:14px">Returns all registered services. No auth required. 26 services are preloaded on startup. Use <code>query</code> to search by intent — matches name, description, and tags (case-insensitive).</p>
+  <h3 class="ss">Query Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">query</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">Intent-based search. Examples: <code>"weather"</code>, <code>"crypto"</code>, <code>"stocks"</code>, <code>"sentiment"</code>. Omit to get all 26 services.</div></div>
+  <h3 class="ss">Returns</h3>
+  <p class="desc">A list envelope: <code>object: "list"</code>, <code>data</code> array, and <code>total_count</code>.</p>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Search by intent <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">"https://micropay.up.railway.app/api/v1/registry/discover?query=finance"</span></pre>
+  <div class="cl">Get all services</div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">https://micropay.up.railway.app/api/v1/registry/discover</span></pre>
+  <div class="cl">Response</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"object"</span><span class="pu">:</span> <span class="s">"list"</span><span class="pu">,</span>
+  <span class="k">"total_count"</span><span class="pu">:</span> <span class="n">3</span><span class="pu">,</span>
+  <span class="k">"data"</span><span class="pu">: [</span>
+    <span class="pu">{</span>
+      <span class="k">"id"</span><span class="pu">:</span> <span class="s">"finance_stocks"</span><span class="pu">,</span>
+      <span class="k">"name"</span><span class="pu">:</span> <span class="s">"Stock Price Feed"</span><span class="pu">,</span>
+      <span class="k">"category"</span><span class="pu">:</span> <span class="s">"Finance"</span><span class="pu">,</span>
+      <span class="k">"description"</span><span class="pu">:</span> <span class="s">"Live equity prices, volume..."</span><span class="pu">,</span>
+      <span class="k">"endpoint"</span><span class="pu">:</span> <span class="s">"GET /tools/finance/stocks"</span><span class="pu">,</span>
+      <span class="k">"tags"</span><span class="pu">: [</span><span class="s">"stocks"</span><span class="pu">,</span> <span class="s">"equity"</span><span class="pu">,</span> <span class="s">"NYSE"</span><span class="pu">],</span>
+      <span class="k">"developer_wallet"</span><span class="pu">:</span> <span class="s">"2Hn6ESe...zv8"</span>
+    <span class="pu">},</span>
+    <span class="co">... 2 more</span>
+  <span class="pu">]</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- GET SERVICE -->
+<div class="doc-sec" id="reg-get">
+<div class="dl">
+  <span class="sec-tag">Registry</span>
+  <h2 class="st">Get a Service</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/registry/services/:id</span><span class="ep-auth">🌐 Public</span></div>
+  <p class="desc">Retrieve a single service by its exact ID. Returns <code>404</code> if not found.</p>
+  <h3 class="ss">Path Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">id</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">The service ID. Use IDs from the discover endpoint (e.g. <code>finance_stocks</code>, <code>weather_openmeteo</code>).</div></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">https://micropay.up.railway.app/api/v1/registry/services/finance_stocks</span></pre>
+  <div class="cl">Response — 200</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"id"</span><span class="pu">:</span> <span class="s">"finance_stocks"</span><span class="pu">,</span>
+  <span class="k">"object"</span><span class="pu">:</span> <span class="s">"service"</span><span class="pu">,</span>
+  <span class="k">"name"</span><span class="pu">:</span> <span class="s">"Stock Price Feed"</span><span class="pu">,</span>
+  <span class="k">"category"</span><span class="pu">:</span> <span class="s">"Finance"</span><span class="pu">,</span>
+  <span class="k">"description"</span><span class="pu">:</span> <span class="s">"Live equity prices..."</span><span class="pu">,</span>
+  <span class="k">"developer_wallet"</span><span class="pu">:</span> <span class="s">"2Hn6ESeMRqfVDTpt...zv8"</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- CREATE CHARGE -->
+<div class="doc-sec" id="ch-create">
+<div class="dl">
+  <span class="sec-tag">Charges</span>
+  <h2 class="st">Create a Charge</h2>
+  <div class="ep"><span class="mth mpost">POST</span><span class="ep-path">/api/v1/charges</span><span class="ep-auth">🔑 Auth required</span></div>
+  <p class="desc" style="margin-bottom:14px">The core endpoint. Returns an unsigned Solana transaction representing payment for a registry service. The backend looks up the <code>developer_wallet</code> automatically from the registry — you never send money to yourself.</p>
+  <div class="alert a-green"><strong>What the backend does automatically:</strong> fetches the live SOL/USD oracle price, calculates exact SOL amount, builds the transaction with correct <code>feePayer</code> and <code>recentBlockhash</code>, and returns it Base64-encoded. You just sign it.</div>
+  <h3 class="ss">Headers</h3>
+  <div class="pm"><div class="pmh"><span class="pname">Idempotency-Key</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">A unique string (e.g. UUID) preventing duplicate charges on retry. Same key twice returns the cached result from the first call.</div></div>
+  <h3 class="ss">Body Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">service_id</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">The registry service to pay for. Must exist. Examples: <code>finance_stocks</code>, <code>weather_openmeteo</code>, <code>nlp_sentiment</code>.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">source_wallet</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">Base58 Solana public key of the wallet paying. The backend sets this as <code>feePayer</code> — <strong>Phantom must be connected with this exact wallet.</strong></div></div>
+  <h3 class="ss">Charge Object Fields</h3>
+  <table class="dtbl">
+    <tr><th>Field</th><th>Description</th></tr>
+    <tr><td><code>id</code></td><td>Unique charge ID (prefix <code>ch_</code>).</td></tr>
+    <tr><td><code>status</code></td><td>Always <code>requires_signature</code> on creation.</td></tr>
+    <tr><td><code>amount_usd</code></td><td>Fixed USD cost, determined by service category.</td></tr>
+    <tr><td><code>exchange_rate_sol_usd</code></td><td>SOL/USD rate used at charge time (live oracle).</td></tr>
+    <tr><td><code>amount_sol</code></td><td>Exact SOL to transfer.</td></tr>
+    <tr><td><code>network_fee_sol</code></td><td>Solana network fee: <code>0.000005</code> SOL.</td></tr>
+    <tr><td><code>destination_wallet</code></td><td>Developer's wallet — auto-fetched from registry.</td></tr>
+    <tr><td><code>transaction_payload</code></td><td>Base64 unsigned Solana tx. Decode → sign → broadcast.</td></tr>
+  </table>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="fl">-X POST</span> <span class="mu">https://micropay.up.railway.app/api/v1/charges</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="fl">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="fl">-H</span> <span class="s">"Idempotency-Key: idemp_abc123"</span> \
+  <span class="fl">-d</span> <span class="s">'{
+    "service_id": "finance_stocks",
+    "source_wallet": "AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5"
+  }'</span></pre>
+  <div class="cl">Response — 200</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"id"</span><span class="pu">:</span> <span class="s">"ch_wb4bedrhxh1q"</span><span class="pu">,</span>
+  <span class="k">"object"</span><span class="pu">:</span> <span class="s">"charge"</span><span class="pu">,</span>
+  <span class="k">"created_at"</span><span class="pu">:</span> <span class="s">"2026-02-28T18:00:00.000Z"</span><span class="pu">,</span>
+  <span class="k">"status"</span><span class="pu">:</span> <span class="s">"requires_signature"</span><span class="pu">,</span>
+  <span class="k">"service_id"</span><span class="pu">:</span> <span class="s">"finance_stocks"</span><span class="pu">,</span>
+  <span class="k">"service_name"</span><span class="pu">:</span> <span class="s">"Stock Price Feed"</span><span class="pu">,</span>
+  <span class="k">"amount_usd"</span><span class="pu">:</span> <span class="n">0.01</span><span class="pu">,</span>
+  <span class="k">"exchange_rate_sol_usd"</span><span class="pu">:</span> <span class="n">148.32</span><span class="pu">,</span>
+  <span class="k">"amount_sol"</span><span class="pu">:</span> <span class="n">0.000067423</span><span class="pu">,</span>
+  <span class="k">"network_fee_sol"</span><span class="pu">:</span> <span class="n">0.000005</span><span class="pu">,</span>
+  <span class="k">"source_wallet"</span><span class="pu">:</span> <span class="s">"AuofYo21...Nt5"</span><span class="pu">,</span>
+  <span class="k">"destination_wallet"</span><span class="pu">:</span> <span class="s">"2Hn6ESe...zv8"</span><span class="pu">,</span>
+  <span class="k">"transaction_payload"</span><span class="pu">:</span> <span class="s">"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAQADb8d..."</span>
+<span class="pu">}</span></pre>
+  <div class="cl">Sign &amp; send — JavaScript</div>
+  <pre class="c"><span class="co">// 1. Decode the payload</span>
+<span class="k">const</span> tx = Transaction.from(
+  Buffer.from(charge.transaction_payload, <span class="s">'base64'</span>)
+);
+
+<span class="co">// 2. Refresh blockhash (prevents expiry)</span>
+<span class="k">const</span> { blockhash, lastValidBlockHeight }
+  = <span class="k">await</span> connection.getLatestBlockhash(<span class="s">'confirmed'</span>);
+tx.recentBlockhash = blockhash;
+
+<span class="co">// 3. Phantom signs (popup appears)</span>
+<span class="k">const</span> signed = <span class="k">await</span> phantom.signTransaction(tx);
+
+<span class="co">// 4. Broadcast to Devnet</span>
+<span class="k">const</span> sig = <span class="k">await</span> connection.sendRawTransaction(
+  signed.serialize()
+);
+<span class="co">// Explorer: https://explorer.solana.com/tx/${sig}?cluster=devnet</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- LIST CHARGES -->
+<div class="doc-sec" id="ch-list">
+<div class="dl">
+  <span class="sec-tag">Charges</span>
+  <h2 class="st">List Charges</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/charges</span><span class="ep-auth">🔑 Auth required</span></div>
+  <p class="desc">Returns a paginated list of all charges. Filter by wallet or status.</p>
+  <h3 class="ss">Query Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">limit</span><span class="ptype">int</span><span class="popt">optional</span></div><div class="pdesc">Max records per page. Range: 1–100. Default: <code>10</code>.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">offset</span><span class="ptype">int</span><span class="popt">optional</span></div><div class="pdesc">Records to skip. Default: <code>0</code>. Combine with <code>limit</code> for pagination.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">status</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">Filter by status. Value: <code>requires_signature</code>.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">source_wallet</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">Filter to charges from a specific wallet address.</div></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request — paginated <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">"https://micropay.up.railway.app/api/v1/charges?limit=5&offset=0"</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span></pre>
+  <div class="cl">Request — filter by wallet</div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">"https://micropay.up.railway.app/api/v1/charges?source_wallet=AuofYo21...Nt5"</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span></pre>
+  <div class="cl">Response</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"object"</span><span class="pu">:</span> <span class="s">"list"</span><span class="pu">,</span>
+  <span class="k">"total_count"</span><span class="pu">:</span> <span class="n">42</span><span class="pu">,</span>
+  <span class="k">"limit"</span><span class="pu">:</span> <span class="n">5</span><span class="pu">,</span>
+  <span class="k">"offset"</span><span class="pu">:</span> <span class="n">0</span><span class="pu">,</span>
+  <span class="k">"has_more"</span><span class="pu">:</span> <span class="bo">true</span><span class="pu">,</span>
+  <span class="k">"data"</span><span class="pu">: [</span>
+    <span class="pu">{</span>
+      <span class="k">"id"</span><span class="pu">:</span> <span class="s">"ch_wb4bedrhxh1q"</span><span class="pu">,</span>
+      <span class="k">"status"</span><span class="pu">:</span> <span class="s">"requires_signature"</span><span class="pu">,</span>
+      <span class="k">"amount_usd"</span><span class="pu">:</span> <span class="n">0.01</span><span class="pu">,</span>
+      <span class="k">"service_name"</span><span class="pu">:</span> <span class="s">"Stock Price Feed"</span>
+    <span class="pu">},</span>
+    <span class="co">... 4 more</span>
+  <span class="pu">]</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- GET CHARGE -->
+<div class="doc-sec" id="ch-get">
+<div class="dl">
+  <span class="sec-tag">Charges</span>
+  <h2 class="st">Get a Charge</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/charges/:id</span><span class="ep-auth">🔑 Auth required</span></div>
+  <p class="desc">Retrieves the full details of a charge by its ID.</p>
+  <h3 class="ss">Path Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">id</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">The charge ID from <code>POST /api/v1/charges</code>. Prefix: <code>ch_</code>.</div></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">https://micropay.up.railway.app/api/v1/charges/ch_wb4bedrhxh1q</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- CHAT COMPLETIONS -->
+<div class="doc-sec" id="chat-completions">
+<div class="dl">
+  <span class="sec-tag">AI Chat Gateway</span>
+  <h2 class="st">Chat Completions</h2>
+  <div class="ep"><span class="mth mpost">POST</span><span class="ep-path">/api/v1/chat/completions</span><span class="ep-auth">🔑 Auth required</span></div>
+  <p class="desc" style="margin-bottom:14px">The AI agent gateway. Send a natural language message — the AI decides whether to answer directly or request a paid tool call from the registry.</p>
+  <div class="alert a-purple"><strong>Two response types:</strong> <code>type: "message"</code> = plain AI answer. <code>type: "tool_call"</code> = AI needs paid data. If it's a tool_call, create a charge → sign → broadcast → call <a href="#chat-tool-result">POST /chat/tool-result</a> with the data.</div>
+  <h3 class="ss">Body Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">message</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">The user's message. Example: <code>"What is the current price of AAPL?"</code></div></div>
+  <div class="pm"><div class="pmh"><span class="pname">conversation_id</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">Pass the <code>conversation_id</code> from a previous call to continue. Omit to start a new conversation (one is auto-generated). Persists up to 20 messages in server memory.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">source_wallet</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">Informational only. Not used to build the transaction here.</div></div>
+  <h3 class="ss">Agentic Payment Flow</h3>
+  <div class="flow-box">
+    <div class="flow-title">When the AI needs paid data</div>
+    <div class="fs"><div class="fn">1</div><div><div class="fl-l">POST /chat/completions → <code>type: "tool_call"</code></div><div class="fl-s">Response includes <code>tool_call.service_id</code> and <code>estimated_cost_usd</code>.</div></div></div>
+    <div class="fc"></div>
+    <div class="fs"><div class="fn">2</div><div><div class="fl-l">POST /charges → sign → broadcast</div><div class="fl-s">Create a charge with the <code>service_id</code>, sign with Phantom, broadcast to Devnet.</div></div></div>
+    <div class="fc"></div>
+    <div class="fs"><div class="fn">3</div><div><div class="fl-l">POST /chat/tool-result → <code>type: "message"</code></div><div class="fl-s">Send <code>conversation_id</code> + the real data. AI returns a natural language answer.</div></div></div>
   </div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="fl">-X POST</span> <span class="mu">https://micropay.up.railway.app/api/v1/chat/completions</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="fl">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="fl">-d</span> <span class="s">'{
+    "message": "What is the current price of AAPL?",
+    "source_wallet": "AuofYo21...Nt5"
+  }'</span></pre>
+  <div class="cl">Response A — Plain answer</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"type"</span><span class="pu">:</span> <span class="s">"message"</span><span class="pu">,</span>
+  <span class="k">"conversation_id"</span><span class="pu">:</span> <span class="s">"conv_a8f2k9x1b3"</span><span class="pu">,</span>
+  <span class="k">"content"</span><span class="pu">:</span> <span class="s">"The x402 protocol enables..."</span><span class="pu">,</span>
+  <span class="k">"model"</span><span class="pu">:</span> <span class="s">"gpt-4o-mini"</span>
+<span class="pu">}</span></pre>
+  <div class="cl">Response B — Tool call needed</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"type"</span><span class="pu">:</span> <span class="s">"tool_call"</span><span class="pu">,</span>
+  <span class="k">"conversation_id"</span><span class="pu">:</span> <span class="s">"conv_a8f2k9x1b3"</span><span class="pu">,</span>
+  <span class="k">"message"</span><span class="pu">:</span> <span class="s">"I need to access Stock Price Feed. This requires a micro-payment of ~$0.01 in SOL on Devnet."</span><span class="pu">,</span>
+  <span class="k">"tool_call"</span><span class="pu">: {</span>
+    <span class="k">"id"</span><span class="pu">:</span> <span class="s">"call_abc123"</span><span class="pu">,</span>
+    <span class="k">"service_id"</span><span class="pu">:</span> <span class="s">"finance_stocks"</span><span class="pu">,</span>
+    <span class="k">"service_name"</span><span class="pu">:</span> <span class="s">"Stock Price Feed"</span><span class="pu">,</span>
+    <span class="k">"query"</span><span class="pu">:</span> <span class="s">"What is the current price of AAPL?"</span><span class="pu">,</span>
+    <span class="k">"estimated_cost_usd"</span><span class="pu">:</span> <span class="n">0.01</span>
+  <span class="pu">},</span>
+  <span class="k">"model"</span><span class="pu">:</span> <span class="s">"gpt-4o-mini"</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
 
-  <div class="footer-space"></div>
+<div class="divr"></div>
+
+<!-- TOOL RESULT -->
+<div class="doc-sec" id="chat-tool-result">
+<div class="dl">
+  <span class="sec-tag">AI Chat Gateway</span>
+  <h2 class="st">Submit Tool Result</h2>
+  <div class="ep"><span class="mth mpost">POST</span><span class="ep-path">/api/v1/chat/tool-result</span><span class="ep-auth">🔑 Auth required</span></div>
+  <p class="desc" style="margin-bottom:14px">After a <code>tool_call</code> response and successful payment, send the actual data back. The AI generates a natural language answer.</p>
+  <div class="alert a-blue"><strong>When to use:</strong> Only after receiving <code>type: "tool_call"</code> from <code>/chat/completions</code>, paying, and fetching the real data. Pass that data here as <code>tool_result</code>.</div>
+  <h3 class="ss">Body Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">conversation_id</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">The exact <code>conversation_id</code> from the <code>tool_call</code> response. Must match to preserve context.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">tool_result</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">The raw data from the service. JSON-stringified or plain text. The AI interprets and summarizes it.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">service_id</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">Fallback tool call ID if conversation history is missing one.</div></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="fl">-X POST</span> <span class="mu">https://micropay.up.railway.app/api/v1/chat/tool-result</span> \
+  <span class="fl">-H</span> <span class="s">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="fl">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="fl">-d</span> <span class="s">'{
+    "conversation_id": "conv_a8f2k9x1b3",
+    "service_id": "finance_stocks",
+    "tool_result": "{\"AAPL\":{\"price\":189.42,\"change\":\"+1.2%\",\"volume\":\"58M\"}}"
+  }'</span></pre>
+  <div class="cl">Response — 200</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"type"</span><span class="pu">:</span> <span class="s">"message"</span><span class="pu">,</span>
+  <span class="k">"conversation_id"</span><span class="pu">:</span> <span class="s">"conv_a8f2k9x1b3"</span><span class="pu">,</span>
+  <span class="k">"content"</span><span class="pu">:</span> <span class="s">"Apple (AAPL) is currently trading at $189.42, up 1.2% on volume of 58M shares."</span><span class="pu">,</span>
+  <span class="k">"model"</span><span class="pu">:</span> <span class="s">"gpt-4o-mini"</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- DIRECT AI CHAT -->
+<div class="doc-sec" id="ai-chat">
+<div class="dl">
+  <span class="sec-tag">AI Chat Gateway</span>
+  <h2 class="st">Direct AI Chat</h2>
+  <div class="ep"><span class="mth mpost">POST</span><span class="ep-path">/api/ai/chat</span><span class="ep-auth">🌐 No auth</span></div>
+  <p class="desc" style="margin-bottom:14px">Simple pass-through to OpenAI. No tools, no registry, no conversation history. One-shot message → reply.</p>
+  <h3 class="ss">Body Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">message</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">The prompt to send to the AI.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">model</span><span class="ptype">string</span><span class="popt">optional</span></div><div class="pdesc">One of: <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>o1-mini</code>, <code>o3-mini</code>. Defaults to <code>gpt-4o-mini</code>.</div></div>
+  <h3 class="ss">Response Fields</h3>
+  <div class="pm"><div class="pmh"><span class="pname">reply</span><span class="ptype">string</span></div><div class="pdesc">The AI's response text.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">model</span><span class="ptype">string</span></div><div class="pdesc">The model that was actually used.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">usage</span><span class="ptype">object</span></div><div class="pdesc">Token usage from OpenAI: <code>prompt_tokens</code>, <code>completion_tokens</code>, <code>total_tokens</code>.</div></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="fl">-X POST</span> <span class="mu">https://micropay.up.railway.app/api/ai/chat</span> \
+  <span class="fl">-H</span> <span class="s">"Content-Type: application/json"</span> \
+  <span class="fl">-d</span> <span class="s">'{
+    "message": "Explain the x402 micropayment protocol in 2 sentences.",
+    "model": "gpt-4o-mini"
+  }'</span></pre>
+  <div class="cl">Response — 200</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"reply"</span><span class="pu">:</span> <span class="s">"The x402 protocol is a standard for HTTP-native micropayments that lets APIs charge per request using blockchain transactions. When a client hits a paywalled endpoint, the server returns a transaction payload; the client signs and broadcasts it, then retries the request."</span><span class="pu">,</span>
+  <span class="k">"model"</span><span class="pu">:</span> <span class="s">"gpt-4o-mini"</span><span class="pu">,</span>
+  <span class="k">"usage"</span><span class="pu">: {</span>
+    <span class="k">"prompt_tokens"</span><span class="pu">:</span> <span class="n">22</span><span class="pu">,</span>
+    <span class="k">"completion_tokens"</span><span class="pu">:</span> <span class="n">68</span><span class="pu">,</span>
+    <span class="k">"total_tokens"</span><span class="pu">:</span> <span class="n">90</span>
+  <span class="pu">}</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- BALANCE -->
+<div class="doc-sec" id="balance">
+<div class="dl">
+  <span class="sec-tag">Network</span>
+  <h2 class="st">Get Balance</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/balance/:wallet</span><span class="ep-auth">🌐 Public</span></div>
+  <p class="desc">Returns real-time SOL balance for any Solana wallet on Devnet. Returns <code>400</code> for invalid addresses.</p>
+  <h3 class="ss">Path Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">wallet</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">A valid Solana public key in base58 format.</div></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">https://micropay.up.railway.app/api/v1/balance/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</span></pre>
+  <div class="cl">Response — 200</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"wallet"</span><span class="pu">:</span> <span class="s">"AuofYo21...Nt5"</span><span class="pu">,</span>
+  <span class="k">"balance_sol"</span><span class="pu">:</span> <span class="n">1.94832</span><span class="pu">,</span>
+  <span class="k">"network"</span><span class="pu">:</span> <span class="s">"devnet"</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- TRANSACTIONS -->
+<div class="doc-sec" id="transactions">
+<div class="dl">
+  <span class="sec-tag">Network</span>
+  <h2 class="st">Get Transactions</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/transactions/:wallet</span><span class="ep-auth">🌐 Public</span></div>
+  <p class="desc" style="margin-bottom:14px">Returns the last 5 Solana transactions for a wallet on Devnet. Paste the <code>signature</code> into <a href="https://explorer.solana.com/?cluster=devnet" target="_blank" style="color:var(--accent)">Solana Explorer (Devnet)</a> to verify on-chain.</p>
+  <h3 class="ss">Path Parameters</h3>
+  <div class="pm"><div class="pmh"><span class="pname">wallet</span><span class="ptype">string</span><span class="preq">required</span></div><div class="pdesc">Valid Solana base58 public key.</div></div>
+  <h3 class="ss">Transaction Object</h3>
+  <div class="pm"><div class="pmh"><span class="pname">signature</span><span class="ptype">string</span></div><div class="pdesc">The Solana transaction signature.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">status</span><span class="ptype">string</span></div><div class="pdesc"><code>settled</code> or <code>failed</code>.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">amount_sol</span><span class="ptype">number</span></div><div class="pdesc">SOL transferred, from pre/post balance diff.</div></div>
+  <div class="pm"><div class="pmh"><span class="pname">time</span><span class="ptype">string</span></div><div class="pdesc">ISO 8601 confirmation timestamp.</div></div>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">https://micropay.up.railway.app/api/v1/transactions/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</span></pre>
+  <div class="cl">Response — 200</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"wallet"</span><span class="pu">:</span> <span class="s">"AuofYo21...Nt5"</span><span class="pu">,</span>
+  <span class="k">"transactions"</span><span class="pu">: [</span>
+    <span class="pu">{</span>
+      <span class="k">"signature"</span><span class="pu">:</span> <span class="s">"5y9QShF7ZEaM...CZq"</span><span class="pu">,</span>
+      <span class="k">"status"</span><span class="pu">:</span> <span class="s">"settled"</span><span class="pu">,</span>
+      <span class="k">"amount_sol"</span><span class="pu">:</span> <span class="n">0.000067</span><span class="pu">,</span>
+      <span class="k">"time"</span><span class="pu">:</span> <span class="s">"2026-02-28T18:42:01.000Z"</span><span class="pu">,</span>
+      <span class="k">"description"</span><span class="pu">:</span> <span class="s">"Solana Transfer"</span>
+    <span class="pu">},</span>
+    <span class="co">... up to 4 more</span>
+  <span class="pu">]</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- NETWORK STATUS -->
+<div class="doc-sec" id="net-status">
+<div class="dl">
+  <span class="sec-tag">Network</span>
+  <h2 class="st">Network Status</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/network/status</span><span class="ep-auth">🌐 Public</span></div>
+  <p class="desc">Returns current Solana Devnet status — slot height, TPS, and RPC health.</p>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">https://micropay.up.railway.app/api/v1/network/status</span></pre>
+</div></div>
+</div>
+
+<div class="divr"></div>
+
+<!-- HEALTH -->
+<div class="doc-sec" id="health">
+<div class="dl">
+  <span class="sec-tag">Network</span>
+  <h2 class="st">Health Check</h2>
+  <div class="ep"><span class="mth mget">GET</span><span class="ep-path">/api/v1/health</span><span class="ep-auth">🌐 Public</span></div>
+  <p class="desc">Ping the server to verify it's running. Always returns <code>200</code> if the service is up. Use before a demo to confirm everything is live.</p>
+</div>
+<div class="dr"><div class="sticky-r">
+  <div class="cl">Request <span class="clang">cURL</span></div>
+  <pre class="c"><span class="cm">curl</span> <span class="mu">https://micropay.up.railway.app/api/v1/health</span></pre>
+  <div class="cl">Response — 200</div>
+  <pre class="c"><span class="pu">{</span>
+  <span class="k">"status"</span><span class="pu">:</span> <span class="s">"ok"</span><span class="pu">,</span>
+  <span class="k">"version"</span><span class="pu">:</span> <span class="s">"1.0.0"</span><span class="pu">,</span>
+  <span class="k">"timestamp"</span><span class="pu">:</span> <span class="s">"2026-02-28T18:00:00.000Z"</span>
+<span class="pu">}</span></pre>
+</div></div>
+</div>
+
+<div class="end"></div>
 </main>
 
+<script>
+const secs = document.querySelectorAll('[id]');
+const links = document.querySelectorAll('nav a');
+const io = new IntersectionObserver(e => {
+  e.forEach(x => {
+    if(x.isIntersecting){
+      links.forEach(a=>a.classList.remove('active'));
+      const a = document.querySelector('nav a[href="#'+x.target.id+'"]');
+      if(a) a.classList.add('active');
+    }
+  });
+},{threshold:0.25,rootMargin:'-5% 0px -70% 0px'});
+secs.forEach(s=>io.observe(s));
+</script>
 </body>
 </html>
