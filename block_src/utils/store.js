@@ -151,7 +151,7 @@ function setIdempotencyResult(key, responseBody) {
 // Seed Data (26 services — no cost_usd)
 // ─────────────────────────────────────────
 
-const DEVELOPER_WALLET = 'AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5';
+const DEVELOPER_WALLET = '2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8';
 
 const SEED_SERVICES = [
     {
@@ -390,4 +390,5 @@ module.exports = {
     // Idempotency store
     getIdempotencyResult,
     setIdempotencyResult,
+
 };
