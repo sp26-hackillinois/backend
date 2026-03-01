@@ -9,6 +9,7 @@
  */
 
 const BASE_URL = process.argv[2] || 'https://micropay.up.railway.app';
+const API_KEY = process.argv[3] || 'mp_live_demo_key';
 
 // ── State ──
 let pass = 0;
@@ -33,7 +34,10 @@ async function test(name, method, path, body, expectedStatus) {
     try {
         const opts = {
             method,
-            headers: { 'Content-Type': 'application/json' },
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${API_KEY}`,
+            },
         };
         if (body) opts.body = JSON.stringify(body);
 
@@ -89,9 +93,8 @@ async function run() {
     const regResult = await test('POST /api/v1/registry/register — create test service', 'POST', '/api/v1/registry/register', {
         name: 'Test AI Service',
         description: 'A test service for backend validation',
-        provider_wallet: 'TestWa11etAddress1111111111111111111111111',
-        price_usd: 0.01,
-        category: 'ai',
+        developer_wallet: '2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8',
+        cost_usd: 0.01,
         endpoint: 'https://example.com/api/test',
     }, 201);
 
@@ -119,10 +122,9 @@ async function run() {
     console.log(`\n${c.yellow}── 5. Charges ──${c.reset}`);
 
     const chargeResult = await test('POST /api/v1/charges — create charge', 'POST', '/api/v1/charges', {
-        service_id: serviceId || 'test-service',
-        amount_usd: 0.01,
-        payer_wallet: 'TestPayerWa11et1111111111111111111111111',
-    }, 201);
+        service_id: 'weather_openmeteo',
+        source_wallet: 'AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5',
+    }, 200);
 
     if (chargeResult.data) {
         chargeId = chargeResult.data.id || chargeResult.data.charge_id || chargeResult.data.data?.id || null;
@@ -140,7 +142,7 @@ async function run() {
 
     // ── 6. BALANCE ──
     console.log(`\n${c.yellow}── 6. Balance ──${c.reset}`);
-    await test('GET /api/v1/balance/:wallet', 'GET', '/api/v1/balance/TestWa11etAddress1111111111111111111111111', null, 200);
+    await test('GET /api/v1/balance/:wallet', 'GET', '/api/v1/balance/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5', null, 200);
 
     // ── 7. CHAT — Legacy ──
     console.log(`\n${c.yellow}── 7. Chat — Legacy Completions ──${c.reset}`);
