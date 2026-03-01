@@ -72,7 +72,7 @@ router.get('/transactions/:wallet', async (req, res) => {
     }
 
     try {
-        const signatures = await connection.getSignaturesForAddress(pubkey, { limit: 5 });
+        const signatures = await connection.getSignaturesForAddress(pubkey, { limit: 20 });
 
         const transactions = await Promise.all(
             signatures.map(async (sigInfo) => {
@@ -128,3 +128,4 @@ router.get('/transactions/:wallet', async (req, res) => {
 });
 
 module.exports = router;
+
