@@ -1,11 +1,12 @@
 require('dotenv').config();
 
 const path = require('path');
+const fs = require('fs');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 
-const { generateRequestId } = require('./utils/store');
+const { generateRequestId, discoverServices } = require('./utils/store');
 const registryRoutes = require('./routes/registry.routes');
 const chargeRoutes = require('./routes/charge.routes');
 const networkRoutes = require('./routes/network.routes');
@@ -32,12 +33,66 @@ app.use((req, res, next) => {
 // ─────────────────────────────────────────
 // Documentation Webpage
 // ─────────────────────────────────────────
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../micropay-docs.html'));
-});
-app.get('/docs', (req, res) => {
-    res.sendFile(path.resolve(__dirname, '../micropay-docs.html'));
-});
+function serveDocs(req, res) {
+    try {
+        const filePath = path.resolve(__dirname, '../micropay-docs.html');
+        let html = fs.readFileSync(filePath, 'utf8');
+
+        // Generate dynamic table of services
+        const services = discoverServices();
+        let servicesHtml = `
+            <div class="section" id="available-services">
+              <h2>Available Services</h2>
+              <p class="sdesc">Below is a live, up-to-date list of all ${services.length} services currently registered on Micropay Bazaar.</p>
+              <div style="overflow-x: auto;">
+              <table style="width:100%; text-align:left; border-collapse: collapse; margin-top: 10px;">
+                <thead>
+                  <tr>
+                    <th>Service ID</th>
+                    <th>Name</th>
+                    <th>Category</th>
+                    <th>Cost (USD)</th>
+                    <th>Ext. Description</th>
+                  </tr>
+                </thead>
+                <tbody>
+        `;
+
+        for (const s of services) {
+            // Some seed services don't have cost_usd directly, we estimate it via helper in charge routes if we need, but for registry display we can show an estimate if cost_usd is missing.
+            const cost = s.cost_usd ? s.cost_usd.toFixed(3) : (s.category === 'AI' ? '0.050' : (s.category === 'Search' || s.category === 'Travel' ? '0.050' : '0.010'));
+
+            servicesHtml += `
+                  <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+                    <td style="font-family: var(--mono); color: var(--orange); font-size: 11px;">${s.id}</td>
+                    <td style="font-weight: 500;">${s.name}</td>
+                    <td><span class="badge" style="background: rgba(124,108,250,.1); color: var(--accent); border: 1px solid rgba(124,108,250,.25); font-size: 9px; padding: 2px 6px;">${s.category || 'API'}</span></td>
+                    <td style="font-family: var(--mono); font-size: 11px;">$${cost}</td>
+                    <td style="color: var(--muted); font-size: 11.5px; line-height: 1.4; padding: 8px 10px;">${s.description}</td>
+                  </tr>
+            `;
+        }
+        servicesHtml += `
+                </tbody>
+              </table>
+              </div>
+            </div>
+            <hr/>
+        `;
+
+        // Inject right before "Registry - Services" section
+        html = html.replace('<!-- ══════════════════════════════\\n     REGISTRY ENDPOINTS', servicesHtml + '\\n<!-- ══════════════════════════════\\n     REGISTRY ENDPOINTS');
+
+        res.setHeader('Content-Type', 'text/html');
+        res.send(html);
+    } catch (err) {
+        console.error('Error serving docs:', err);
+        res.status(500).send('Error loading documentation.');
+    }
+}
+
+app.get('/', serveDocs);
+app.get('/docs', serveDocs);
 
 // ─────────────────────────────────────────
 // Routes
@@ -65,7 +120,7 @@ app.use((req, res) => {
 // Global Error Handler (must be last middleware)
 // ─────────────────────────────────────────
 app.use((err, req, res, next) => {
-    console.error(`[Server] Unhandled error: ${err.message}`);
+    console.error(`[Server] Unhandled error: ${err.message} `);
     res.status(500).json({
         error: {
             type: 'api_error',
@@ -80,7 +135,7 @@ app.use((err, req, res, next) => {
 // ─────────────────────────────────────────
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`\n🚀 Micropay Bazaar API running on port ${PORT}`);
+    console.log(`\n🚀 Micropay Bazaar API running on port ${PORT} `);
     console.log(`\n📖 Documentation: http://localhost:${PORT}/docs`);
     console.log(`\n   Endpoints:`);
     console.log(`     GET  http://localhost:${PORT}/api/v1/health`);
