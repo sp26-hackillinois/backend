@@ -204,7 +204,7 @@ footer{padding:28px 60px;border-top:1px solid var(--border);color:var(--muted);f
     <div class="logo-sub">API Reference</div>
     <div class="logo-name">Micropay <em>Bazaar</em></div>
     <div class="v-pill">v1.0.0 · REST · JSON</div>
-    <div class="base-url">localhost:3000/api/v1</div>
+    <div class="base-url">micropay.up.railway.app/api/v1</div>
   </div>
   <nav>
     <div class="nav-group">Getting Started</div>
@@ -243,7 +243,7 @@ footer{padding:28px 60px;border-top:1px solid var(--border);color:var(--muted);f
   <h1>Micropay <em>Bazaar</em><br>API Reference</h1>
   <p class="hero-desc">A discovery registry and micro-payment gateway for AI agents. Register services, let agents find them, and settle payments instantly on Solana using the x402 standard — all in one unified REST API.</p>
   <div class="chips">
-    <span class="chip"><span class="live"></span>localhost:3000</span>
+    <span class="chip"><span class="live"></span>micropay.up.railway.app</span>
     <span class="chip">JSON · REST</span>
     <span class="chip">Solana · x402</span>
     <span class="chip">Idempotent POST &amp; DELETE</span>
@@ -294,11 +294,11 @@ footer{padding:28px 60px;border-top:1px solid var(--border);color:var(--muted);f
     </div>
     <div id="auth-curl" class="code-pane active">
 <pre><span class="c"># Pass your API key as a Bearer token</span>
-curl -G <span class="url">http://localhost:3000/api/v1/registry/discover</span> \
+curl -G <span class="url">http://micropay.up.railway.app/api/v1/registry/discover</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123xyz"</span></pre>
     </div>
     <div id="auth-node" class="code-pane">
-<pre><span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'http://localhost:3000/api/v1/registry/discover'</span>, {
+<pre><span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'http://micropay.up.railway.app/api/v1/registry/discover'</span>, {
   headers: {
     <span class="key">'Authorization'</span>: <span class="s">`Bearer ${process.env.MPB_API_KEY}`</span>,
     <span class="key">'Content-Type'</span>: <span class="s">'application/json'</span>
@@ -310,7 +310,7 @@ curl -G <span class="url">http://localhost:3000/api/v1/registry/discover</span> 
 <pre><span class="k">import</span> requests
 
 headers = {<span class="s">"Authorization"</span>: <span class="s">f"Bearer {api_key}"</span>}
-res = requests.get(<span class="s">"http://localhost:3000/api/v1/registry/discover"</span>, headers=headers)
+res = requests.get(<span class="s">"http://micropay.up.railway.app/api/v1/registry/discover"</span>, headers=headers)
 data = res.json()</pre>
     </div>
   </div>
@@ -336,7 +336,7 @@ data = res.json()</pre>
   </table>
 
   <pre><span class="c"># Safe to retry — will not double-charge</span>
-curl -X POST <span class="url">http://localhost:3000/api/v1/charges</span> \
+curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/charges</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123xyz"</span> \
   -H <span class="s">"Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
@@ -360,7 +360,7 @@ curl -X POST <span class="url">http://localhost:3000/api/v1/charges</span> \
 
     <div class="code-wrap">
 <pre><span class="c"># Search for cheap NLP services</span>
-curl <span class="url">"http://localhost:3000/api/v1/registry/discover?query=nlp"</span> \
+curl <span class="url">"http://micropay.up.railway.app/api/v1/registry/discover?query=nlp"</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
 
@@ -412,7 +412,7 @@ curl <span class="url">"http://localhost:3000/api/v1/registry/discover?query=nlp
     </table>
 
     <div class="code-wrap">
-<pre>curl <span class="url">http://localhost:3000/api/v1/registry/discover/svc_9Kp2mNqRxT</span> \
+<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/registry/discover/svc_9Kp2mNqRxT</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
 
@@ -494,7 +494,7 @@ curl <span class="url">"http://localhost:3000/api/v1/registry/discover?query=nlp
         <button class="ctab" onclick="switchTab(this,'cp-node')">Node.js</button>
       </div>
       <div id="cp-curl" class="code-pane active">
-<pre>curl -X POST <span class="url">http://localhost:3000/api/v1/charges</span> \
+<pre>curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/charges</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
   -H <span class="s">"Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000"</span> \
@@ -505,7 +505,7 @@ curl <span class="url">"http://localhost:3000/api/v1/registry/discover?query=nlp
   }'</span></pre>
       </div>
       <div id="cp-node" class="code-pane">
-<pre><span class="k">const</span> charge = <span class="k">await</span> fetch(<span class="s">'http://localhost:3000/api/v1/charges'</span>, {
+<pre><span class="k">const</span> charge = <span class="k">await</span> fetch(<span class="s">'http://micropay.up.railway.app/api/v1/charges'</span>, {
   method: <span class="s">'POST'</span>,
   headers: {
     <span class="key">'Authorization'</span>: <span class="s">'Bearer mpb_live_abc123'</span>,
@@ -599,7 +599,7 @@ curl <span class="url">"http://localhost:3000/api/v1/registry/discover?query=nlp
 
     <div class="code-wrap">
 <pre><span class="c"># All confirmed charges for a specific service</span>
-curl <span class="url">"http://localhost:3000/api/v1/charges?service_id=svc_9Kp2mNqRxT&amp;status=confirmed"</span> \
+curl <span class="url">"http://micropay.up.railway.app/api/v1/charges?service_id=svc_9Kp2mNqRxT&amp;status=confirmed"</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
   </div>
@@ -617,7 +617,7 @@ curl <span class="url">"http://localhost:3000/api/v1/charges?service_id=svc_9Kp2
   </div>
   <div class="ep-body">
     <div class="code-wrap">
-<pre>curl <span class="url">http://localhost:3000/api/v1/charges/ch_4Rm9pQxKvL</span> \
+<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/charges/ch_4Rm9pQxKvL</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
   </div>
@@ -645,7 +645,7 @@ curl <span class="url">"http://localhost:3000/api/v1/charges?service_id=svc_9Kp2
   </div>
   <div class="ep-body">
     <div class="code-wrap">
-<pre>curl <span class="url">http://localhost:3000/api/v1/health</span></pre>
+<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/health</span></pre>
     </div>
     <div class="resp-tabs">
       <button class="rtab s2 active" onclick="switchResp(this,'h-200')">200 OK</button>
@@ -675,7 +675,7 @@ curl <span class="url">"http://localhost:3000/api/v1/charges?service_id=svc_9Kp2
   </div>
   <div class="ep-body">
     <div class="code-wrap">
-<pre>curl <span class="url">http://localhost:3000/api/v1/network/balance/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU</span> \
+<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/network/balance/7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
     <div class="resp-tabs">
@@ -707,7 +707,7 @@ curl <span class="url">"http://localhost:3000/api/v1/charges?service_id=svc_9Kp2
   </div>
   <div class="ep-body">
     <div class="code-wrap">
-<pre>curl <span class="url">http://localhost:3000/api/v1/network/price</span> \
+<pre>curl <span class="url">http://micropay.up.railway.app/api/v1/network/price</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
     <div class="resp-tabs">
@@ -758,22 +758,22 @@ cd micropay-bazaar
 npm install
 cp .env.example .env  <span class="c"># add your SOLANA_RPC_URL and API key seed</span>
 npm start
-<span class="c"># Server running on http://localhost:3000</span></pre>
+<span class="c"># Server running on http://micropay.up.railway.app</span></pre>
 
   <div class="ptitle" style="margin-top:20px">Step 2 — Register a service</div>
-<pre>curl -X POST <span class="url">http://localhost:3000/api/v1/registry/discover</span> \
+<pre>curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/registry/discover</span> \
   -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
   -d <span class="s">'{"name":"My AI Tool","endpoint":"https://myapp.com/infer","cost_usd":0.001,"developer_wallet":"YOUR_SOLANA_WALLET"}'</span>
 <span class="c"># → Returns service with id: "svc_..."</span></pre>
 
   <div class="ptitle" style="margin-top:20px">Step 3 — Discover services</div>
-<pre>curl <span class="url">"http://localhost:3000/api/v1/registry/discover?tag=nlp&amp;limit=5"</span> \
+<pre>curl <span class="url">"http://micropay.up.railway.app/api/v1/registry/discover?tag=nlp&amp;limit=5"</span> \
   -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span>
 <span class="c"># → Returns paginated list of matching services</span></pre>
 
   <div class="ptitle" style="margin-top:20px">Step 4 — Pay and call</div>
-<pre>curl -X POST <span class="url">http://localhost:3000/api/v1/charges</span> \
+<pre>curl -X POST <span class="url">http://micropay.up.railway.app/api/v1/charges</span> \
   -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
   -H <span class="s">"Idempotency-Key: $(uuidgen)"</span> \
