@@ -224,6 +224,7 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:
   <div class="nav-gap"></div>
   <div class="nav-label">Resources</div>
   <a href="#services-catalog">Service catalog</a>
+  <a href="#tech-stack">Tech Stack</a>
   <a href="#errors">Errors</a>
 </nav>
 </aside>
@@ -1313,6 +1314,89 @@ data = requests.get(<span class="str">"https://micropay.up.railway.app/api/v1/he
   <div class="svc-detail"><p><strong>Description:</strong> GPT-4o chat completions. Pay per request, no subscription.</p><p><strong>Endpoint:</strong> <code>POST /tools/openai-chat</code></p><div class="svc-meta"><span class="svc-tag">openai</span><span class="svc-tag">gpt</span><span class="svc-tag">chat</span><span class="svc-tag">ai</span><span class="svc-tag">llm</span></div></div>
 </div>
 
+<!-- ══════════════════════════════
+     TECH STACK
+     ══════════════════════════════ -->
+<h2 id="tech-stack">Tech Stack</h2>
+<p class="sdesc">How Micropay Bazaar is built under the hood.</p>
+
+<table style="width:100%; text-align:left; border-collapse: collapse; margin-top: 16px;">
+  <thead>
+    <tr>
+      <th style="padding: 10px 12px; border-bottom: 2px solid rgba(124,108,250,0.3);">Component</th>
+      <th style="padding: 10px 12px; border-bottom: 2px solid rgba(124,108,250,0.3);">Technology</th>
+      <th style="padding: 10px 12px; border-bottom: 2px solid rgba(124,108,250,0.3);">Why</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+      <td style="padding: 10px 12px; font-weight: 500;">Runtime</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">Node.js + Express.js</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">Lightweight, fast JSON API server with middleware ecosystem</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+      <td style="padding: 10px 12px; font-weight: 500;">Blockchain</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">@solana/web3.js (Devnet)</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">Build unsigned transactions, query balances, parse on-chain data</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+      <td style="padding: 10px 12px; font-weight: 500;">Price Oracle</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">CoinGecko API</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">Live SOL/USD conversion with 60-second cache and hardcoded fallback</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+      <td style="padding: 10px 12px; font-weight: 500;">AI Gateway</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">OpenAI GPT-4o-mini</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">Function calling for tool selection, conversation context for multi-turn</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+      <td style="padding: 10px 12px; font-weight: 500;">Data Store</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">In-memory (Map)</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">Charges, registry, conversations, and idempotency — resets on restart</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+      <td style="padding: 10px 12px; font-weight: 500;">Deployment</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">Railway</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">Auto-deploy from GitHub, HTTPS, environment variable management</td>
+    </tr>
+    <tr style="border-bottom: 1px solid rgba(30,37,56,0.5);">
+      <td style="padding: 10px 12px; font-weight: 500;">Logging</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">Morgan</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">HTTP request logging in dev format</td>
+    </tr>
+    <tr>
+      <td style="padding: 10px 12px; font-weight: 500;">Wallet</td>
+      <td style="padding: 10px 12px; font-family: var(--mono); font-size: 12px;">Phantom (client-side)</td>
+      <td style="padding: 10px 12px; color: var(--muted); font-size: 12px;">Transaction signing and broadcasting via browser extension</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 style="margin-top: 32px;">Architecture</h3>
+<pre style="background: rgba(0,0,0,0.3); border: 1px solid rgba(124,108,250,0.2); border-radius: 8px; padding: 20px; font-size: 11px; line-height: 1.6; overflow-x: auto;"><code>
+  Developer / AI Agent
+         │
+         ▼
+  ┌─────────────────────────────────┐
+  │     Micropay API (Express.js)   │
+  │                                 │
+  │  ┌───────────┐ ┌─────────────┐  │     ┌──────────────┐
+  │  │ Registry  │ │  Charges    │  │────▶│ Solana       │
+  │  │ Store     │ │  Store      │  │     │ Devnet RPC   │
+  │  └───────────┘ └─────────────┘  │     └──────────────┘
+  │  ┌───────────┐ ┌─────────────┐  │
+  │  │ Chat      │ │ Idempotency │  │     ┌──────────────┐
+  │  │ History   │ │ Cache (24h) │  │────▶│ CoinGecko    │
+  │  └───────────┘ └─────────────┘  │     │ Price Oracle  │
+  │                                 │     └──────────────┘
+  └────────────┬────────────────────┘
+               │                          ┌──────────────┐
+               └─────────────────────────▶│ OpenAI       │
+                                          │ GPT-4o-mini  │
+                                          └──────────────┘
+</code></pre>
+<hr/>
+
 <!-- ═══════════════════════ ERRORS ═══════════════════════ -->
 <h2 id="errors">Errors</h2>
 <p>All errors return a consistent JSON object.</p>
@@ -1321,7 +1405,7 @@ data = requests.get(<span class="str">"https://micropay.up.railway.app/api/v1/he
     <div class="param-header" onclick="toggleParam(this)"><span class="param-name">error.type</span><span class="param-type">string</span><span class="param-toggle">+</span></div>
     <div class="param-desc">Machine-readable error category.</div>
     <div class="param-expand">
-      <div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Valid values</div><div class="pe-val"><code>invalid_request_error</code> (400), <code>not_found_error</code> (404), <code>api_error</code> (500), <code>gateway_error</code> (502)</div></div></div></div>
+      <div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Valid values</div><div class="pe-val"><code>authentication_error</code> (401), <code>invalid_request_error</code> (400), <code>not_found_error</code> (404), <code>api_error</code> (500), <code>gateway_error</code> (502)</div></div></div></div>
     </div>
   </div>
   <div class="param">

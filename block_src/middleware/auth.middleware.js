@@ -1,12 +1,18 @@
 /**
- * Middleware to verify Bearer API Key against a hardcoded array in ENV.
+ * Middleware to verify Bearer API Key against allowed keys in ENV.
  */
 function verifyApiKey(req, res, next) {
     try {
         const authHeader = req.headers.authorization;
 
         if (!authHeader || !authHeader.startsWith('Bearer ')) {
-            return res.status(401).json({ error: 'Unauthorized: Missing or invalid Authorization header format' });
+            return res.status(401).json({
+                error: {
+                    type: 'authentication_error',
+                    message: "Missing or invalid Authorization header. Expected format: 'Bearer <api_key>'.",
+                    request_id: req.requestId || null,
+                },
+            });
         }
 
         const token = authHeader.split(' ')[1];
@@ -16,16 +22,28 @@ function verifyApiKey(req, res, next) {
         const allowedKeys = allowedKeysString.split(',').map(key => key.trim());
 
         if (!allowedKeys.includes(token)) {
-            return res.status(401).json({ error: 'Unauthorized: Invalid API Key' });
+            return res.status(401).json({
+                error: {
+                    type: 'authentication_error',
+                    message: 'Invalid API key provided.',
+                    request_id: req.requestId || null,
+                },
+            });
         }
 
         next();
     } catch (error) {
         console.error(`[Auth Middleware] Error checking API key: ${error.message}`);
-        return res.status(500).json({ error: 'Internal Server Error' });
+        return res.status(500).json({
+            error: {
+                type: 'api_error',
+                message: 'An internal error occurred during authentication.',
+                request_id: req.requestId || null,
+            },
+        });
     }
 }
 
 module.exports = {
-    verifyApiKey
+    verifyApiKey,
 };

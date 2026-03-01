@@ -75,8 +75,13 @@ router.post('/chat', async (req, res) => {
     try {
         const { message, model } = req.body;
 
-        if (!message) {
-            return res.status(400).json({ error: 'message is required' });
+        if (!message || typeof message !== 'string' || message.trim() === '') {
+            return res.status(400).json({
+                error: {
+                    type: 'invalid_request_error',
+                    message: "'message' is required and must be a non-empty string.",
+                },
+            });
         }
 
         const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'gpt-4o-mini';
@@ -115,10 +120,12 @@ router.post('/chat', async (req, res) => {
         });
 
     } catch (err) {
-        console.error('OpenAI API error:', err.response?.data || err.message);
+        console.error('[AI Chat] OpenAI error:', err.response?.data || err.message);
         return res.status(err.response?.status || 500).json({
-            error: 'AI request failed',
-            details: err.response?.data?.error?.message || err.message,
+            error: {
+                type: 'gateway_error',
+                message: err.response?.data?.error?.message || 'AI service request failed. Please retry.',
+            },
         });
     }
 });
