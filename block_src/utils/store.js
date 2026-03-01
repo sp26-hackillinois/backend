@@ -390,5 +390,4 @@ module.exports = {
     // Idempotency store
     getIdempotencyResult,
     setIdempotencyResult,
-
 };
