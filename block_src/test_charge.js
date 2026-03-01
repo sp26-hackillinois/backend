@@ -12,7 +12,7 @@ const http = require('http');
 const { URL } = require('url');
 
 // ── Config ────────────────────────────────────────────────────────────────
-const BASE_URL = process.argv[2] || 'http://localhost:3000';
+const BASE_URL = process.argv[2] || 'https://micropay.up.railway.app';
 const API_KEY = 'mp_live_demo_key';
 
 const parsed = new URL(BASE_URL);
@@ -21,6 +21,7 @@ const transport = isHttps ? https : http;
 
 const body = JSON.stringify({
     service_id: "weather_openmeteo",
+    amount_usd: 0.05,
     source_wallet: "AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5"
 });
 

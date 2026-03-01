@@ -21,7 +21,7 @@ const { Connection, Keypair, Transaction } = require('@solana/web3.js');
 const bs58 = require('bs58').default || require('bs58');
 
 // ── Config ────────────────────────────────────────────────────────────────
-const BASE_URL = process.argv[2] || 'http://localhost:3000';
+const BASE_URL = process.argv[2] || 'https://micropay.up.railway.app';
 const API_KEY = 'mp_live_demo_key';
 const SERVICE_ID = 'weather_openmeteo';
 
@@ -32,7 +32,7 @@ const transport = isHttps ? https : http;
 // ── Step 1: Call the API ──────────────────────────────────────────────────
 function callChargeApi(sourceWallet) {
     return new Promise((resolve, reject) => {
-        const body = JSON.stringify({ service_id: SERVICE_ID, source_wallet: sourceWallet });
+        const body = JSON.stringify({ service_id: SERVICE_ID, source_wallet: sourceWallet, amount_usd: 0.05 });
 
         const options = {
             hostname: parsed.hostname,
