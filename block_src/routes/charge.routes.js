@@ -101,6 +101,15 @@ router.post('/', verifyApiKey, async (req, res) => {
 });
 
 // ─────────────────────────────────────────
+// GET /api/v1/charges/count
+// Returns total number of charges ever processed (public — no auth)
+// ─────────────────────────────────────────
+router.get('/count', (req, res) => {
+    const result = listCharges({ limit: 1000000, offset: 0 });
+    return res.status(200).json({ count: result.total });
+});
+
+// ─────────────────────────────────────────
 // GET /api/v1/charges
 // ─────────────────────────────────────────
 router.get('/', verifyApiKey, (req, res) => {
