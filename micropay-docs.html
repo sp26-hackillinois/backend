@@ -26,17 +26,17 @@ html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
 ::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-aside{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--bg);display:flex;flex-direction:column;overflow-y:auto;z-index:100}
-.sb-header{padding:22px 22px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+aside{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid rgba(99,91,255,.08);background:linear-gradient(180deg,#f8f7ff 0%,#f3f2fb 100%);display:flex;flex-direction:column;overflow-y:auto;z-index:100}
+.sb-header{padding:22px 22px 18px;border-bottom:1px solid rgba(99,91,255,.1);position:sticky;top:0;background:linear-gradient(180deg,#f8f7ff,#f6f5fc);z-index:10;backdrop-filter:blur(8px)}
 .sb-logo{display:flex;align-items:center;gap:10px}
-.sb-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px;flex-shrink:0}
-.sb-name{font-size:15px;font-weight:700;letter-spacing:-.02em}
-.sb-tagline{font-size:11px;color:var(--text-muted);margin-top:1px}
+.sb-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px;flex-shrink:0;box-shadow:0 2px 8px rgba(99,91,255,.25)}
+.sb-name{font-size:15px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
+.sb-tagline{font-size:11px;color:#8b85b5;margin-top:1px}
 nav{padding:16px 0 32px;flex:1}
-.nav-label{padding:8px 22px 4px;font-size:10.5px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
-nav a{display:block;padding:5px 22px;font-size:13.5px;color:var(--text-secondary);text-decoration:none;transition:all .12s;border-left:2px solid transparent}
-nav a:hover{color:var(--text);background:var(--bg-subtle)}
-nav a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);background:var(--accent-subtle)}
+.nav-label{padding:8px 22px 4px;font-size:10.5px;font-weight:600;color:#9a94c4;text-transform:uppercase;letter-spacing:.08em}
+nav a{display:block;padding:5px 22px;font-size:13.5px;color:#5a5580;text-decoration:none;transition:all .12s;border-left:2px solid transparent}
+nav a:hover{color:var(--text);background:rgba(99,91,255,.06)}
+nav a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);background:rgba(99,91,255,.1)}
 .nav-gap{height:6px}
 
 main{flex:1;overflow-y:auto}
@@ -112,11 +112,21 @@ pre .label{position:absolute;top:10px;right:12px;font-size:10px;font-weight:600;
 pre .kw{color:#6cb6ff}pre .str{color:#96d0ff}pre .val{color:#6bc46d}pre .cmt{color:#4d6a87}pre .punc{color:#6e7e8f}pre .fn{color:#dcbdfb}pre .num{color:#f69d50}
 code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle);color:#0a2540}
 
-.endpoint{display:inline-flex;align-items:center;gap:10px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:8px 0 16px;font-size:13px;width:100%}
+.endpoint{display:flex;align-items:center;gap:10px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:10px 14px;margin:8px 0 0;font-size:13px;width:100%;cursor:pointer;transition:all .15s;user-select:none}
+.endpoint:hover{border-color:#c4c1f7;background:#fafaff}
+.endpoint.open{border-radius:8px 8px 0 0;border-bottom-color:transparent;background:#fafaff}
+.ep-chevron{margin-left:auto;transition:transform .2s;color:var(--text-muted);flex-shrink:0}
+.endpoint.open .ep-chevron{transform:rotate(180deg)}
 .method{font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.04em;flex-shrink:0}
 .method-post{background:var(--green-bg);color:var(--green-text)}
 .method-get{background:var(--blue-bg);color:var(--blue)}
 .ep-path{font-family:var(--mono);font-size:13px;color:var(--text-secondary)}
+.ep-auth{margin-left:auto;font-size:10px;color:var(--text-muted);white-space:nowrap}
+.ep-body{display:none;border:1px solid var(--border);border-top:none;border-radius:0 0 8px 8px;padding:20px;margin-bottom:16px;background:var(--bg);animation:fadeIn .2s ease}
+.ep-body.open{display:block}
+.ep-body>p:first-child{margin-top:0}
+.ep-example{margin-top:16px}
+.ep-example pre{margin:0;border-radius:8px}
 
 /* PARAMS */
 .param-list{margin:8px 0 20px}
@@ -683,7 +693,8 @@ console.log(answer);</pre>
 <p>Charges represent a payment for a registry service. Create one to get an unsigned Solana transaction, then sign and broadcast it.</p>
 
 <h3>Create a charge</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/charges</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-post">POST</span><span class="ep-path">/api/v1/charges</span><span class="ep-auth">Auth required</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Returns an unsigned Solana transaction. The backend fetches live SOL/USD price, calculates SOL amount, looks up the developer's wallet, and builds the transaction.</p>
 
 <div class="param-list">
@@ -705,8 +716,20 @@ console.log(answer);</pre>
   </div>
 </div>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> -X POST https://micropay.up.railway.app/api/v1/charges \
+     -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span> \
+     -H <span class="str">"Content-Type: application/json"</span> \
+     -d <span class="str">'{
+       "service_id": "finance_stocks",
+       "source_wallet": "YOUR_PHANTOM_WALLET_ADDRESS"
+     }'</span></pre>
+</div>
+</div>
+
 <h3>List charges</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges</span><span class="ep-auth">Auth required</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Paginated list of all charges. Filter by wallet or status.</p>
 <div class="param-list">
   <div class="param">
@@ -731,8 +754,15 @@ console.log(answer);</pre>
   </div>
 </div>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/charges?limit=5 \
+     -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span></pre>
+</div>
+</div>
+
 <h3>Get a charge</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges/:id</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges/:id</span><span class="ep-auth">Auth required</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Retrieve full details of a single charge.</p>
 <div class="param-list">
   <div class="param">
@@ -742,16 +772,38 @@ console.log(answer);</pre>
   </div>
 </div>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/charges/ch_wb4bedrhxh1q \
+     -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span></pre>
+</div>
+</div>
+
 <!-- ═══════════════════════ REGISTRY ═══════════════════════ -->
 <h2 id="registry">Registry</h2>
 <p>The registry is the discovery index for all paid services in the Bazaar.</p>
 
 <h3>Register a service</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/registry/register</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-post">POST</span><span class="ep-path">/api/v1/registry/register</span><span class="ep-auth">Auth required</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>See the <a href="#accept-payments">Accept Payments guide</a> for complete instructions and all 5 required parameters with error details.</p>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> -X POST https://micropay.up.railway.app/api/v1/registry/register \
+     -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span> \
+     -H <span class="str">"Content-Type: application/json"</span> \
+     -d <span class="str">'{
+       "name": "My Weather API",
+       "description": "Real-time weather data",
+       "endpoint": "https://myapi.com/weather",
+       "developer_wallet": "YOUR_WALLET_ADDRESS",
+       "tags": ["weather", "forecast"]
+     }'</span></pre>
+</div>
+</div>
+
 <h3>Discover services</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/discover</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/discover</span><span class="ep-auth">Public</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Search all registered services. 26 preloaded. No auth required.</p>
 <div class="param-list">
   <div class="param">
@@ -763,16 +815,33 @@ console.log(answer);</pre>
   </div>
 </div>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="cmt"># Get all services</span>
+<span class="fn">curl</span> https://micropay.up.railway.app/api/v1/registry/discover
+
+<span class="cmt"># Search for weather services</span>
+<span class="fn">curl</span> <span class="str">"https://micropay.up.railway.app/api/v1/registry/discover?query=weather"</span></pre>
+</div>
+</div>
+
 <h3>Get a service</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/services/:id</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/services/:id</span><span class="ep-auth">Public</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Retrieve a single service by exact ID. Returns <code>404</code> if not found.</p>
+
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/registry/services/finance_stocks</pre>
+</div>
+</div>
 
 <!-- ═══════════════════════ AI GATEWAY ═══════════════════════ -->
 <h2 id="ai-gateway">AI Gateway</h2>
 <p>Natural language interface to the Bazaar. The AI decides whether to answer directly or request a paid tool call. See the <a href="#access-apis">Access APIs guide</a> Step 5 for the full agentic flow with code.</p>
 
 <h3>Chat completions</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/completions</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/completions</span><span class="ep-auth">Auth required</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
+<p>Send a natural language message. The AI decides whether to answer directly or request a paid tool call from the Bazaar.</p>
 <div class="param-list">
   <div class="param">
     <div class="param-header" onclick="toggleParam(this)"><span class="param-name">message</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
@@ -799,8 +868,20 @@ console.log(answer);</pre>
   </div>
 </div>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> -X POST https://micropay.up.railway.app/api/v1/chat/completions \
+     -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span> \
+     -H <span class="str">"Content-Type: application/json"</span> \
+     -d <span class="str">'{
+       "message": "What is the current price of AAPL?",
+       "source_wallet": "YOUR_WALLET_ADDRESS"
+     }'</span></pre>
+</div>
+</div>
+
 <h3>Submit tool result</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/tool-result</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/tool-result</span><span class="ep-auth">Auth required</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>After paying for a tool call, send the real data back. AI generates a natural language answer.</p>
 <div class="param-list">
   <div class="param">
@@ -826,8 +907,21 @@ console.log(answer);</pre>
   </div>
 </div>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> -X POST https://micropay.up.railway.app/api/v1/chat/tool-result \
+     -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span> \
+     -H <span class="str">"Content-Type: application/json"</span> \
+     -d <span class="str">'{
+       "conversation_id": "conv_a8f2k9x1b3",
+       "tool_result": "{\"AAPL\":{\"price\":189.42,\"change\":\"+1.2%\"}}",
+       "service_id": "finance_stocks"
+     }'</span></pre>
+</div>
+</div>
+
 <h3>Direct AI chat</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/ai/chat</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-post">POST</span><span class="ep-path">/api/ai/chat</span><span class="ep-auth">Public</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>One-shot pass-through to OpenAI. No tools, no registry, no conversation state.</p>
 <div class="param-list">
   <div class="param">
@@ -848,26 +942,56 @@ console.log(answer);</pre>
   </div>
 </div>
 
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> -X POST https://micropay.up.railway.app/api/ai/chat \
+     -H <span class="str">"Content-Type: application/json"</span> \
+     -d <span class="str">'{
+       "message": "Explain quantum computing in one sentence",
+       "model": "gpt-4o-mini"
+     }'</span></pre>
+</div>
+</div>
+
 <!-- ═══════════════════════ NETWORK ═══════════════════════ -->
 <h2 id="network">Network</h2>
 <p>Public endpoints for wallet balances, transaction history, and Devnet health.</p>
 
 <h3>Get balance</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/balance/:wallet</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/balance/:wallet</span><span class="ep-auth">Public</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Real-time SOL balance for any Solana wallet on Devnet.</p>
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/balance/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</pre>
+</div>
+</div>
 
 <h3>Get transactions</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/transactions/:wallet</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/transactions/:wallet</span><span class="ep-auth">Public</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Last 5 Solana transactions for a wallet. Each has a <code>signature</code> verifiable on <a href="https://explorer.solana.com/?cluster=devnet" target="_blank">Solana Explorer</a>.</p>
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/transactions/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</pre>
+</div>
+</div>
 
 <h3>Network status</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/network/status</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/network/status</span><span class="ep-auth">Public</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Devnet status — slot height, block height, SOL price, RPC health.</p>
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/network/status</pre>
+</div>
+</div>
 
 <h3>Health check</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/health</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<div class="endpoint" onclick="toggleEp(this)"><span class="method method-get">GET</span><span class="ep-path">/api/v1/health</span><span class="ep-auth">Public</span><svg class="ep-chevron" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 4.5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+<div class="ep-body">
 <p>Returns <code>200</code> if the server is up.</p>
-<pre><span class="label">JSON</span>{ <span class="kw">"status"</span>: <span class="str">"ok"</span>, <span class="kw">"version"</span>: <span class="str">"1.0.0"</span> }</pre>
+<div class="ep-example">
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/health</pre>
+<pre><span class="label">Response</span>{ <span class="kw">"status"</span>: <span class="str">"ok"</span>, <span class="kw">"version"</span>: <span class="str">"1.0.0"</span> }</pre>
+</div>
+</div>
 
 <!-- ═══════════════════════ SERVICE CATALOG ═══════════════════════ -->
 <h2 id="services-catalog">Service catalog</h2>
@@ -1054,6 +1178,14 @@ function closeModal() {
 }
 
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function toggleEp(el) {
+  const body = el.nextElementSibling;
+  if (!body || !body.classList.contains('ep-body')) return;
+  const isOpen = el.classList.contains('open');
+  el.classList.toggle('open');
+  body.classList.toggle('open');
+}
 
 function openGuideFromNav(type) {
   const card = document.getElementById('card-' + type);
