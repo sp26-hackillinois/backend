@@ -6,6 +6,9 @@ const { Connection, PublicKey } = require('@solana/web3.js');
 
 const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 
+// The developer wallet that receives all playground payments
+const DEVELOPER_WALLET = process.env.AI_DEVELOPER_WALLET || '2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8';
+
 // ─────────────────────────────────────────
 // GET /api/v1/health
 // Health check (public — no auth)
@@ -26,7 +29,10 @@ router.get('/balance/:wallet', async (req, res) => {
     const { wallet } = req.params;
     try {
         const balanceInfo = await getWalletBalance(wallet);
-        return res.status(200).json(balanceInfo);
+        return res.status(200).json({
+            ...balanceInfo,
+            developer_wallet: DEVELOPER_WALLET,
+        });
     } catch (error) {
         return res.status(400).json({
             error: {
@@ -105,7 +111,11 @@ router.get('/transactions/:wallet', async (req, res) => {
             })
         );
 
-        return res.status(200).json({ wallet, transactions });
+        return res.status(200).json({
+            wallet,
+            developer_wallet: DEVELOPER_WALLET,
+            transactions,
+        });
     } catch (error) {
         console.error('[Transactions] RPC error:', error.message);
         return res.status(500).json({
