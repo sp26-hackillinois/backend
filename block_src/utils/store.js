@@ -131,6 +131,10 @@ function discoverServices(query) {
     });
 }
 
+function deleteService(id) {
+    return registryStore.delete(id);
+}
+
 // ─────────────────────────────────────────
 // Idempotency Store
 // ─────────────────────────────────────────
@@ -145,6 +149,7 @@ function getIdempotencyResult(key) {
 /** @param {string} key @param {object} responseBody */
 function setIdempotencyResult(key, responseBody) {
     idempotencyStore.set(key, responseBody);
+    setTimeout(() => idempotencyStore.delete(key), 24 * 60 * 60 * 1000);
 }
 
 // ─────────────────────────────────────────
@@ -387,6 +392,7 @@ module.exports = {
     registerService,
     getServiceById,
     discoverServices,
+    deleteService,
     // Idempotency store
     getIdempotencyResult,
     setIdempotencyResult,

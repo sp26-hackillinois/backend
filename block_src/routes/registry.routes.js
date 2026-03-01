@@ -1,11 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { verifyApiKey } = require('../middleware/auth.middleware');
-const {
-    registerService,
-    getServiceById,
-    discoverServices,
-} = require('../utils/store');
+const { registerService, getServiceById, discoverServices, deleteService } = require('../utils/store');
 
 // ─────────────────────────────────────────
 // POST /api/v1/registry/register
@@ -72,12 +68,30 @@ router.post('/register', verifyApiKey, (req, res) => {
 // Discover registered services (public — no auth)
 // ─────────────────────────────────────────
 router.get('/discover', (req, res) => {
-    const { query } = req.query;
-    const services = discoverServices(query);
+    const { query, category, limit, offset } = req.query;
+
+    let services = discoverServices(query);
+
+    if (category && typeof category === 'string' && category.trim() !== '') {
+        const cat = category.trim().toLowerCase();
+        services = services.filter(s =>
+            s.category && s.category.toLowerCase() === cat
+        );
+    }
+
+    const parsedLimit = Math.min(Math.max(1, parseInt(limit, 10) || 50), 100);
+    const parsedOffset = Math.max(0, parseInt(offset, 10) || 0);
+    const total_count = services.length;
+    const data = services.slice(parsedOffset, parsedOffset + parsedLimit);
+    const has_more = parsedOffset + parsedLimit < total_count;
+
     return res.status(200).json({
         object: 'list',
-        data: services,
-        total_count: services.length,
+        data,
+        total_count,
+        has_more,
+        limit: parsedLimit,
+        offset: parsedOffset,
     });
 });
 
@@ -97,6 +111,29 @@ router.get('/services/:id', (req, res) => {
         });
     }
     return res.status(200).json(service);
+});
+
+// ─────────────────────────────────────────
+// DELETE /api/v1/registry/services/:id
+// Delete a registered service (auth required)
+// ─────────────────────────────────────────
+router.delete('/services/:id', verifyApiKey, (req, res) => {
+    const { id } = req.params;
+    const service = getServiceById(id);
+    if (!service) {
+        return res.status(404).json({
+            error: {
+                type: 'not_found_error',
+                message: `Service '${id}' not found.`,
+            },
+        });
+    }
+    deleteService(id);
+    return res.status(200).json({
+        id,
+        object: 'service',
+        deleted: true,
+    });
 });
 
 module.exports = router;

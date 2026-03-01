@@ -42,7 +42,10 @@ router.post('/', verifyApiKey, async (req, res) => {
         const idempotencyKey = req.headers['idempotency-key'];
         if (idempotencyKey) {
             const cached = getIdempotencyResult(idempotencyKey);
-            if (cached) return res.status(200).json(cached);
+            if (cached) {
+                res.setHeader('Idempotency-Replayed', 'true');
+                return res.status(200).json(cached);
+            }
         }
 
         // Validate
