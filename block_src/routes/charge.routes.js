@@ -1,198 +1,297 @@
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const { verifyApiKey } = require('../middleware/auth.middleware');
-const { getSolPriceInUsd } = require('../services/price.service');
-const { buildUnsignedTransaction } = require('../services/solana.service');
-const {
-    createCharge,
-    getChargeById,
-    listCharges,
-    getServiceById,
-    getIdempotencyResult,
-    setIdempotencyResult,
-} = require('../utils/store');
+const { discoverServices, getServiceById } = require('../utils/store');
 
 // ─────────────────────────────────────────
-// GET /api/v1/charges
-// List charges with optional filtering & pagination (auth required)
-// NOTE: Defined BEFORE /:id to prevent Express treating "list" etc. as an id
+// Helpers
 // ─────────────────────────────────────────
-router.get('/', verifyApiKey, (req, res) => {
-    let { limit = '10', offset = '0', status, source_wallet } = req.query;
 
-    const parsedLimit = Math.min(Math.max(1, parseInt(limit, 10) || 10), 100);
-    const parsedOffset = Math.max(0, parseInt(offset, 10) || 0);
+const CHARSET = 'abcdefghijklmnopqrstuvwxyz0123456789';
+function randomString(len) {
+    let s = '';
+    for (let i = 0; i < len; i++) s += CHARSET[Math.floor(Math.random() * CHARSET.length)];
+    return s;
+}
+function generateConversationId() { return 'conv_' + randomString(12); }
 
-    const result = listCharges({
-        limit: parsedLimit,
-        offset: parsedOffset,
-        status,
-        source_wallet,
-    });
+/**
+ * Default estimated cost per category (USD).
+ * Used when the LLM requests a tool call — the actual charge amount
+ * is always set by the frontend at charge time.
+ */
+const CATEGORY_COST_USD = {
+    Weather: 0.01,
+    Finance: 0.01,
+    NLP: 0.01,
+    Food: 0.01,
+    Blockchain: 0.01,
+    News: 0.02,
+    Sports: 0.02,
+    Data: 0.02,
+    Search: 0.05,
+    Travel: 0.05,
+    AI: 0.05,
+};
+const DEFAULT_COST_USD = 0.01;
+
+function estimatedCost(service) {
+    // Special-case the openai_chat service id
+    if (service.id === 'openai_chat') return 0.05;
+    return CATEGORY_COST_USD[service.category] ?? DEFAULT_COST_USD;
+}
+
+/** In-memory conversation histories. Resets on restart. */
+const conversationStore = new Map(); // conversationId → messages[]
+
+const MAX_HISTORY = 20;
+
+function getHistory(conversationId) {
+    return conversationStore.get(conversationId) || [];
+}
+
+function setHistory(conversationId, messages) {
+    // Keep only the last MAX_HISTORY messages
+    const trimmed = messages.slice(-MAX_HISTORY);
+    conversationStore.set(conversationId, trimmed);
+}
+
+/** Build the OpenRouter tools array from the registry. */
+function buildTools(services) {
+    return services.map(service => ({
+        type: 'function',
+        function: {
+            name: service.id,
+            description: `${service.name}: ${service.description} (Cost: estimated based on usage)`,
+            parameters: {
+                type: 'object',
+                properties: {
+                    query: {
+                        type: 'string',
+                        description: 'The specific query or input for this tool',
+                    },
+                },
+                required: ['query'],
+            },
+        },
+    }));
+}
+
+const SYSTEM_PROMPT = `You are an AI assistant powered by Micropay Bazaar — a discovery registry and payment gateway for AI agents on Solana. You have access to paid data tools that can be unlocked with micro-payments. When you need real-time or external data (weather, stocks, news, sports, crypto, etc.), call the appropriate tool function. The user will be charged a micro-payment in SOL to access the data. Available tools are provided as functions. Be concise and helpful.`;
+
+/** Helper to call OpenAI. */
+async function callOpenRouter(messages, tools) {
+    const apiKey = process.env.OPENAI_API_KEY;
+    if (!apiKey) throw Object.assign(new Error('Chat service not configured.'), { code: 'NO_KEY' });
+
+    const payload = {
+        model: 'gpt-4o-mini',
+        messages,
+    };
+    if (tools && tools.length > 0) {
+        payload.tools = tools;
+        payload.tool_choice = 'auto';
+    }
+
+    const response = await axios.post(
+        'https://api.openai.com/v1/chat/completions',
+        payload,
+        {
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+            },
+            timeout: 30000,
+        }
+    );
+    return response.data;
+}
+
+// ─────────────────────────────────────────
+// POST /api/v1/chat/completions
+// Main AI gateway: message → AI reasoning → plain reply OR tool call
+// ─────────────────────────────────────────
+router.post('/completions', verifyApiKey, async (req, res) => {
+    const { message, conversation_id, source_wallet } = req.body;
+
+    // Step 1: Validate
+    if (!message || typeof message !== 'string' || message.trim() === '') {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'message' is required and must be a non-empty string.",
+            },
+        });
+    }
+
+    const convId = conversation_id && typeof conversation_id === 'string'
+        ? conversation_id.trim()
+        : generateConversationId();
+
+    // Step 2: Build tools from registry
+    const services = discoverServices();
+    const tools = buildTools(services);
+
+    // Step 3: Build messages array
+    const history = getHistory(convId);
+    const messages = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...history,
+        { role: 'user', content: message.trim() },
+    ];
+
+    // Step 4 + 5: Call OpenRouter
+    let orData;
+    try {
+        orData = await callOpenRouter(messages, tools);
+    } catch (err) {
+        if (err.code === 'NO_KEY') {
+            return res.status(500).json({ error: { type: 'api_error', message: 'Chat service not configured.' } });
+        }
+        console.error('[Chat] OpenRouter error:', err.response?.data || err.message);
+        return res.status(502).json({
+            error: { type: 'gateway_error', message: 'AI service temporarily unavailable. Please retry.' },
+        });
+    }
+
+    const choice = orData.choices?.[0];
+    const assistantMsg = choice?.message;
+    const modelUsed = orData.model || 'openai/gpt-4o-mini';
+
+    // Step 6: Process response
+    if (assistantMsg?.tool_calls && assistantMsg.tool_calls.length > 0) {
+        // ── Outcome B: Tool call requested ──────────────────────────────
+        const toolCall = assistantMsg.tool_calls[0];
+        const serviceId = toolCall.function?.name;
+        const toolArgs = (() => { try { return JSON.parse(toolCall.function?.arguments || '{}'); } catch { return {}; } })();
+        const query = toolArgs.query || message.trim();
+
+        const service = getServiceById(serviceId);
+        const serviceName = service?.name || serviceId;
+        const cost = service ? estimatedCost(service) : DEFAULT_COST_USD;
+
+        const humanMsg = `I need to access **${serviceName}** to answer your question. This requires a micro-payment of approximately $${cost.toFixed(2)} (paid in SOL on Solana Devnet).`;
+
+        // Store full assistant message including tool_calls so tool-result can reference it
+        const updatedHistory = [
+            ...history,
+            { role: 'user', content: message.trim() },
+            assistantMsg, // includes role, content, tool_calls
+        ];
+        setHistory(convId, updatedHistory);
+
+        return res.status(200).json({
+            type: 'tool_call',
+            conversation_id: convId,
+            tool_call: {
+                id: toolCall.id,
+                service_id: serviceId,
+                service_name: serviceName,
+                query,
+                estimated_cost_usd: cost,
+            },
+            message: humanMsg,
+            model: modelUsed,
+        });
+    } else {
+        // ── Outcome A: Plain text response ───────────────────────────────
+        const content = assistantMsg?.content || '';
+
+        const updatedHistory = [
+            ...history,
+            { role: 'user', content: message.trim() },
+            { role: 'assistant', content },
+        ];
+        setHistory(convId, updatedHistory);
+
+        return res.status(200).json({
+            type: 'message',
+            conversation_id: convId,
+            content,
+            model: modelUsed,
+        });
+    }
+});
+
+// ─────────────────────────────────────────
+// POST /api/v1/chat/tool-result
+// Feed tool data back → LLM generates a natural language answer
+// ─────────────────────────────────────────
+router.post('/tool-result', verifyApiKey, async (req, res) => {
+    const { conversation_id, service_id, tool_result } = req.body;
+
+    // Validate
+    if (!conversation_id || typeof conversation_id !== 'string' || conversation_id.trim() === '') {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'conversation_id' is required.",
+            },
+        });
+    }
+    if (tool_result === undefined || tool_result === null || String(tool_result).trim() === '') {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'tool_result' is required and must be non-empty.",
+            },
+        });
+    }
+
+    const convId = conversation_id.trim();
+    const history = getHistory(convId);
+
+    // Find the tool_call id from the last assistant message (for OpenRouter's tool message format)
+    let toolCallId = service_id || 'tool_call_0';
+    const lastAssistant = [...history].reverse().find(m => m.role === 'assistant');
+    if (lastAssistant?.tool_calls?.[0]?.id) {
+        toolCallId = lastAssistant.tool_calls[0].id;
+    }
+
+    // Build message chain: system + history + tool result
+    const messages = [
+        { role: 'system', content: SYSTEM_PROMPT },
+        ...history,
+        {
+            role: 'tool',
+            tool_call_id: toolCallId,
+            content: String(tool_result),
+        },
+    ];
+
+    // Call OpenRouter — no tools this time, we want a plain answer
+    let orData;
+    try {
+        orData = await callOpenRouter(messages, null);
+    } catch (err) {
+        if (err.code === 'NO_KEY') {
+            return res.status(500).json({ error: { type: 'api_error', message: 'Chat service not configured.' } });
+        }
+        console.error('[Chat] OpenRouter tool-result error:', err.response?.data || err.message);
+        return res.status(502).json({
+            error: { type: 'gateway_error', message: 'AI service temporarily unavailable. Please retry.' },
+        });
+    }
+
+    const choice = orData.choices?.[0];
+    const content = choice?.message?.content || '';
+    const modelUsed = orData.model || 'openai/gpt-4o-mini';
+
+    // Update conversation history
+    const updatedHistory = [
+        ...history,
+        { role: 'tool', tool_call_id: toolCallId, content: String(tool_result) },
+        { role: 'assistant', content },
+    ];
+    setHistory(convId, updatedHistory);
 
     return res.status(200).json({
-        object: 'list',
-        ...result,
+        type: 'message',
+        conversation_id: convId,
+        content,
+        model: modelUsed,
     });
-});
-
-// ─────────────────────────────────────────
-// POST /api/v1/charges
-// Create a new charge with dynamic amount_usd (auth required)
-// ─────────────────────────────────────────
-router.post('/', verifyApiKey, async (req, res) => {
-    const idempotencyKey = req.headers['idempotency-key'];
-
-    // Step 1: Idempotency check — return cached response immediately
-    if (idempotencyKey) {
-        const cached = getIdempotencyResult(idempotencyKey);
-        if (cached) {
-            res.setHeader('Idempotency-Replayed', 'true');
-            return res.status(200).json(cached);
-        }
-    }
-
-    // Step 2: Validate inputs
-    const { service_id, source_wallet, amount_usd } = req.body;
-
-    if (!service_id || typeof service_id !== 'string' || service_id.trim() === '') {
-        return res.status(400).json({
-            error: {
-                type: 'invalid_request_error',
-                message: "'service_id' is required and must be a non-empty string.",
-            },
-        });
-    }
-    if (!source_wallet || typeof source_wallet !== 'string' || source_wallet.trim() === '') {
-        return res.status(400).json({
-            error: {
-                type: 'invalid_request_error',
-                message: "'source_wallet' is required and must be a non-empty string.",
-            },
-        });
-    }
-    if (amount_usd === undefined || amount_usd === null) {
-        return res.status(400).json({
-            error: {
-                type: 'invalid_request_error',
-                message: "'amount_usd' is required.",
-            },
-        });
-    }
-    if (typeof amount_usd !== 'number') {
-        return res.status(400).json({
-            error: {
-                type: 'invalid_request_error',
-                message: "'amount_usd' must be a number.",
-            },
-        });
-    }
-    if (amount_usd <= 0) {
-        return res.status(400).json({
-            error: {
-                type: 'invalid_request_error',
-                message: "'amount_usd' must be greater than 0.",
-            },
-        });
-    }
-    if (amount_usd > 100) {
-        return res.status(400).json({
-            error: {
-                type: 'invalid_request_error',
-                message: "'amount_usd' must not exceed $100.00 (safety cap).",
-            },
-        });
-    }
-
-    // Step 3: Look up the service to get developer_wallet and name
-    const service = getServiceById(service_id.trim());
-    if (!service) {
-        return res.status(404).json({
-            error: {
-                type: 'not_found_error',
-                message: `Service '${service_id}' not found in registry.`,
-            },
-        });
-    }
-
-    // Step 4: Fetch live SOL price
-    const solPrice = await getSolPriceInUsd();
-    if (!solPrice || solPrice <= 0) {
-        return res.status(500).json({
-            error: {
-                type: 'api_error',
-                message: 'Unable to fetch current SOL price. Please retry.',
-            },
-        });
-    }
-
-    // Step 5: Calculate SOL amount from the request's amount_usd
-    const amount_sol = parseFloat((amount_usd / solPrice).toFixed(9));
-    if (amount_sol <= 0) {
-        return res.status(400).json({
-            error: {
-                type: 'invalid_request_error',
-                message: 'Calculated SOL amount is too small to process.',
-            },
-        });
-    }
-
-    // Step 6: Build the unsigned Solana transaction
-    let transaction_payload;
-    try {
-        transaction_payload = await buildUnsignedTransaction(
-            source_wallet.trim(),
-            service.developer_wallet,
-            amount_sol
-        );
-    } catch (error) {
-        return res.status(500).json({
-            error: {
-                type: 'api_error',
-                message: 'Failed to construct transaction. Please verify wallet addresses.',
-            },
-        });
-    }
-
-    // Step 7: Build and store the charge object
-    const charge = createCharge({
-        status: 'requires_signature',
-        service_id: service.id,
-        service_name: service.name,
-        amount_usd,
-        exchange_rate_sol_usd: solPrice,
-        amount_sol,
-        network_fee_sol: 0.000005,
-        source_wallet: source_wallet.trim(),
-        destination_wallet: service.developer_wallet,
-        transaction_payload,
-    });
-
-    // Step 8: Cache idempotency result if key was provided
-    if (idempotencyKey) {
-        setIdempotencyResult(idempotencyKey, charge);
-    }
-
-    // Step 9: Return the charge
-    return res.status(200).json(charge);
-});
-
-// ─────────────────────────────────────────
-// GET /api/v1/charges/:id
-// Get a single charge by ID (auth required)
-// ─────────────────────────────────────────
-router.get('/:id', verifyApiKey, (req, res) => {
-    const { id } = req.params;
-    const charge = getChargeById(id);
-    if (!charge) {
-        return res.status(404).json({
-            error: {
-                type: 'not_found_error',
-                message: `Charge '${id}' not found.`,
-            },
-        });
-    }
-    return res.status(200).json(charge);
 });
 
 module.exports = router;
