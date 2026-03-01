@@ -1,213 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Micropay Bazaar API</title>
-
-    <!-- React and ReactDOM -->
     <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
     <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-
-    <!-- Babel for parsing JSX -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-
-    <!-- Lucide Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
-
     <style>
-        :root {
-            color-scheme: light dark;
-        }
-
-        body {
-            margin: 0;
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            -webkit-font-smoothing: antialiased;
-        }
-
-        /* Simple smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
+        html { scroll-behavior: smooth; }
+        body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
     </style>
 </head>
-
 <body>
     <div id="root"></div>
-
     <script type="text/babel">
-        const { useState, useEffect } = React;
+        const { useState, useEffect, useRef } = React;
 
-        // A lightweight Lucide Icon wrapper for React without a bundler
-        const Icon = ({ name, size = 24, className = '', color = 'currentColor' }) => {
-            const iconRef = React.useRef(null);
-
-            useEffect(() => {
-                if (iconRef.current && window.lucide) {
-                    window.lucide.createIcons({
-                        icons: { [name]: window.lucide.icons[name] },
-                        nameAttr: 'data-lucide',
-                        attrs: {
-                            class: className,
-                            width: size,
-                            height: size,
-                            stroke: color,
-                        }
-                    });
-                }
-            }, [name, size, className, color]);
-
-            return <i ref={iconRef} data-lucide={name}></i>;
+        const MethodBadge = ({ method }) => {
+            const isGet = method === 'GET';
+            const colorClass = isGet ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
+            return (
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide ${colorClass}`}>
+                    {method}
+                </span>
+            );
         };
 
-        import React, { useState } from 'react';
-import { Book, Server, CreditCard, Cpu, Activity, Key } from 'lucide-react';
-
-const MethodBadge = ({ method }: { method: string }) => {
-    const isGet = method === 'GET';
-    const colorClass = isGet ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
-    return (
-        <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide ${colorClass}`}>
-            {method}
-        </span>
-    );
-};
-
-const ParamRow = ({ name, type, required, desc }: { name: string; type: string; required?: boolean; desc: string }) => (
-    <div className="py-4 border-b border-slate-100 last:border-0">
-        <div className="flex items-center gap-2 mb-1.5">
-            <span className="font-mono text-sm font-bold text-slate-900">{name}</span>
-            <span className="font-mono text-xs text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{type}</span>
-            {required && (
-                <span className="text-[10px] uppercase font-bold tracking-wider text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
-                    Required
-                </span>
-            )}
-        </div>
-        <div className="text-sm text-slate-600 leading-relaxed">{desc}</div>
-    </div>
-);
-
-const NavLink = ({ title, isActive }: { title: string; isActive?: boolean }) => (
-    <a
-        href={`#${title.toLowerCase().replace(/\s+/g, '-')}`}
-        className={`block py-1.5 text-sm ${isActive ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-900'} transition-colors duration-150`}
-    >
-        {title}
-    </a>
-);
-
-const MicropayDocs = function() {
-    const [activeTab, setActiveTab] = useState('overview');
-
-    return (
-        <div className="flex h-screen w-full bg-slate-900 text-slate-900 font-sans overflow-hidden antialiased selection:bg-blue-100 selection:text-blue-900">
-
-            {/* 1. Left Nav (Sticky, Light Mode) */}
-            <aside className="w-[260px] flex-shrink-0 border-r border-slate-200 overflow-y-auto hidden md:flex flex-col bg-slate-50 relative z-20">
-                <div className="p-6 sticky top-0 bg-slate-50/90 backdrop-blur-md z-10 border-b border-slate-100">
-                    <div className="flex items-center gap-2 mb-1">
-                        <div className="w-6 h-6 bg-blue-600 rounded-md flex items-center justify-center">
-                            <span className="text-white font-bold text-xs">M</span>
-                        </div>
-                        <span className="font-bold text-lg tracking-tight">Micropay</span>
-                    </div>
-                    <p className="text-xs text-slate-500 font-medium">Bazaar API v1.0.0</p>
+        const ParamRow = ({ name, type: paramType, required, desc }) => (
+            <div className="py-4 border-b border-slate-100 last:border-0">
+                <div className="flex items-center gap-2 mb-1.5">
+                    <span className="font-mono text-sm font-bold text-slate-900">{name}</span>
+                    <span className="font-mono text-xs text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{paramType}</span>
+                    {required && (
+                        <span className="text-[10px] uppercase font-bold tracking-wider text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
+                            Required
+                        </span>
+                    )}
                 </div>
+                <div className="text-sm text-slate-600 leading-relaxed">{desc}</div>
+            </div>
+        );
 
-                <nav className="flex-1 px-6 pt-6 pb-8 space-y-8">
-                    <div>
-                        <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                            <Book size={14} className="text-slate-400" /> Getting Started
-                        </div>
-                        <div className="space-y-1">
-                            <NavLink title="Overview" isActive={activeTab === 'overview'} />
-                            <NavLink title="Authentication" />
-                        </div>
+        const NavLink = ({ title, isActive }) => {
+            const linkClass = isActive ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-900';
+            return (
+            <a
+                href={`#${title.toLowerCase().replace(/\s+/g, '-')}`}
+                className={`block py-1.5 text-sm ${linkClass} transition-colors duration-150`}
+            >
+                {title}
+            </a>
+            );
+        };
+
+        const Section = ({ id: sectionId, title, method, path, children, codePanel }) => (
+            <>
+                <section id={sectionId} className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                    <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
+                        <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">{title}</h2>
+                        {method && path && (
+                            <div className="flex items-center gap-3 mb-6">
+                                <MethodBadge method={method} />
+                                <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">{path}</code>
+                            </div>
+                        )}
+                        {children}
                     </div>
-
-                    <div>
-                        <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                            <Server size={14} className="text-slate-400" /> Registry
-                        </div>
-                        <div className="space-y-1">
-                            <NavLink title="Register a Service" />
-                            <NavLink title="Discover Services" />
-                            <NavLink title="Get a Service" />
-                        </div>
+                    <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                        {codePanel}
                     </div>
+                </section>
+                <div className="w-full h-px bg-slate-100 hidden lg:block" />
+            </>
+        );
 
-                    <div>
-                        <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                            <CreditCard size={14} className="text-slate-400" /> Charges
-                        </div>
-                        <div className="space-y-1">
-                            <NavLink title="Create a Charge" />
-                            <NavLink title="List Charges" />
-                            <NavLink title="Get a Charge" />
-                        </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                            <Cpu size={14} className="text-slate-400" /> AI Gateway
-                        </div>
-                        <div className="space-y-1">
-                            <NavLink title="Chat Completions" />
-                            <NavLink title="Direct AI Chat" />
-                        </div>
-                    </div>
-
-                    <div>
-                        <div className="flex items-center gap-2 mb-3 text-[11px] font-bold text-slate-400 uppercase tracking-widest">
-                            <Activity size={14} className="text-slate-400" /> Network
-                        </div>
-                        <div className="space-y-1">
-                            <NavLink title="Get Balance" />
-                            <NavLink title="Health Check" />
-                        </div>
-                    </div>
-                </nav>
-            </aside>
-
-            {/* Main Content Pane */}
-            <main className="flex-1 flex overflow-hidden relative bg-white">
-
-                {/* Fake Background Split for Right-Hand Code Section */}
-                <div className="absolute inset-0 pointer-events-none flex z-0 hidden lg:flex">
-                    <div className="w-[55%] bg-white h-full" />
-                    <div className="w-[45%] bg-slate-900 border-l border-slate-800" />
+        const CodeBlock = ({ label, code }) => (
+            <div className="mb-8">
+                {label && <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">{label}</div>}
+                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
+                    <pre className="text-slate-300 whitespace-pre-wrap">{code}</pre>
                 </div>
+            </div>
+        );
 
-                {/* Scrollable Container */}
-                <div className="relative flex-1 overflow-y-auto scroll-smooth z-10 w-full lg:w-full">
+        function MicropayDocs() {
+            return (
+                <div className="flex h-screen w-full bg-white text-slate-900 font-sans overflow-hidden antialiased">
 
-                    <div className="flex flex-col">
+                    {/* Sidebar */}
+                    <aside className="w-[260px] flex-shrink-0 border-r border-slate-200 overflow-y-auto hidden md:flex flex-col bg-slate-50">
+                        <div className="p-6 sticky top-0 bg-slate-50/90 backdrop-blur-md z-10 border-b border-slate-100">
+                            <div className="flex items-center gap-2 mb-1">
+                                <div className="w-6 h-6 bg-indigo-600 rounded-md flex items-center justify-center">
+                                    <span className="text-white font-bold text-xs">M</span>
+                                </div>
+                                <span className="font-bold text-lg tracking-tight">Micropay</span>
+                            </div>
+                            <p className="text-xs text-slate-500 font-medium">Bazaar API v1.0.0</p>
+                        </div>
 
-                        {/* =========================================
-                HERO OVERVIEW & INTERACTIVE SHELL
-            ========================================= */}
-                        <section id="overview" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        <nav className="flex-1 px-6 pt-6 pb-8 space-y-8">
+                            <div>
+                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Getting Started</div>
+                                <div className="space-y-1">
+                                    <NavLink title="Overview" />
+                                    <NavLink title="Authentication" />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Registry</div>
+                                <div className="space-y-1">
+                                    <NavLink title="Register a Service" />
+                                    <NavLink title="Discover Services" />
+                                    <NavLink title="Get a Service" />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Charges</div>
+                                <div className="space-y-1">
+                                    <NavLink title="Create a Charge" />
+                                    <NavLink title="List Charges" />
+                                    <NavLink title="Get a Charge" />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">AI Gateway</div>
+                                <div className="space-y-1">
+                                    <NavLink title="Chat Completions" />
+                                    <NavLink title="Direct AI Chat" />
+                                </div>
+                            </div>
+                            <div>
+                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Network</div>
+                                <div className="space-y-1">
+                                    <NavLink title="Get Balance" />
+                                    <NavLink title="Health Check" />
+                                </div>
+                            </div>
+                        </nav>
+                    </aside>
+
+                    {/* Main */}
+                    <main className="flex-1 overflow-y-auto">
+
+                        {/* ── OVERVIEW ── */}
+                        <section id="overview" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-2">Documentation</h1>
                                 <p className="text-xl text-slate-500 mb-8 font-light">
-                                    Explore our guides and examples to integrate Micropay Bazaar.
+                                    Explore guides and examples to integrate Micropay Bazaar.
                                 </p>
-
                                 <div className="flex items-center mb-16 gap-4">
-                                    <button className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-colors flex items-center gap-2 shadow-sm">
-                                        Get started with Bazaar <span className="text-indigo-200 ml-1">→</span>
-                                    </button>
-                                    <button className="text-slate-600 hover:text-slate-900 font-semibold text-sm transition-colors">
-                                        Explore all products
-                                    </button>
+                                    <a href="#create-a-charge" className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-colors flex items-center gap-2 shadow-sm">
+                                        Get started →
+                                    </a>
+                                    <a href="#discover-services" className="text-slate-600 hover:text-slate-900 font-semibold text-sm transition-colors">
+                                        Explore all services
+                                    </a>
                                 </div>
-
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                                     <div>
                                         <h3 className="font-bold text-slate-900 mb-4 text-base">Payments</h3>
@@ -222,120 +174,73 @@ const MicropayDocs = function() {
                                         <div className="space-y-3">
                                             <a href="#chat-completions" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Build agents with tools</a>
                                             <a href="#register-a-service" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Monetize AI skills</a>
-                                            <a href="#discover-services" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Discover registry intents</a>
+                                            <a href="#discover-services" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Discover registry services</a>
                                         </div>
                                     </div>
                                     <div>
                                         <h3 className="font-bold text-slate-900 mb-4 text-base">Developers</h3>
                                         <div className="space-y-3">
-                                            <a href="#authentication" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Set up your API keys</a>
+                                            <a href="#authentication" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Set up API keys</a>
                                             <a href="#health-check" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Monitor network health</a>
-                                            <a href="#" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Integration quickstarts</a>
+                                            <a href="#discover-services" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">26 prebuilt services</a>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0 lg:pt-16 flex flex-col relative justify-center">
-                                {/* Decorator Card hovering behind */}
-                                <div className="absolute top-24 right-12 bg-white rounded-xl shadow-2xl p-4 w-64 transform rotate-3 border border-slate-100 hidden xl:block opacity-90 z-0">
-                                    <div className="flex justify-between items-center mb-3">
-                                        <div className="text-[10px] font-bold text-slate-400 uppercase">API KEYS</div>
-                                        <div className="flex items-center gap-1 text-slate-500 text-xs"><Server size={12} /> Live</div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0 flex flex-col justify-center">
+                                <div className="text-sm font-bold text-slate-100 mb-4">Quick Start</div>
+                                <div className="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
+                                    <div className="bg-slate-800 px-4 py-3 flex items-center gap-1.5">
+                                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
+                                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
+                                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
+                                        <span className="text-slate-400 text-xs ml-2 font-mono">terminal</span>
                                     </div>
-                                    <div className="flex justify-between text-xs mb-2">
-                                        <span className="text-slate-600">Publishable key</span>
-                                        <span className="font-mono text-slate-400">pk_live_89d2...</span>
-                                    </div>
-                                    <div className="flex justify-between text-xs">
-                                        <span className="text-slate-600">Secret key</span>
-                                        <span className="font-mono text-slate-400">sk_live_9x12...</span>
-                                    </div>
-                                </div>
-
-                                {/* Stripe Shell Replica */}
-                                <div className="text-sm font-bold text-slate-100 mb-4 z-10 flex items-center gap-2">
-                                    Try it out <span className="text-slate-500 font-normal border border-slate-700 rounded-sm px-1 text-[10px]">T</span>
-                                </div>
-                                <div className="bg-white rounded-xl shadow-2xl overflow-hidden border border-slate-200 z-10 max-w-full">
-                                    {/* Mac Window Dots */}
-                                    <div className="bg-slate-50 border-b border-slate-100 px-4 py-3 flex items-center gap-1.5">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
-                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
-                                        <div className="w-2.5 h-2.5 rounded-full bg-slate-300"></div>
-                                    </div>
-                                    {/* Shell Content */}
-                                    <div className="p-5 font-mono text-[13px] bg-white text-slate-700 min-h-[220px]">
-                                        <div className="text-slate-400 text-xs mb-4 select-none whitespace-pre font-mono">
-                                            {`   // // // // //     // // // // //
- // // // // //     // // // // //
-// // // // //     // // // // //`}
-                                        </div>
-                                        <p className="mb-2">Welcome to Bazaar Shell!</p>
-                                        <p className="mb-4 text-slate-500">Bazaar Shell is a browser-based shell with the Micropay CLI pre-installed. You can use it to test x402 intents:</p>
-                                        <ul className="list-dash pl-4 mb-6 text-slate-500 space-y-1">
-                                            <li>View supported commands: <span className="text-blue-600">bazaar help ▹</span></li>
-                                            <li>Discover tools: <span className="text-blue-600">bazaar registry search [query] ▹</span></li>
-                                        </ul>
-                                        <div className="flex items-center gap-2">
-                                            <span className="text-slate-400">$</span>
-                                            <span className="text-slate-900 font-semibold">bazaar charge create --service srv_ak392 --wallet 2Hn...</span>
-                                            <span className="w-2 h-4 bg-blue-500 animate-pulse block"></span>
-                                        </div>
-                                    </div>
-                                    {/* Shell Footer */}
-                                    <div className="bg-slate-50 border-t border-slate-100 px-4 py-2.5 flex items-center justify-between text-xs font-semibold text-blue-600">
-                                        <div className="flex items-center gap-1 cursor-pointer hover:text-blue-800">
-                                            ▹ Open in Workbench
+                                    <div className="p-5 font-mono text-[13px] text-slate-300 leading-relaxed">
+                                        <div className="text-slate-500 mb-3"># 1. Create a charge</div>
+                                        <div className="mb-4 text-emerald-300">curl -X POST https://micropay.up.railway.app/api/v1/charges \</div>
+                                        <div className="pl-4 text-slate-400 mb-4">  -H "Authorization: Bearer mp_live_demo_key" \{"\n"}  -d '&#123;"service_id":"finance_stocks","source_wallet":"YOUR_WALLET","amount_usd":0.05&#125;'</div>
+                                        <div className="text-slate-500 mb-2"># 2. Sign the returned transaction_payload with Phantom</div>
+                                        <div className="text-slate-500"># 3. Done — payment settled on Solana Devnet ✓</div>
+                                        <div className="flex items-center gap-2 mt-4">
+                                            <span className="text-slate-500">$</span>
+                                            <span className="w-2 h-4 bg-indigo-500 animate-pulse block"></span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-right mt-3 z-10">
-                                    <a href="#create-a-charge" className="text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
-                                        Learn more about Charges →
-                                    </a>
-                                </div>
+                                <a href="#create-a-charge" className="text-right mt-3 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
+                                    Learn more about Charges →
+                                </a>
                             </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        {/* =========================================
-                AUTHENTICATION
-            ========================================= */}
-                        <section id="authentication" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── AUTHENTICATION ── */}
+                        <section id="authentication" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-4">Authentication</h1>
                                 <p className="text-slate-600 mb-6 leading-relaxed">
-                                    Micropay Bazaar uses API keys for authentication. Protected routes require your API key in the Authorization header.
+                                    Micropay Bazaar uses API keys for authentication. Protected routes require your API key in the <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">Authorization</code> header.
                                 </p>
                                 <div className="bg-amber-50 rounded-lg p-5 border border-amber-200">
-                                    <div className="flex items-start gap-3">
-                                        <Key className="text-amber-500 mt-0.5 shrink-0" size={18} />
-                                        <p className="text-sm text-amber-900 leading-relaxed">
-                                            <strong>Keep your keys safe.</strong> Avoid sharing your secret keys in publicly accessible areas such as GitHub or client-side code.
-                                        </p>
-                                    </div>
+                                    <p className="text-sm text-amber-900 leading-relaxed">
+                                        <strong>Demo key:</strong> <code className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">mp_live_demo_key</code> — use this for all hackathon testing.
+                                    </p>
                                 </div>
                             </div>
-
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0 lg:pt-28">
-                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Example Request</div>
-                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto">
-                                    <pre className="text-slate-300">
-                                        <span className="text-sky-400">Authorization:</span> Bearer <span className="text-emerald-300">&lt;YOUR_API_KEY&gt;</span>
-                                    </pre>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0 pt-28">
+                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Header</div>
+                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800">
+                                    <span className="text-sky-400">Authorization:</span> Bearer <span className="text-emerald-300">mp_live_demo_key</span>
                                 </div>
                             </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        {/* =========================================
-                GROUP 1: REGISTRY
-            ========================================= */}
-
-                        <section id="register-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── REGISTER A SERVICE ── */}
+                        <section id="register-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Register a Service</h2>
                                 <div className="flex items-center gap-3 mb-6">
@@ -343,52 +248,40 @@ const MicropayDocs = function() {
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/register</code>
                                 </div>
                                 <p className="text-slate-600 mb-8 leading-relaxed">
-                                    Registers an AI tool into the active global Micropay Bazaar discovery index. Agents can dynamically discover your service and execute it paying via x402 protocols.
+                                    Registers an AI tool into the global Micropay Bazaar discovery index. Agents can dynamically discover your service and pay via x402 protocols.
                                 </p>
-
                                 <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Body Parameters</h3>
-                                <ParamRow name="name" type="string" required desc="The human-readable name of your service." />
-                                <ParamRow name="description" type="string" required desc="Detailed description of what the service does, used heavily during agent semantic search." />
-                                <ParamRow name="endpoint" type="string" required desc="The fully qualified URL where your service API resides." />
-                                <ParamRow name="cost_usd" type="number" required desc="The exact cost per execution in USD." />
-                                <ParamRow name="developer_wallet" type="string" required desc="Your Solana wallet base58 address where settlement funds will be directed." />
+                                <ParamRow name="name" type="string" required={true} desc="The human-readable name of your service." />
+                                <ParamRow name="description" type="string" required={true} desc="Detailed description used for agent semantic search." />
+                                <ParamRow name="endpoint" type="string" required={true} desc="The fully qualified URL where your service API resides." />
+                                <ParamRow name="cost_usd" type="number" required={true} desc="The exact cost per execution in USD." />
+                                <ParamRow name="developer_wallet" type="string" required={true} desc="Your Solana base58 wallet address for settlement." />
                             </div>
-
                             <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Request</div>
-                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose mb-8">
-                                    <pre>
-                                        <span className="text-pink-400">curl</span> -X POST https://micropay.up.railway.app/api/v1/registry/register \
-                                        <span className="text-sky-400">-H</span> <span className="text-amber-200">"Authorization: Bearer &lt;YOUR_API_KEY&gt;"</span> \
-                                        <span className="text-sky-400">-H</span> <span className="text-amber-200">"Content-Type: application/json"</span> \
-                                        <span className="text-sky-400">-d</span> <span className="text-amber-200">'{'{'}</span>
-                                        <span className="text-blue-300">"name"</span>: <span className="text-emerald-300">"Weather Oracle"</span>,
-                                        <span className="text-blue-300">"description"</span>: <span className="text-emerald-300">"Detailed real-time meteorological data."</span>,
-                                        <span className="text-blue-300">"endpoint"</span>: <span className="text-emerald-300">"https://api.example.com/weather"</span>,
-                                        <span className="text-blue-300">"cost_usd"</span>: <span className="text-orange-300">0.05</span>,
-                                        <span className="text-blue-300">"developer_wallet"</span>: <span className="text-emerald-300">"2Hn6ES...xG9"</span>
-                                        <span className="text-amber-200">{'}'}'</span>
-                                    </pre>
-                                </div>
-
-                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Response</div>
-                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
-                                    <pre>
-                                        <span className="text-slate-400">{'{'}</span>
-                                        <span className="text-blue-300">"id"</span>: <span className="text-emerald-300">"srv_ak392nf9d21"</span>,
-                                        <span className="text-blue-300">"object"</span>: <span className="text-emerald-300">"service"</span>,
-                                        <span className="text-blue-300">"created_at"</span>: <span className="text-emerald-300">"2026-02-28T12:00:00Z"</span>,
-                                        <span className="text-blue-300">"name"</span>: <span className="text-emerald-300">"Weather Oracle"</span>,
-                                        <span className="text-blue-300">"cost_usd"</span>: <span className="text-orange-300">0.05</span>
-                                        <span className="text-slate-400">{'}'}</span>
-                                    </pre>
-                                </div>
+                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/v1/registry/register \\
+  -H "Authorization: Bearer mp_live_demo_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "name": "Weather Oracle",
+    "description": "Real-time meteorological data.",
+    "endpoint": "https://api.example.com/weather",
+    "cost_usd": 0.05,
+    "developer_wallet": "2Hn6ES...xG9"
+  }'`} />
+                                <CodeBlock label="Response" code={`{
+  "id": "srv_ak392nf9d21",
+  "object": "service",
+  "created_at": "2026-02-28T12:00:00Z",
+  "name": "Weather Oracle",
+  "cost_usd": 0.05
+}`} />
                             </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="discover-services" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── DISCOVER SERVICES ── */}
+                        <section id="discover-services" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Discover Services</h2>
                                 <div className="flex items-center gap-3 mb-6">
@@ -396,42 +289,48 @@ const MicropayDocs = function() {
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/discover</code>
                                 </div>
                                 <p className="text-slate-600 mb-8 leading-relaxed">
-                                    Retrieve a list of available services. This request is unauthenticated. Use the query parameter to search services dynamically by intent or keywords.
+                                    Returns all registered services. Unauthenticated. Use the <code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-xs">query</code> param to search by intent or keyword. 26 services preloaded covering weather, finance, news, sports, AI, blockchain, and more.
                                 </p>
                                 <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Query Parameters</h3>
-                                <ParamRow name="query" type="string" desc="Optional. An intent-based search term (e.g., 'weather', 'crypto')." />
+                                <ParamRow name="query" type="string" desc="Optional. Search by intent (e.g., 'weather', 'crypto', 'stocks')." />
                             </div>
                             <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Request</div>
-                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
-                                    <pre>
-                                        <span className="text-pink-400">curl</span> -G https://micropay.up.railway.app/api/v1/registry/discover \
-                                        <span className="text-sky-400">--data-urlencode</span> <span className="text-amber-200">"query=weather"</span>
-                                    </pre>
-                                </div>
+                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/registry/discover?query=finance`} />
+                                <CodeBlock label="Response" code={`[
+  {
+    "id": "finance_stocks",
+    "name": "Stock Price Feed",
+    "category": "Finance",
+    "description": "Live equity prices from NYSE and NASDAQ.",
+    "endpoint": "GET /tools/finance/stocks",
+    "developer_wallet": "2Hn6ES...zv8"
+  },
+  ...
+]`} />
                             </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="get-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── GET A SERVICE ── */}
+                        <section id="get-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get a Service</h2>
                                 <div className="flex items-center gap-3 mb-6">
                                     <MethodBadge method="GET" />
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/services/:id</code>
                                 </div>
-                                <p className="text-slate-600">Retrieves the specifics of an existing service by its unique service ID.</p>
+                                <p className="text-slate-600">Retrieves a single service by its ID. Use IDs from the discover endpoint (e.g., <code className="font-mono bg-slate-100 px-1 rounded text-xs">finance_stocks</code>, <code className="font-mono bg-slate-100 px-1 rounded text-xs">weather_openmeteo</code>).</p>
                             </div>
-                            <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/registry/services/finance_stocks`} />
+                            </div>
                         </section>
 
-                        {/* =========================================
-                GROUP 2: CHARGES
-            ========================================= */}
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="create-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── CREATE A CHARGE ── */}
+                        <section id="create-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Create a Charge</h2>
                                 <div className="flex items-center gap-3 mb-6">
@@ -439,86 +338,85 @@ const MicropayDocs = function() {
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges</code>
                                 </div>
                                 <p className="text-slate-600 mb-8 leading-relaxed">
-                                    Initiates an x402 payment flow. Returns a base64 encoded Solana transaction payload representing the cost of the requested service, ready for a wallet (e.g., Phantom) to sign and broadcast.
+                                    Initiates an x402 payment flow. Returns a Base64-encoded unsigned Solana transaction ready for a wallet (e.g. Phantom) to sign and broadcast. The developer_wallet is pulled automatically from the service registry.
                                 </p>
-
                                 <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Headers</h3>
-                                <ParamRow name="Idempotency-Key" type="string" desc="Optional. Guarantees that the same charge is not created twice if requests are retried." />
-
+                                <ParamRow name="Idempotency-Key" type="string" desc="Optional. Prevents duplicate charges on retry." />
                                 <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3 mt-8">Body Parameters</h3>
-                                <ParamRow name="service_id" type="string" required desc="The ID of the service you intend to consume (e.g., srv_ak392nf9d21)." />
-                                <ParamRow name="source_wallet" type="string" required desc="The public address of the consumer wallet that will pay the invoice." />
+                                <ParamRow name="service_id" type="string" required={true} desc="ID of the service to consume (e.g., finance_stocks, weather_openmeteo)." />
+                                <ParamRow name="source_wallet" type="string" required={true} desc="Public Solana address of the wallet paying the charge." />
+                                <ParamRow name="amount_usd" type="number" required={true} desc="Amount to charge in USD (e.g., 0.05). Converted to SOL at live oracle price." />
                             </div>
-
                             <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Request</div>
-                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose mb-8">
-                                    <pre>
-                                        <span className="text-pink-400">curl</span> -X POST https://micropay.up.railway.app/api/v1/charges \
-                                        <span className="text-sky-400">-H</span> <span className="text-amber-200">"Authorization: Bearer &lt;YOUR_API_KEY&gt;"</span> \
-                                        <span className="text-sky-400">-H</span> <span className="text-amber-200">"Idempotency-Key: idemp_11928"</span> \
-                                        <span className="text-sky-400">-d</span> <span className="text-amber-200">'{'{'}</span>
-                                        <span className="text-blue-300">"service_id"</span>: <span className="text-emerald-300">"srv_ak392nf9d21"</span>,
-                                        <span className="text-blue-300">"source_wallet"</span>: <span className="text-emerald-300">"CxM...4gV"</span>
-                                        <span className="text-amber-200">{'}'}'</span>
-                                    </pre>
-                                </div>
-
-                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Response</div>
-                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
-                                    <pre>
-                                        <span className="text-slate-400">{'{'}</span>
-                                        <span className="text-blue-300">"id"</span>: <span className="text-emerald-300">"ch_wb4bedrhxh1q"</span>,
-                                        <span className="text-blue-300">"object"</span>: <span className="text-emerald-300">"charge"</span>,
-                                        <span className="text-blue-300">"service_id"</span>: <span className="text-emerald-300">"srv_ak392nf9d21"</span>,
-                                        <span className="text-blue-300">"amount_sol"</span>: <span className="text-orange-300">0.00035</span>,
-                                        <span className="text-blue-300">"status"</span>: <span className="text-emerald-300">"pending"</span>,
-                                        <span className="text-blue-300">"transaction_base64"</span>: <span className="text-emerald-300">"AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA..."</span>
-                                        <span className="text-slate-400">{'}'}</span>
-                                    </pre>
-                                </div>
+                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/v1/charges \\
+  -H "Authorization: Bearer mp_live_demo_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "service_id": "finance_stocks",
+    "source_wallet": "AuofYo21...Nt5",
+    "amount_usd": 0.05
+  }'`} />
+                                <CodeBlock label="Response" code={`{
+  "id": "ch_wb4bedrhxh1q",
+  "object": "charge",
+  "status": "requires_signature",
+  "service_id": "finance_stocks",
+  "service_name": "Stock Price Feed",
+  "amount_usd": 0.05,
+  "exchange_rate_sol_usd": 150.0,
+  "amount_sol": 0.000333,
+  "source_wallet": "AuofYo21...Nt5",
+  "destination_wallet": "2Hn6ES...zv8",
+  "transaction_payload": "AQAAAAAAAAAA..."
+}`} />
                             </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="list-charges" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── LIST CHARGES ── */}
+                        <section id="list-charges" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">List Charges</h2>
                                 <div className="flex items-center gap-3 mb-6">
                                     <MethodBadge method="GET" />
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges</code>
                                 </div>
-                                <p className="text-slate-600 mb-8 leading-relaxed">Returns a cursor-paginated list of charges.</p>
+                                <p className="text-slate-600 mb-8 leading-relaxed">Returns a paginated list of charges, optionally filtered.</p>
                                 <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Query Parameters</h3>
-                                <ParamRow name="limit" type="int" desc="A limit on the number of objects to be returned." />
-                                <ParamRow name="offset" type="int" desc="Pagination offset index." />
-                                <ParamRow name="status" type="string" desc="Filter by charge status (e.g., 'pending', 'succeeded')." />
-                                <ParamRow name="source_wallet" type="string" desc="Filter by the wallet that initiated the transaction." />
+                                <ParamRow name="limit" type="int" desc="Max records to return (1–100, default 10)." />
+                                <ParamRow name="offset" type="int" desc="Pagination offset." />
+                                <ParamRow name="status" type="string" desc="Filter by status: requires_signature, confirmed, failed." />
+                                <ParamRow name="source_wallet" type="string" desc="Filter by payer wallet address." />
                             </div>
-                            <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/charges?limit=5 \\
+  -H "Authorization: Bearer mp_live_demo_key"`} />
+                            </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="get-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── GET A CHARGE ── */}
+                        <section id="get-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get a Charge</h2>
                                 <div className="flex items-center gap-3 mb-6">
                                     <MethodBadge method="GET" />
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges/:id</code>
                                 </div>
-                                <p className="text-slate-600">Retrieves the details of a charge that has previously been created.</p>
+                                <p className="text-slate-600">Retrieves the full details of a previously created charge by its ID.</p>
                             </div>
-                            <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/charges/ch_wb4bedrhxh1q \\
+  -H "Authorization: Bearer mp_live_demo_key"`} />
+                            </div>
                         </section>
 
-                        {/* =========================================
-                GROUP 3: AI GATEWAY
-            ========================================= */}
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="chat-completions" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── CHAT COMPLETIONS ── */}
+                        <section id="chat-completions" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Chat Completions</h2>
                                 <div className="flex items-center gap-3 mb-6">
@@ -526,75 +424,92 @@ const MicropayDocs = function() {
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/chat/completions</code>
                                 </div>
                                 <p className="text-slate-600 leading-relaxed">
-                                    OpenRouter proxy. This endpoint intercepts messages and auto-injects Micropay Bazaar tools transparently to perform dynamic capabilities.
+                                    OpenRouter proxy with Micropay Bazaar tools auto-injected. Agents use this to discover and invoke registry services dynamically. Compatible with the OpenAI Chat Completions API format.
                                 </p>
                             </div>
-                            <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/v1/chat/completions \\
+  -H "Authorization: Bearer mp_live_demo_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{
+    "model": "gpt-4o-mini",
+    "messages": [
+      {"role": "user", "content": "What is the price of AAPL?"}
+    ]
+  }'`} />
+                            </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="direct-ai-chat" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── DIRECT AI CHAT ── */}
+                        <section id="direct-ai-chat" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Direct AI Chat</h2>
                                 <div className="flex items-center gap-3 mb-6">
                                     <MethodBadge method="POST" />
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/ai/chat</code>
                                 </div>
-                                <p className="text-slate-600 mb-8 leading-relaxed">
-                                    Passthrough plain-text chat to the underlying OpenAI layer.
-                                </p>
+                                <p className="text-slate-600 mb-8 leading-relaxed">Passthrough plain-text chat to the underlying AI layer.</p>
                                 <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Body Parameters</h3>
-                                <ParamRow name="message" type="string" required desc="The text message intended for the assistant." />
+                                <ParamRow name="message" type="string" required={true} desc="The text message for the assistant." />
                                 <ParamRow name="model" type="string" desc="Defaults to 'gpt-4o-mini'." />
                             </div>
-                            <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/ai/chat \\
+  -H "Authorization: Bearer mp_live_demo_key" \\
+  -H "Content-Type: application/json" \\
+  -d '{"message": "Summarize the Micropay x402 protocol"}'`} />
+                            </div>
                         </section>
 
-                        {/* =========================================
-                GROUP 4: NETWORK UTILS
-            ========================================= */}
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="get-balance" className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
+                        {/* ── GET BALANCE ── */}
+                        <section id="get-balance" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get Balance</h2>
                                 <div className="flex items-center gap-3 mb-6">
                                     <MethodBadge method="GET" />
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/balance/:wallet</code>
                                 </div>
-                                <p className="text-slate-600">Returns the real-time SOL balance for a specified Solana wallet address via the Solana Devnet RPC.</p>
+                                <p className="text-slate-600">Returns the real-time SOL balance for any Solana wallet address via Devnet RPC.</p>
                             </div>
-                            <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/balance/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5`} />
+                            </div>
                         </section>
 
-                        <div className="w-full h-px bg-slate-100 hidden lg:block" />
+                        <div className="w-full h-px bg-slate-100" />
 
-                        <section id="health-check" className="flex flex-col lg:flex-row w-full lg:border-none">
+                        {/* ── HEALTH CHECK ── */}
+                        <section id="health-check" className="flex flex-col lg:flex-row w-full">
                             <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
                                 <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Health Check</h2>
                                 <div className="flex items-center gap-3 mb-6">
                                     <MethodBadge method="GET" />
                                     <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/health</code>
                                 </div>
-                                <p className="text-slate-600">Public endpoint to ping the orchestrator and determine its uptime, version, and server time.</p>
+                                <p className="text-slate-600">Public endpoint. Returns server uptime, version, and current time. No authentication required.</p>
                             </div>
-                            <div className="w-full lg:w-[45%] py-16 bg-slate-900 shrink-0"></div>
+                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
+                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/health`} />
+                                <CodeBlock label="Response" code={`{
+  "status": "ok",
+  "version": "1.0.0",
+  "timestamp": "2026-02-28T18:00:00Z"
+}`} />
+                            </div>
                         </section>
 
-                        {/* Empty space below so scrolling allows last item to hit top */}
-                        <div className="w-full h-64 bg-slate-50" />
-
-                    </div>
+                        <div className="w-full h-32 bg-slate-50" />
+                    </main>
                 </div>
-            </main>
-        </div>
-    );
-}
+            );
+        }
 
-      const root = ReactDOM.createRoot(domNode);
-    root.render(<MicropayDocs />);
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<MicropayDocs />);
     </script>
 </body>
-
 </html>
