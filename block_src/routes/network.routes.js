@@ -54,7 +54,8 @@ router.get('/network/status', async (req, res) => {
 
 // ─────────────────────────────────────────
 // GET /api/v1/transactions/:wallet
-// Get last 5 transactions for a wallet (public — no auth)
+// Get last 20 transactions for a wallet (public — no auth)
+// Returns both incoming and outgoing with direction field
 // ─────────────────────────────────────────
 router.get('/transactions/:wallet', async (req, res) => {
     const { wallet } = req.params;
@@ -82,26 +83,29 @@ router.get('/transactions/:wallet', async (req, res) => {
                         maxSupportedTransactionVersion: 0,
                     });
 
-                    let amount_sol = 0;
-                    if (tx?.meta?.preBalances && tx?.meta?.postBalances) {
-                        const diff = Math.abs(tx.meta.preBalances[0] - tx.meta.postBalances[0]);
-                        amount_sol = parseFloat((diff / 1_000_000_000).toFixed(9));
-                    }
+                    const preBalance = tx?.meta?.preBalances?.[0] ?? 0;
+                    const postBalance = tx?.meta?.postBalances?.[0] ?? 0;
+                    const amount_sol = parseFloat(
+                        (Math.abs(preBalance - postBalance) / 1_000_000_000).toFixed(9)
+                    );
+                    const direction = preBalance > postBalance ? 'outgoing' : 'incoming';
 
                     return {
                         signature: sigInfo.signature,
                         status: sigInfo.err ? 'failed' : 'settled',
                         amount_sol,
+                        direction,
                         time: sigInfo.blockTime
                             ? new Date(sigInfo.blockTime * 1000).toISOString()
                             : null,
-                        description: 'Solana Transfer',
+                        description: direction === 'outgoing' ? 'Payment Sent' : 'Payment Received',
                     };
                 } catch {
                     return {
                         signature: sigInfo.signature,
                         status: sigInfo.err ? 'failed' : 'settled',
                         amount_sol: 0,
+                        direction: 'unknown',
                         time: sigInfo.blockTime
                             ? new Date(sigInfo.blockTime * 1000).toISOString()
                             : null,
@@ -128,4 +132,3 @@ router.get('/transactions/:wallet', async (req, res) => {
 });
 
 module.exports = router;
-
