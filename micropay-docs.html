@@ -218,7 +218,7 @@ footer{padding:28px 60px;border-top:1px solid var(--border);color:var(--muted);f
     <a href="#services-post"><span class="dot dp"></span>Register a Service</a>
     <a href="#services-list"><span class="dot dg"></span>List Services</a>
     <a href="#services-get"><span class="dot dg"></span>Get a Service</a>
-    <a href="#services-delete"><span class="dot dd"></span>Delete a Service</a>
+    
 
     <div class="nav-group">Charges</div>
     <a href="#charges-post"><span class="dot dp"></span>Create a Charge</a>
@@ -294,11 +294,11 @@ footer{padding:28px 60px;border-top:1px solid var(--border);color:var(--muted);f
     </div>
     <div id="auth-curl" class="code-pane active">
 <pre><span class="c"># Pass your API key as a Bearer token</span>
-curl -G <span class="url">http://localhost:3000/api/v1/services</span> \
+curl -G <span class="url">http://localhost:3000/api/v1/registry/discover</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123xyz"</span></pre>
     </div>
     <div id="auth-node" class="code-pane">
-<pre><span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'http://localhost:3000/api/v1/services'</span>, {
+<pre><span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'http://localhost:3000/api/v1/registry/discover'</span>, {
   headers: {
     <span class="key">'Authorization'</span>: <span class="s">`Bearer ${process.env.MPB_API_KEY}`</span>,
     <span class="key">'Content-Type'</span>: <span class="s">'application/json'</span>
@@ -310,7 +310,7 @@ curl -G <span class="url">http://localhost:3000/api/v1/services</span> \
 <pre><span class="k">import</span> requests
 
 headers = {<span class="s">"Authorization"</span>: <span class="s">f"Bearer {api_key}"</span>}
-res = requests.get(<span class="s">"http://localhost:3000/api/v1/services"</span>, headers=headers)
+res = requests.get(<span class="s">"http://localhost:3000/api/v1/registry/discover"</span>, headers=headers)
 data = res.json()</pre>
     </div>
   </div>
@@ -340,7 +340,7 @@ curl -X POST <span class="url">http://localhost:3000/api/v1/charges</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123xyz"</span> \
   -H <span class="s">"Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
-  -d <span class="s">'{"service_id":"svc_xyz","payer_wallet":"AgentWallet111..."}'</span></pre>
+  -d <span class="s">'{"service_id":"svc_xyz","source_wallet":"AgentWallet111..."}'</span></pre>
 </div>
 
 <hr/>
@@ -353,237 +353,14 @@ curl -X POST <span class="url">http://localhost:3000/api/v1/charges</span> \
   <table>
     <thead><tr><th>Query Param</th><th>Type</th><th>Default</th><th>Description</th></tr></thead>
     <tbody>
-      <tr><td class="pn">limit</td><td class="pt">integer</td><td>20</td><td class="pd">Max items per page (1–100)</td></tr>
-      <tr><td class="pn">cursor</td><td class="pt">string</td><td>—</td><td class="pd">Opaque cursor from previous response. Omit for first page.</td></tr>
-      <tr><td class="pn">sort</td><td class="pt">string</td><td>desc</td><td class="pd"><code>asc</code> or <code>desc</code> by <code>created_at</code></td></tr>
-    </tbody>
-  </table>
-
-  <div class="code-wrap" style="margin-top:16px">
-<pre><span class="c"># Paginated list response envelope</span>
-{
-  <span class="key">"object"</span>: <span class="s">"list"</span>,
-  <span class="key">"data"</span>: [ <span class="c">/* array of items */</span> ],
-  <span class="key">"has_more"</span>: <span class="num">true</span>,
-  <span class="key">"next_page_url"</span>: <span class="s">"http://localhost:3000/api/v1/services?cursor=cur_abc&amp;limit=20"</span>,
-  <span class="key">"previous_page_url"</span>: <span class="num">null</span>,
-  <span class="key">"total_count"</span>: <span class="num">84</span>
-}</pre>
-  </div>
-</div>
-
-<hr/>
-
-<!-- ═══════════ ERRORS ═══════════ -->
-<div class="section" id="errors">
-  <h2>Errors &amp; Status Codes</h2>
-  <p class="sdesc">All errors return a consistent JSON shape so agents can parse failures programmatically. Never guess on an empty body — every non-2xx response includes <code>error.type</code>, <code>error.code</code>, and a human-readable <code>error.message</code>.</p>
-
-  <pre>{
-  <span class="key">"error"</span>: {
-    <span class="key">"type"</span>: <span class="s">"invalid_request_error"</span>,
-    <span class="key">"code"</span>: <span class="s">"parameter_missing"</span>,
-    <span class="key">"message"</span>: <span class="s">"Required field 'payer_wallet' is missing."</span>,
-    <span class="key">"param"</span>: <span class="s">"payer_wallet"</span>,
-    <span class="key">"request_id"</span>: <span class="s">"req_7fK2mNpQwX"</span>
-  }
-}</pre>
-
-  <div class="ptitle" style="margin-top:20px">HTTP Status Codes</div>
-  <div class="status-grid">
-    <div class="sg-row"><div class="s200">200</div><div>OK — Request succeeded, data in response body.</div></div>
-    <div class="sg-row"><div class="s201">201</div><div>Created — Resource created successfully.</div></div>
-    <div class="sg-row"><div class="s400">400</div><div>Bad Request — Malformed JSON or invalid field value.</div></div>
-    <div class="sg-row"><div class="s401">401</div><div>Unauthorized — Missing or invalid API key.</div></div>
-    <div class="sg-row"><div class="s402">402</div><div>Payment Required — Insufficient SOL balance to cover charge.</div></div>
-    <div class="sg-row"><div class="s404">404</div><div>Not Found — Resource with the given ID does not exist.</div></div>
-    <div class="sg-row"><div class="s409">409</div><div>Conflict — Duplicate registration or idempotency conflict.</div></div>
-    <div class="sg-row"><div class="s422">422</div><div>Unprocessable — Passed validation but failed business logic (e.g. bad wallet).</div></div>
-    <div class="sg-row"><div class="s429">429</div><div>Too Many Requests — Rate limit exceeded. Retry after the <code>Retry-After</code> header value.</div></div>
-    <div class="sg-row"><div class="s500">500</div><div>Internal Server Error — Something unexpected happened on our end.</div></div>
-  </div>
-
-  <div class="ptitle" style="margin-top:20px">Error Types</div>
-  <table>
-    <thead><tr><th>type</th><th>When it occurs</th></tr></thead>
-    <tbody>
-      <tr><td class="pn">invalid_request_error</td><td class="pd">Missing/invalid fields, bad JSON</td></tr>
-      <tr><td class="pn">authentication_error</td><td class="pd">Invalid or missing API key</td></tr>
-      <tr><td class="pn">payment_error</td><td class="pd">Insufficient balance, Solana RPC failure</td></tr>
-      <tr><td class="pn">not_found_error</td><td class="pd">Resource ID does not exist</td></tr>
-      <tr><td class="pn">conflict_error</td><td class="pd">Duplicate name/endpoint, idempotency conflict</td></tr>
-      <tr><td class="pn">rate_limit_error</td><td class="pd">Too many requests in window</td></tr>
-      <tr><td class="pn">api_error</td><td class="pd">Unexpected internal server error</td></tr>
-    </tbody>
-  </table>
-</div>
-
-<hr/>
-
-<!-- ══════════════════════════════
-     REGISTRY ENDPOINTS
-══════════════════════════════ -->
-<div class="section" id="services-section">
-  <h2>Registry — Services</h2>
-  <p class="sdesc">Services are the core resource of Micropay Bazaar. A service represents any paid API endpoint a provider wants to expose to AI agents. Once registered, agents can discover it via the List or Get endpoints and initiate charges against it.</p>
-</div>
-
-<!-- POST /services -->
-<div class="ep" id="services-post">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge POST">POST</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/services</div>
-      <div class="ep-sum">Register a new service in the marketplace registry.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="notice info"><span class="ni">🔐</span><span>Requires authentication. Supports <code>Idempotency-Key</code>.</span></div>
-
-    <div class="ptitle">Request Body</div>
-    <table>
-      <thead><tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td class="pn">name</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Human-readable service name. Must be unique per account. Max 80 chars.</td></tr>
-        <tr><td class="pn">endpoint_url</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Fully qualified HTTPS URL of the service endpoint agents will call.</td></tr>
-        <tr><td class="pn">price_usd</td><td class="pt">number</td><td class="req">REQUIRED</td><td class="pd">Price per call in USD (e.g. <code>0.001</code>). Converted to SOL at charge time using live CoinGecko rate.</td></tr>
-        <tr><td class="pn">wallet_address</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Solana wallet address to receive payment (base58, 32–44 chars).</td></tr>
-        <tr><td class="pn">description</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Short description shown to agents during discovery. Max 280 chars.</td></tr>
-        <tr><td class="pn">tags</td><td class="pt">string[]</td><td class="opt">optional</td><td class="pd">Array of category tags for filtering (e.g. <code>["nlp","summarization"]</code>). Max 10 tags.</td></tr>
-        <tr><td class="pn">metadata</td><td class="pt">object</td><td class="opt">optional</td><td class="pd">Arbitrary key-value pairs. Remove a key by setting its value to <code>null</code>. Max 16 keys.</td></tr>
-      </tbody>
-    </table>
-
-    <div class="code-wrap">
-      <div class="code-tabs">
-        <button class="ctab active" onclick="switchTab(this,'sp-req')">Request</button>
-        <button class="ctab" onclick="switchTab(this,'sp-node')">Node.js</button>
-        <button class="ctab" onclick="switchTab(this,'sp-py')">Python</button>
-      </div>
-      <div id="sp-req" class="code-pane active">
-<pre>curl -X POST <span class="url">http://localhost:3000/api/v1/services</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span> \
-  -H <span class="s">"Content-Type: application/json"</span> \
-  -H <span class="s">"Idempotency-Key: uuid-v4-here"</span> \
-  -d <span class="s">'{
-    "name": "GPT-4o Summarizer",
-    "endpoint_url": "https://myapi.com/summarize",
-    "price_usd": 0.002,
-    "wallet_address": "7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU",
-    "description": "Summarizes text up to 10,000 tokens using GPT-4o.",
-    "tags": ["nlp", "summarization", "gpt4"],
-    "metadata": {"version": "2.1", "rate_limit": "100/min"}
-  }'</span></pre>
-      </div>
-      <div id="sp-node" class="code-pane">
-<pre><span class="k">const</span> res = <span class="k">await</span> fetch(<span class="s">'http://localhost:3000/api/v1/services'</span>, {
-  method: <span class="s">'POST'</span>,
-  headers: {
-    <span class="key">'Authorization'</span>: <span class="s">'Bearer mpb_live_abc123'</span>,
-    <span class="key">'Content-Type'</span>: <span class="s">'application/json'</span>,
-    <span class="key">'Idempotency-Key'</span>: crypto.randomUUID()
-  },
-  body: JSON.stringify({
-    name: <span class="s">'GPT-4o Summarizer'</span>,
-    endpoint_url: <span class="s">'https://myapi.com/summarize'</span>,
-    price_usd: <span class="num">0.002</span>,
-    wallet_address: <span class="s">'7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU'</span>
-  })
-});
-<span class="k">const</span> service = <span class="k">await</span> res.json();</pre>
-      </div>
-      <div id="sp-py" class="code-pane">
-<pre>res = requests.post(
-    <span class="s">"http://localhost:3000/api/v1/services"</span>,
-    headers={<span class="s">"Authorization"</span>: <span class="s">"Bearer mpb_live_abc123"</span>},
-    json={
-        <span class="s">"name"</span>: <span class="s">"GPT-4o Summarizer"</span>,
-        <span class="s">"endpoint_url"</span>: <span class="s">"https://myapi.com/summarize"</span>,
-        <span class="s">"price_usd"</span>: <span class="num">0.002</span>,
-        <span class="s">"wallet_address"</span>: <span class="s">"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"</span>
-    }
-)
-service = res.json()</pre>
-      </div>
-    </div>
-
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'sp-200')">201 Created</button>
-      <button class="rtab s4" onclick="switchResp(this,'sp-400')">400 Bad Request</button>
-      <button class="rtab s4" onclick="switchResp(this,'sp-409')">409 Conflict</button>
-    </div>
-    <div id="sp-200" class="rpane active">
-<pre>{
-  <span class="key">"object"</span>: <span class="s">"service"</span>,
-  <span class="key">"id"</span>: <span class="s">"svc_9Kp2mNqRxT"</span>,
-  <span class="key">"name"</span>: <span class="s">"GPT-4o Summarizer"</span>,
-  <span class="key">"endpoint_url"</span>: <span class="s">"https://myapi.com/summarize"</span>,
-  <span class="key">"price_usd"</span>: <span class="num">0.002</span>,
-  <span class="key">"price_sol"</span>: <span class="num">0.0000284</span>,
-  <span class="key">"wallet_address"</span>: <span class="s">"7xKXtg2CW87d97TXJSDpbD5jBkheTqA83TZRuJosgAsU"</span>,
-  <span class="key">"description"</span>: <span class="s">"Summarizes text up to 10,000 tokens using GPT-4o."</span>,
-  <span class="key">"tags"</span>: [<span class="s">"nlp"</span>, <span class="s">"summarization"</span>, <span class="s">"gpt4"</span>],
-  <span class="key">"metadata"</span>: { <span class="key">"version"</span>: <span class="s">"2.1"</span>, <span class="key">"rate_limit"</span>: <span class="s">"100/min"</span> },
-  <span class="key">"active"</span>: <span class="num">true</span>,
-  <span class="key">"total_charges"</span>: <span class="num">0</span>,
-  <span class="key">"created_at"</span>: <span class="s">"2026-02-28T03:12:44Z"</span>,
-  <span class="key">"livemode"</span>: <span class="num">true</span>
-}</pre>
-    </div>
-    <div id="sp-400" class="rpane">
-<pre>{
-  <span class="key">"error"</span>: {
-    <span class="key">"type"</span>: <span class="s">"invalid_request_error"</span>,
-    <span class="key">"code"</span>: <span class="s">"parameter_missing"</span>,
-    <span class="key">"message"</span>: <span class="s">"Required field 'price_usd' is missing."</span>,
-    <span class="key">"param"</span>: <span class="s">"price_usd"</span>,
-    <span class="key">"request_id"</span>: <span class="s">"req_4aXmQp"</span>
-  }
-}</pre>
-    </div>
-    <div id="sp-409" class="rpane">
-<pre>{
-  <span class="key">"error"</span>: {
-    <span class="key">"type"</span>: <span class="s">"conflict_error"</span>,
-    <span class="key">"code"</span>: <span class="s">"service_name_exists"</span>,
-    <span class="key">"message"</span>: <span class="s">"A service named 'GPT-4o Summarizer' already exists on this account."</span>,
-    <span class="key">"request_id"</span>: <span class="s">"req_9bZkLm"</span>
-  }
-}</pre>
-    </div>
-  </div>
-</div>
-
-<!-- GET /services -->
-<div class="ep" id="services-list">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge GET">GET</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/services</div>
-      <div class="ep-sum">List all registered services. Supports filtering, search, and cursor pagination.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="ptitle">Query Parameters</div>
-    <table>
-      <thead><tr><th>Param</th><th>Type</th><th></th><th>Description</th></tr></thead>
-      <tbody>
-        <tr><td class="pn">limit</td><td class="pt">integer</td><td class="opt">optional</td><td class="pd">Items per page. Default: <code>20</code>. Max: <code>100</code>.</td></tr>
-        <tr><td class="pn">cursor</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Pagination cursor from a previous response's <code>next_page_url</code>.</td></tr>
-        <tr><td class="pn">sort</td><td class="pt">string</td><td class="opt">optional</td><td class="pd"><code>asc</code> or <code>desc</code> by <code>created_at</code>. Default: <code>desc</code>.</td></tr>
-        <tr><td class="pn">tag</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Filter by a single tag (e.g. <code>?tag=nlp</code>).</td></tr>
-        <tr><td class="pn">search</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Full-text search across <code>name</code> and <code>description</code>.</td></tr>
-        <tr><td class="pn">min_price_usd</td><td class="pt">number</td><td class="opt">optional</td><td class="pd">Filter services with <code>price_usd &gt;= min_price_usd</code>.</td></tr>
-        <tr><td class="pn">max_price_usd</td><td class="pt">number</td><td class="opt">optional</td><td class="pd">Filter services with <code>price_usd &lt;= max_price_usd</code>.</td></tr>
-        <tr><td class="pn">active</td><td class="pt">boolean</td><td class="opt">optional</td><td class="pd">Filter by active status. Default: returns all.</td></tr>
+      <tr><td class="pn">query</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Full-text search across name, description, and tags.</td></tr>
+        <!-- REMOVED --><td class="pt">boolean</td><td class="opt">optional</td><td class="pd">Filter by active status. Default: returns all.</td></tr>
       </tbody>
     </table>
 
     <div class="code-wrap">
 <pre><span class="c"># Search for cheap NLP services</span>
-curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_price_usd=0.01&amp;limit=10"</span> \
+curl <span class="url">"http://localhost:3000/api/v1/registry/discover?query=nlp"</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
 
@@ -620,7 +397,7 @@ curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_pr
   <div class="ep-head" onclick="toggle(this)">
     <span class="badge GET">GET</span>
     <div class="ep-meta">
-      <div class="ep-path">/api/v1/services/<span class="p">:service_id</span></div>
+      <div class="ep-path">/api/v1/registry/services/<span class="p">:id</span></div>
       <div class="ep-sum">Retrieve a single service by its ID. Returns full detail including lifetime charge stats.</div>
     </div>
     <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
@@ -635,7 +412,7 @@ curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_pr
     </table>
 
     <div class="code-wrap">
-<pre>curl <span class="url">http://localhost:3000/api/v1/services/svc_9Kp2mNqRxT</span> \
+<pre>curl <span class="url">http://localhost:3000/api/v1/registry/discover/svc_9Kp2mNqRxT</span> \
   -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span></pre>
     </div>
 
@@ -675,39 +452,6 @@ curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_pr
   </div>
 </div>
 
-<!-- DELETE /services/:id -->
-<div class="ep" id="services-delete">
-  <div class="ep-head" onclick="toggle(this)">
-    <span class="badge DELETE">DELETE</span>
-    <div class="ep-meta">
-      <div class="ep-path">/api/v1/services/<span class="p">:service_id</span></div>
-      <div class="ep-sum">Deregister a service. Soft-deletes: existing charge records are preserved.</div>
-    </div>
-    <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
-  </div>
-  <div class="ep-body">
-    <div class="notice warn"><span class="ni">⚠️</span><span>Supports <code>Idempotency-Key</code>. Deleting a service does not cancel in-flight charges. Historical charges remain queryable.</span></div>
-
-    <div class="code-wrap">
-<pre>curl -X DELETE <span class="url">http://localhost:3000/api/v1/services/svc_9Kp2mNqRxT</span> \
-  -H <span class="s">"Authorization: Bearer mpb_live_abc123"</span> \
-  -H <span class="s">"Idempotency-Key: uuid-v4-here"</span></pre>
-    </div>
-
-    <div class="resp-tabs">
-      <button class="rtab s2 active" onclick="switchResp(this,'sd-200')">200 OK</button>
-    </div>
-    <div id="sd-200" class="rpane active">
-<pre>{
-  <span class="key">"object"</span>: <span class="s">"service"</span>,
-  <span class="key">"id"</span>: <span class="s">"svc_9Kp2mNqRxT"</span>,
-  <span class="key">"deleted"</span>: <span class="num">true</span>,
-  <span class="key">"deleted_at"</span>: <span class="s">"2026-02-28T05:00:00Z"</span>
-}</pre>
-    </div>
-  </div>
-</div>
-
 <hr/>
 
 <!-- ══════════════════════════════
@@ -736,7 +480,7 @@ curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_pr
       <thead><tr><th>Field</th><th>Type</th><th></th><th>Description</th></tr></thead>
       <tbody>
         <tr><td class="pn">service_id</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">ID of the registered service to charge for (prefix: <code>svc_</code>). API resolves wallet and price automatically.</td></tr>
-        <tr><td class="pn">payer_wallet</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Solana wallet address of the paying agent (base58, 32–44 chars).</td></tr>
+        <tr><td class="pn">source_wallet</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Solana wallet address of the paying agent (base58, 32–44 chars).</td></tr>
         <tr><td class="pn">payer_secret</td><td class="pt">string</td><td class="req">REQUIRED</td><td class="pd">Base58-encoded private key of the payer wallet to sign the transaction. Transmitted over TLS, never stored.</td></tr>
         <tr><td class="pn">metadata</td><td class="pt">object</td><td class="opt">optional</td><td class="pd">Arbitrary key-value pairs for your records (e.g. <code>{"job_id":"abc"}</code>). Max 16 keys.</td></tr>
       </tbody>
@@ -756,7 +500,7 @@ curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_pr
   -H <span class="s">"Idempotency-Key: 550e8400-e29b-41d4-a716-446655440000"</span> \
   -d <span class="s">'{
     "service_id": "svc_9Kp2mNqRxT",
-    "payer_wallet": "AgentWallet111aaa222bbb333ccc",
+    "source_wallet": "AgentWallet111aaa222bbb333ccc",
     "payer_secret": "5Kb8kLf9..."
   }'</span></pre>
       </div>
@@ -771,7 +515,7 @@ curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_pr
   body: JSON.stringify({
     service_id: <span class="s">'svc_9Kp2mNqRxT'</span>,
     payer_wallet: agentWallet.publicKey.toBase58(),
-    payer_secret: bs58.encode(agentWallet.secretKey),
+    
     metadata: { job_id: <span class="s">'inference_run_77'</span> }
   })
 }).then(r =&gt; r.json());</pre>
@@ -844,7 +588,7 @@ curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;max_pr
       <thead><tr><th>Param</th><th>Type</th><th></th><th>Description</th></tr></thead>
       <tbody>
         <tr><td class="pn">service_id</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Filter charges for a specific service.</td></tr>
-        <tr><td class="pn">payer_wallet</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Filter charges by payer wallet address.</td></tr>
+        <tr><td class="pn">source_wallet</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">Filter charges by payer wallet address.</td></tr>
         <tr><td class="pn">status</td><td class="pt">string</td><td class="opt">optional</td><td class="pd"><code>confirmed</code>, <code>pending</code>, or <code>failed</code>.</td></tr>
         <tr><td class="pn">created_after</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">ISO 8601 datetime. Return charges created at or after this time.</td></tr>
         <tr><td class="pn">created_before</td><td class="pt">string</td><td class="opt">optional</td><td class="pd">ISO 8601 datetime. Return charges created at or before this time.</td></tr>
@@ -1017,14 +761,14 @@ npm start
 <span class="c"># Server running on http://localhost:3000</span></pre>
 
   <div class="ptitle" style="margin-top:20px">Step 2 — Register a service</div>
-<pre>curl -X POST <span class="url">http://localhost:3000/api/v1/services</span> \
+<pre>curl -X POST <span class="url">http://localhost:3000/api/v1/registry/discover</span> \
   -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
-  -d <span class="s">'{"name":"My AI Tool","endpoint_url":"https://myapp.com/infer","price_usd":0.001,"wallet_address":"YOUR_SOLANA_WALLET"}'</span>
+  -d <span class="s">'{"name":"My AI Tool","endpoint":"https://myapp.com/infer","cost_usd":0.001,"developer_wallet":"YOUR_SOLANA_WALLET"}'</span>
 <span class="c"># → Returns service with id: "svc_..."</span></pre>
 
   <div class="ptitle" style="margin-top:20px">Step 3 — Discover services</div>
-<pre>curl <span class="url">"http://localhost:3000/api/v1/services?tag=nlp&amp;limit=5"</span> \
+<pre>curl <span class="url">"http://localhost:3000/api/v1/registry/discover?tag=nlp&amp;limit=5"</span> \
   -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span>
 <span class="c"># → Returns paginated list of matching services</span></pre>
 
@@ -1033,7 +777,7 @@ npm start
   -H <span class="s">"Authorization: Bearer YOUR_API_KEY"</span> \
   -H <span class="s">"Content-Type: application/json"</span> \
   -H <span class="s">"Idempotency-Key: $(uuidgen)"</span> \
-  -d <span class="s">'{"service_id":"svc_...","payer_wallet":"AGENT_WALLET","payer_secret":"AGENT_SECRET"}'</span>
+  -d <span class="s">'{"service_id":"svc_...","source_wallet":"AGENT_WALLET","payer_secret":"AGENT_SECRET"}'</span>
 <span class="c"># → Returns confirmed charge with tx_signature on Solana</span></pre>
 
   <div class="notice tip" style="margin-top:20px">

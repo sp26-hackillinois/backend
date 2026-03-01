@@ -83,9 +83,9 @@ async function run() {
     await test('GET /api/v1/health', 'GET', '/api/v1/health', null, 200);
     await test('GET /api/v1/network/status', 'GET', '/api/v1/network/status', null, 200);
 
-    // ── 2. SWAGGER / DOCS ──
-    console.log(`\n${c.yellow}── 2. Swagger / Docs ──${c.reset}`);
-    await test('GET /api-docs.json returns OpenAPI spec', 'GET', '/api-docs.json', null, 200);
+    // ── 2. DOCS ──
+    console.log(`\n${c.yellow}── 2. Docs ──${c.reset}`);
+    await test('GET /docs returns HTML docs', 'GET', '/docs', null, 200);
 
     // ── 3. REGISTRY — Register ──
     console.log(`\n${c.yellow}── 3. Registry — Register a Service ──${c.reset}`);

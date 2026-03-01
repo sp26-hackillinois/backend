@@ -1,11 +1,9 @@
 require('dotenv').config();
 
+const path = require('path');
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
-
-const swaggerUi = require('swagger-ui-express');
-const swaggerSpec = require('./swagger');
 
 const { generateRequestId } = require('./utils/store');
 const registryRoutes = require('./routes/registry.routes');
@@ -32,24 +30,14 @@ app.use((req, res, next) => {
 });
 
 // ─────────────────────────────────────────
-// Swagger UI — interactive API documentation
+// Documentation Webpage
 // ─────────────────────────────────────────
-const swaggerUiOptions = {
-    customSiteTitle: 'Micropay Bazaar API',
-    customCss: `
-        .swagger-ui .topbar { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
-        .swagger-ui .topbar .download-url-wrapper { display: none; }
-        .swagger-ui .info h2.title { color: #e94560; }
-        .swagger-ui .opblock.opblock-post .opblock-summary-method { background: #e94560; }
-        .swagger-ui .btn.authorize { border-color: #e94560; color: #e94560; }
-        .swagger-ui .btn.authorize svg { fill: #e94560; }
-    `,
-};
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec, swaggerUiOptions));
-app.get('/api-docs.json', (req, res) => { res.setHeader('Content-Type', 'application/json'); res.send(swaggerSpec); });
-
-// Redirect root to docs
-app.get('/', (req, res) => res.redirect('/api-docs'));
+app.get('/', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../micropay-docs.html'));
+});
+app.get('/docs', (req, res) => {
+    res.sendFile(path.resolve(__dirname, '../micropay-docs.html'));
+});
 
 // ─────────────────────────────────────────
 // Routes
@@ -93,8 +81,7 @@ app.use((err, req, res, next) => {
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
     console.log(`\n🚀 Micropay Bazaar API running on port ${PORT}`);
-    console.log(`\n📖 Swagger UI:  http://localhost:${PORT}/api-docs`);
-    console.log(`📄 OpenAPI JSON: http://localhost:${PORT}/api-docs.json`);
+    console.log(`\n📖 Documentation: http://localhost:${PORT}/docs`);
     console.log(`\n   Endpoints:`);
     console.log(`     GET  http://localhost:${PORT}/api/v1/health`);
     console.log(`     GET  http://localhost:${PORT}/api/v1/network/status`);
