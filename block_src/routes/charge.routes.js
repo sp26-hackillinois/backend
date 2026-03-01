@@ -4,6 +4,10 @@ const { verifyApiKey } = require('../middleware/auth.middleware');
 const { getServiceById, createCharge, getChargeById, listCharges, getIdempotencyResult, setIdempotencyResult } = require('../utils/store');
 const { getSolPriceInUsd } = require('../services/price.service');
 const { buildUnsignedTransaction } = require('../services/solana.service');
+const { Connection, PublicKey } = require('@solana/web3.js');
+
+const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
+const DEVELOPER_WALLET = process.env.AI_DEVELOPER_WALLET || '2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8';
 
 const NETWORK_FEE_SOL = 0.000005;
 
@@ -102,11 +106,20 @@ router.post('/', verifyApiKey, async (req, res) => {
 
 // ─────────────────────────────────────────
 // GET /api/v1/charges/count
-// Returns total number of charges ever processed (public — no auth)
+// Returns total on-chain transaction count for the developer wallet (public — no auth)
 // ─────────────────────────────────────────
-router.get('/count', (req, res) => {
-    const result = listCharges({ limit: 1000000, offset: 0 });
-    return res.status(200).json({ count: result.total });
+router.get('/count', async (req, res) => {
+    try {
+        const pubkey = new PublicKey(DEVELOPER_WALLET);
+        // Fetch up to 1000 signatures; Solana RPC max is 1000 per call
+        const signatures = await connection.getSignaturesForAddress(pubkey, { limit: 1000 });
+        return res.status(200).json({ count: signatures.length });
+    } catch (error) {
+        console.error('[Charges/Count] RPC error:', error.message);
+        return res.status(500).json({
+            error: { type: 'api_error', message: 'Failed to fetch transaction count from Solana RPC.' }
+        });
+    }
 });
 
 // ─────────────────────────────────────────
