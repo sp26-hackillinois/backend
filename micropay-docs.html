@@ -9,142 +9,155 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#ffffff;--bg-subtle:#f7f7f8;--bg-muted:#f0f0f3;
+  --bg:#fff;--bg-subtle:#f7f7f8;--bg-muted:#f0f0f3;
   --border:#e3e3e8;--border-subtle:#ebebef;
   --text:#0a2540;--text-secondary:#425466;--text-muted:#8898aa;
-  --accent:#635bff;--accent-hover:#5147e5;--accent-subtle:#f0eeff;--accent-bg:#ede9fe;
+  --accent:#635bff;--accent-hover:#5147e5;--accent-subtle:#f0eeff;
   --green:#00d4aa;--green-text:#0d7d5f;--green-bg:#e6faf5;--green-border:#b6f0df;
   --blue:#0073e6;--blue-bg:#e8f4fd;--blue-border:#b3d9f7;
   --amber:#ff9f43;--amber-bg:#fff6eb;--amber-border:#ffdaa0;--amber-text:#7d4e00;
-  --red:#df1b41;--red-bg:#ffeef1;
+  --red:#df1b41;--red-bg:#ffeef1;--red-border:#fec1cb;
   --code-bg:#f6f8fa;
   --font:'Inter',system-ui,-apple-system,sans-serif;
   --mono:'JetBrains Mono','SF Mono',Menlo,monospace;
-  --sidebar-w:260px;
-  --content-max:720px;
+  --sidebar-w:252px;--content-max:740px;
 }
 html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--bg);color:var(--text);display:flex;height:100vh;overflow:hidden;-webkit-font-smoothing:antialiased;font-size:15px;line-height:1.6}
-::-webkit-scrollbar{width:6px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
+::-webkit-scrollbar{width:6px}::-webkit-scrollbar-track{background:transparent}::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px}
 
-/* SIDEBAR */
-aside{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--bg);display:flex;flex-direction:column;overflow-y:auto;position:relative;z-index:100}
-.sb-header{padding:24px 24px 20px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
+aside{width:var(--sidebar-w);flex-shrink:0;border-right:1px solid var(--border);background:var(--bg);display:flex;flex-direction:column;overflow-y:auto;z-index:100}
+.sb-header{padding:22px 22px 18px;border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--bg);z-index:10}
 .sb-logo{display:flex;align-items:center;gap:10px}
-.sb-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px;letter-spacing:-.02em;flex-shrink:0}
-.sb-name{font-size:15px;font-weight:700;letter-spacing:-.02em;color:var(--text)}
-.sb-tagline{font-size:11px;color:var(--text-muted);margin-top:1px;font-weight:400}
+.sb-icon{width:28px;height:28px;background:var(--accent);border-radius:7px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:10px;flex-shrink:0}
+.sb-name{font-size:15px;font-weight:700;letter-spacing:-.02em}
+.sb-tagline{font-size:11px;color:var(--text-muted);margin-top:1px}
 nav{padding:16px 0 32px;flex:1}
-.nav-group{margin-bottom:4px}
-.nav-label{padding:8px 24px 4px;font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
-nav a{display:block;padding:6px 24px;font-size:13.5px;color:var(--text-secondary);text-decoration:none;transition:all .12s;border-left:2px solid transparent;font-weight:400}
+.nav-label{padding:8px 22px 4px;font-size:10.5px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em}
+nav a{display:block;padding:5px 22px;font-size:13.5px;color:var(--text-secondary);text-decoration:none;transition:all .12s;border-left:2px solid transparent}
 nav a:hover{color:var(--text);background:var(--bg-subtle)}
 nav a.active{color:var(--accent);font-weight:600;border-left-color:var(--accent);background:var(--accent-subtle)}
+.nav-gap{height:6px}
 
-/* MAIN CONTENT */
 main{flex:1;overflow-y:auto}
-.content{max-width:var(--content-max);margin:0 auto;padding:48px 48px 120px}
+.content{max-width:var(--content-max);margin:0 auto;padding:48px 48px 140px}
 
-/* TYPOGRAPHY */
-h1{font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.2;margin-bottom:16px}
+h1{font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-bottom:16px}
 h2{font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.3;margin-top:56px;margin-bottom:12px;padding-top:24px;border-top:1px solid var(--border)}
-h2:first-of-type{margin-top:36px;border-top:none;padding-top:0}
-h3{font-size:17px;font-weight:600;letter-spacing:-.01em;margin-top:32px;margin-bottom:8px}
+h2:first-of-type{margin-top:32px;border-top:none;padding-top:0}
+h3{font-size:16px;font-weight:600;letter-spacing:-.01em;margin-top:28px;margin-bottom:8px}
 p{color:var(--text-secondary);margin-bottom:16px}
-p+p{margin-top:0}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
+a{color:var(--accent);text-decoration:none}a:hover{text-decoration:underline}
 
-/* HERO */
-.hero-badge{display:inline-flex;align-items:center;gap:6px;background:var(--accent-subtle);border:1px solid #d4d0fb;border-radius:999px;padding:4px 12px;font-size:11px;font-weight:600;color:var(--accent);margin-bottom:16px;letter-spacing:.02em}
-.hero-badge::before{content:'';width:6px;height:6px;background:var(--accent);border-radius:50%}
-.hero-sub{font-size:17px;color:var(--text-secondary);max-width:540px;line-height:1.65;margin-bottom:32px}
+/* HERO — clean & light like Stripe */
+.hero-badge{display:inline-flex;align-items:center;gap:6px;padding:5px 14px;border-radius:999px;background:var(--green-bg);border:1px solid var(--green-border);font-size:12px;font-weight:600;color:var(--green-text);margin-bottom:20px;letter-spacing:.01em}
+.hero-badge .dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;animation:pulse-dot 2s ease infinite}
+@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{font-size:40px;font-weight:800;letter-spacing:-.04em;line-height:1.08;color:var(--text);margin-bottom:16px}
+.hero-title span{color:var(--accent)}
+.hero-sub{font-size:16px;color:var(--text-secondary);max-width:540px;line-height:1.7;margin-bottom:28px}
+.hero-btns{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.btn-primary{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:8px;background:var(--accent);color:#fff;font-size:13.5px;font-weight:600;border:none;cursor:pointer;transition:all .15s;font-family:var(--font);text-decoration:none}
+.btn-primary:hover{background:var(--accent-hover);text-decoration:none;transform:translateY(-1px);box-shadow:0 4px 12px rgba(99,91,255,.25)}
+.btn-secondary{display:inline-flex;align-items:center;gap:6px;padding:10px 22px;border-radius:8px;background:var(--bg);color:var(--text);font-size:13.5px;font-weight:600;border:1px solid var(--border);cursor:pointer;transition:all .15s;font-family:var(--font);text-decoration:none}
+.btn-secondary:hover{border-color:#c4c1f7;background:var(--bg-subtle);text-decoration:none;transform:translateY(-1px)}
+.btn-secondary svg{color:var(--text-muted)}
+
+/* HERO SERVICES BLURB */
+.hero-services{margin-top:28px;padding:20px 24px;border:1px solid var(--border);border-radius:10px;background:var(--bg-subtle)}
+.hs-label{font-size:11px;font-weight:600;color:var(--text-muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:6px}
+.hs-desc{font-size:13.5px;color:var(--text-secondary);margin-bottom:12px;line-height:1.6}
+.hs-desc a{font-weight:500}
+.hs-tags{display:flex;flex-wrap:wrap;gap:6px}
+.hs-tags span{padding:3px 10px;font-size:11.5px;font-weight:500;color:var(--text-secondary);background:var(--bg);border:1px solid var(--border);border-radius:999px;white-space:nowrap}
 
 /* PATH CARDS */
-.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:24px 0 8px}
-.path-card{border:1px solid var(--border);border-radius:12px;padding:24px;cursor:pointer;transition:all .18s;position:relative;background:var(--bg)}
-.path-card:hover{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
-.path-card.active{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent);background:var(--accent-subtle)}
-.path-num{width:28px;height:28px;border-radius:50%;background:var(--accent-subtle);color:var(--accent);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;margin-bottom:12px}
-.path-card.active .path-num{background:var(--accent);color:#fff}
-.path-card h3{font-size:15px;font-weight:600;color:var(--text);margin:0 0 6px;letter-spacing:-.01em}
-.path-card p{font-size:13px;color:var(--text-muted);margin:0;line-height:1.5}
+.path-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:32px 0 8px}
+.path-card{border:1px solid var(--border);border-radius:10px;padding:20px;cursor:pointer;transition:all .15s;background:var(--bg);position:relative}
+.path-card:hover{border-color:#c4c1f7;background:#fafaff}
+.path-card.active{border-color:var(--accent);background:#f8f7ff;box-shadow:inset 3px 0 0 var(--accent)}
+.path-icon{font-size:20px;margin-bottom:10px;display:block;line-height:1}
+.path-card h3{font-size:14px;font-weight:600;color:var(--text);margin:0 0 4px;line-height:1.35}
+.path-card p{font-size:12.5px;color:var(--text-muted);margin:0;line-height:1.5}
+.path-card .path-arrow{display:inline-flex;align-items:center;gap:3px;margin-top:10px;font-size:12.5px;color:var(--accent);font-weight:500}
+.path-card:hover .path-arrow{gap:5px}
 
-/* GUIDE CONTENT */
-.guide-content{display:none;margin-top:32px;animation:fadeIn .25s ease}
-.guide-content.visible{display:block}
+/* MODAL OVERLAY */
+.modal-overlay{position:fixed;inset:0;background:rgba(10,37,64,.45);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:999;opacity:0;pointer-events:none;transition:opacity .2s ease}
+.modal-overlay.open{opacity:1;pointer-events:auto}
+.modal-panel{position:fixed;top:0;right:0;width:min(680px,calc(100vw - var(--sidebar-w)));height:100vh;background:var(--bg);z-index:1000;transform:translateX(100%);transition:transform .28s cubic-bezier(.4,0,.2,1);overflow-y:auto;box-shadow:-8px 0 40px rgba(0,0,0,.08)}
+.modal-panel.open{transform:translateX(0)}
+.modal-header{position:sticky;top:0;background:var(--bg);z-index:10;display:flex;align-items:center;justify-content:space-between;padding:20px 40px 16px;border-bottom:1px solid var(--border)}
+.modal-title{font-size:15px;font-weight:600;color:var(--text)}
+.modal-close{height:28px;border-radius:6px;border:1px solid var(--border);background:var(--bg);display:inline-flex;align-items:center;gap:6px;padding:0 10px;cursor:pointer;color:var(--text-muted);font-size:12px;transition:all .12s;flex-shrink:0;font-family:inherit}
+.modal-close:hover{background:var(--bg-subtle);color:var(--text);border-color:var(--border)}
+.modal-close kbd{font-size:10px;color:var(--text-muted);opacity:.6;font-family:inherit}
+.modal-body{padding:32px 40px 80px}
+.modal-body h2{margin-top:0;border-top:none;padding-top:0}
+.modal-body h2:first-of-type{margin-top:0}
 @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
+.guide-content{display:none}
+.guide-content.in-modal{display:block}
+
 /* STEPS */
-.step{position:relative;padding-left:36px;margin-bottom:32px}
-.step::before{content:attr(data-step);position:absolute;left:0;top:2px;width:24px;height:24px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
+.step{position:relative;padding-left:38px;margin-bottom:36px}
+.step::before{content:attr(data-step);position:absolute;left:0;top:1px;width:26px;height:26px;border-radius:50%;background:var(--accent);color:#fff;font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:center}
 .step-title{font-size:16px;font-weight:600;color:var(--text);margin-bottom:6px}
 .step p{font-size:14px}
 
-/* CODE BLOCKS */
-pre{background:#0a2540;border-radius:10px;padding:20px 24px;font-family:var(--mono);font-size:12.5px;color:#adbac7;line-height:1.75;overflow-x:auto;margin:12px 0 16px;position:relative;border:1px solid #1a3a5c}
+/* CODE */
+pre{background:#0a2540;border-radius:10px;padding:18px 22px;font-family:var(--mono);font-size:12.5px;color:#adbac7;line-height:1.75;overflow-x:auto;margin:12px 0 16px;position:relative;border:1px solid #1a3a5c}
 pre .label{position:absolute;top:10px;right:12px;font-size:10px;font-weight:600;color:#4d6a87;text-transform:uppercase;letter-spacing:.06em;font-family:var(--font)}
-pre .kw{color:#6cb6ff}
-pre .str{color:#96d0ff}
-pre .val{color:#6bc46d}
-pre .cmt{color:#4d6a87}
-pre .punc{color:#6e7e8f}
-pre .fn{color:#dcbdfb}
-pre .num{color:#f69d50}
-
-/* INLINE CODE */
+pre .kw{color:#6cb6ff}pre .str{color:#96d0ff}pre .val{color:#6bc46d}pre .cmt{color:#4d6a87}pre .punc{color:#6e7e8f}pre .fn{color:#dcbdfb}pre .num{color:#f69d50}
 code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:2px 6px;border-radius:4px;border:1px solid var(--border-subtle);color:#0a2540}
 
-/* ENDPOINT PILL */
 .endpoint{display:inline-flex;align-items:center;gap:10px;background:var(--bg-subtle);border:1px solid var(--border);border-radius:8px;padding:8px 14px;margin:8px 0 16px;font-size:13px;width:100%}
 .method{font-family:var(--mono);font-size:11px;font-weight:700;padding:2px 8px;border-radius:4px;letter-spacing:.04em;flex-shrink:0}
 .method-post{background:var(--green-bg);color:var(--green-text)}
 .method-get{background:var(--blue-bg);color:var(--blue)}
 .ep-path{font-family:var(--mono);font-size:13px;color:var(--text-secondary)}
 
-/* PARAMETER LIST */
-.param-list{margin:8px 0 16px}
+/* PARAMS */
+.param-list{margin:8px 0 20px}
 .param{border-bottom:1px solid var(--border-subtle);padding:14px 0}
 .param:last-child{border-bottom:none}
-.param-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer}
-.param-name{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--text);position:relative}
-.param-type{font-family:var(--mono);font-size:11px;color:var(--text-muted);background:var(--bg-muted);padding:1px 6px;border-radius:3px}
+.param-header{display:flex;align-items:center;gap:8px;flex-wrap:wrap;cursor:pointer;user-select:none}
+.param-name{font-family:var(--mono);font-size:13.5px;font-weight:600;color:var(--text)}
+.param-type{font-family:var(--mono);font-size:10.5px;color:var(--text-muted);background:var(--bg-muted);padding:1px 6px;border-radius:3px}
 .param-required{font-size:9px;font-weight:700;letter-spacing:.05em;text-transform:uppercase;color:var(--red);background:var(--red-bg);padding:2px 6px;border-radius:3px}
 .param-optional{font-size:9px;font-weight:600;color:var(--text-muted);background:var(--bg-muted);padding:2px 6px;border-radius:3px}
-.param-desc{font-size:13.5px;color:var(--text-secondary);line-height:1.6;margin-top:6px}
-.param-desc code{font-size:11.5px}
-.param-expand{display:none;margin-top:10px;padding:12px 16px;background:var(--bg-subtle);border-radius:8px;border:1px solid var(--border-subtle);font-size:13px;color:var(--text-secondary);line-height:1.65}
-.param-expand.open{display:block;animation:fadeIn .2s ease}
-.param-expand strong{color:var(--text);font-weight:600}
-.param-expand code{font-size:11px}
-.param-toggle{margin-left:auto;font-size:10px;color:var(--text-muted);opacity:.5;transition:all .15s}
-.param-header:hover .param-toggle{opacity:1;color:var(--accent)}
+.param-desc{font-size:13px;color:var(--text-secondary);line-height:1.55;margin-top:5px}
+.param-desc code{font-size:11px}
+.param-toggle{margin-left:auto;width:20px;height:20px;border-radius:4px;background:var(--bg-muted);display:flex;align-items:center;justify-content:center;font-size:12px;color:var(--text-muted);transition:all .15s;flex-shrink:0;font-weight:500}
+.param-header:hover .param-toggle{background:var(--accent-subtle);color:var(--accent)}
+.param-expand{display:none;margin-top:12px;border-radius:8px;border:1px solid var(--border-subtle);overflow:hidden;font-size:13px;line-height:1.65;animation:fadeIn .2s ease}
+.param-expand.open{display:block}
+.pe-body{padding:14px 16px;background:var(--bg-subtle);color:var(--text-secondary)}
+.pe-body strong{color:var(--text);font-weight:600}
+.pe-body code{font-size:11px}
+.pe-row{display:flex;gap:20px;margin-top:8px;flex-wrap:wrap}
+.pe-item{flex:1;min-width:120px}
+.pe-label{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--text-muted);margin-bottom:2px}
+.pe-val{font-size:12.5px;color:var(--text)}
+.pe-val code{font-size:11px;border:none;background:var(--bg-muted)}
+.pe-error{padding:12px 16px;background:var(--red-bg);border-top:1px solid var(--red-border);color:#7f1d2d;font-size:12.5px;line-height:1.55}
+.pe-error strong{color:var(--red)}
+.pe-error code{font-size:10.5px;background:#fff;border-color:var(--red-border);color:var(--red)}
 
-/* TOOLTIP */
-.has-tooltip{position:relative;border-bottom:1px dashed var(--accent);cursor:help;color:var(--accent)}
-.tooltip{display:none;position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--text);color:#fff;padding:10px 14px;border-radius:8px;font-size:12px;line-height:1.5;width:280px;z-index:1000;box-shadow:0 4px 20px rgba(0,0,0,.15);pointer-events:none}
-.tooltip::after{content:'';position:absolute;top:100%;left:50%;transform:translateX(-50%);border:6px solid transparent;border-top-color:var(--text)}
-.has-tooltip:hover .tooltip{display:block}
-
-/* CALLOUT */
-.callout{border-radius:8px;padding:16px 18px;font-size:13.5px;line-height:1.65;margin:16px 0}
+/* CALLOUTS */
+.callout{border-radius:8px;padding:14px 18px;font-size:13px;line-height:1.65;margin:16px 0}
 .callout code{font-size:11px}
 .callout-info{background:var(--blue-bg);border:1px solid var(--blue-border);color:#0c4a6e}
 .callout-warn{background:var(--amber-bg);border:1px solid var(--amber-border);color:var(--amber-text)}
 .callout-success{background:var(--green-bg);border:1px solid var(--green-border);color:#065f46}
 .callout-purple{background:var(--accent-subtle);border:1px solid #d4d0fb;color:#3b1f8c}
 
-/* RESPONSE TABLE */
 .resp-table{width:100%;border-collapse:collapse;font-size:13px;margin:12px 0 16px}
 .resp-table th{text-align:left;padding:8px 12px;font-size:10px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--text-muted);border-bottom:2px solid var(--border);background:var(--bg-subtle)}
 .resp-table td{padding:10px 12px;border-bottom:1px solid var(--border-subtle);vertical-align:top;color:var(--text-secondary)}
 .resp-table code{font-size:11px}
-.resp-table tr:last-child td{border-bottom:none}
 
-/* SERVICE CATALOG */
-.svc-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
 .svc-cat{margin-bottom:20px}
 .svc-cat-header{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:8px}
 .svc-cat-price{font-family:var(--mono);font-size:12px;color:var(--accent);background:var(--accent-subtle);padding:1px 8px;border-radius:4px}
@@ -155,21 +168,16 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:
 .svc-detail{display:none;padding:12px 16px;background:var(--bg-subtle);border:1px solid var(--border-subtle);border-radius:8px;margin-top:-2px;margin-bottom:8px;animation:fadeIn .2s ease}
 .svc-detail.open{display:block}
 .svc-detail p{font-size:13px;margin-bottom:6px}
-.svc-detail .svc-meta{display:flex;gap:12px;flex-wrap:wrap;margin-top:6px}
+.svc-detail .svc-meta{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
 .svc-detail .svc-tag{font-size:10px;background:var(--bg-muted);color:var(--text-muted);padding:2px 6px;border-radius:3px;border:1px solid var(--border)}
 
-/* STATUS PILLS */
 .pill{display:inline-block;padding:2px 8px;border-radius:4px;font-family:var(--mono);font-size:10.5px;font-weight:600}
 .pill-public{background:var(--green-bg);color:var(--green-text)}
 .pill-auth{background:var(--red-bg);color:var(--red)}
 
-/* DIVIDER */
-.divider{height:1px;background:var(--border);margin:0}
-
-/* AUTH TABLE */
 .auth-grid{display:grid;grid-template-columns:1fr auto;gap:0;border:1px solid var(--border);border-radius:8px;overflow:hidden;font-size:13px;margin:12px 0 16px}
-.auth-ep{padding:10px 14px;border-bottom:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);font-family:var(--mono);font-size:12px;background:var(--bg-subtle)}
-.auth-status{padding:10px 14px;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center}
+.auth-ep{padding:9px 14px;border-bottom:1px solid var(--border-subtle);border-right:1px solid var(--border-subtle);font-family:var(--mono);font-size:11.5px;background:var(--bg-subtle)}
+.auth-status{padding:9px 14px;border-bottom:1px solid var(--border-subtle);display:flex;align-items:center}
 .auth-ep:last-of-type,.auth-status:last-of-type{border-bottom:none}
 </style>
 </head>
@@ -183,116 +191,125 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:
   </div>
 </div>
 <nav>
-  <div class="nav-group">
-    <div class="nav-label">Getting Started</div>
-    <a href="#overview" class="active">Overview</a>
-    <a href="#authentication">Authentication</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-label">Guides</div>
-    <a href="#accept-payments">Accept payments</a>
-    <a href="#access-apis">Access APIs</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-label">API Reference</div>
-    <a href="#charges">Charges</a>
-    <a href="#registry">Registry</a>
-    <a href="#ai-gateway">AI Gateway</a>
-    <a href="#network">Network</a>
-  </div>
-  <div class="nav-group">
-    <div class="nav-label">Resources</div>
-    <a href="#services-catalog">Service catalog</a>
-    <a href="#errors">Errors</a>
-  </div>
+  <div class="nav-label">Getting Started</div>
+  <a href="#overview" class="active">Overview</a>
+  <a href="#authentication">Authentication</a>
+  <div class="nav-gap"></div>
+  <div class="nav-label">Guides</div>
+  <a href="#overview" onclick="event.preventDefault();openGuideFromNav('accept')">Accept payments</a>
+  <a href="#overview" onclick="event.preventDefault();openGuideFromNav('access')">Access APIs</a>
+  <div class="nav-gap"></div>
+  <div class="nav-label">API Reference</div>
+  <a href="#charges">Charges</a>
+  <a href="#registry">Registry</a>
+  <a href="#ai-gateway">AI Gateway</a>
+  <a href="#network">Network</a>
+  <div class="nav-gap"></div>
+  <div class="nav-label">Resources</div>
+  <a href="#services-catalog">Service catalog</a>
+  <a href="#errors">Errors</a>
 </nav>
 </aside>
 
 <main>
 <div class="content">
-
-<!-- ═══════════════════════════════════════ -->
-<!-- OVERVIEW -->
-<!-- ═══════════════════════════════════════ -->
 <section id="overview">
-<div class="hero-badge">Live on Solana Devnet</div>
-<h1>Micropay Bazaar Documentation</h1>
-<p class="hero-sub">A micropayment gateway for AI agents. Pay per API call in SOL, discover data services, and settle on-chain — all with one API.</p>
 
-<p>There are two ways to use Micropay. Pick the path that matches what you're building:</p>
+<div class="hero-badge"><span class="dot"></span> Live on Solana Devnet</div>
+<h1 class="hero-title">Micropay Bazaar <span>Documentation</span></h1>
+<p class="hero-sub">A micropayment gateway for AI agents. Pay per call in SOL, discover data services, and settle on-chain — all with one API.</p>
+<div class="hero-btns">
+  <a class="btn-primary" href="#services-catalog">Browse 26 services <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h7M6.5 3L9.5 6 6.5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  <a class="btn-secondary" href="#charges">Start with a Charge <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 6h7M6.5 3L9.5 6 6.5 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+</div>
 
 <div class="path-grid">
   <div class="path-card" onclick="showGuide('accept')" id="card-accept">
-    <div class="path-num">1</div>
-    <h3>Accept payments for your API</h3>
-    <p>Register your service in the Bazaar so AI agents can discover and pay you in SOL per request.</p>
+    <span class="path-icon">💳</span>
+    <h3>Add Micropay to your payment gateway</h3>
+    <p>Monetize your API. Register it in the Bazaar, set a price, and get paid in SOL every time an AI agent calls it.</p>
+    <span class="path-arrow">Start integrating <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="margin-left:2px"><path d="M1 5h7M5.5 2L8.5 5 5.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
   </div>
   <div class="path-card" onclick="showGuide('access')" id="card-access">
-    <div class="path-num">2</div>
-    <h3>Use Micropay to access APIs</h3>
-    <p>Pay for 26+ data services (weather, stocks, NLP, search) using micro SOL payments. No subscriptions.</p>
+    <span class="path-icon">🔌</span>
+    <h3>Use Micropay API to access other APIs</h3>
+    <p>Pay for 26 data services — stocks, weather, NLP, search — with micro SOL payments. No subscriptions, no rate limits.</p>
+    <span class="path-arrow">Start integrating <svg width="10" height="10" viewBox="0 0 10 10" fill="none" style="margin-left:2px"><path d="M1 5h7M5.5 2L8.5 5 5.5 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
   </div>
 </div>
 
-<!-- GUIDE: ACCEPT PAYMENTS -->
-<div class="guide-content" id="guide-accept">
+<div class="hero-services">
+  <div class="hs-label">Prebuilt services</div>
+  <p class="hs-desc">26 data services across 11 categories — weather, finance, crypto, NLP, news, sports, travel, and more. Each costs fractions of a cent in SOL. <a href="#services-catalog">View full catalog &darr;</a></p>
+  <div class="hs-tags">
+    <span>Stocks</span><span>Weather</span><span>Crypto</span><span>NLP</span><span>News</span><span>Sports</span><span>Travel</span><span>Search</span><span>AI/GPT</span><span>DeFi</span><span>GitHub</span>
+  </div>
+</div>
 
-<h2 id="accept-payments">Accept payments for your API</h2>
-<p>Turn any REST API into a paid Micropay service. AI agents discover you through the Bazaar registry and pay per call in SOL on Solana Devnet. Here's exactly how to set it up.</p>
+<div id="guide-holder" style="display:none">
+<!-- ─── GUIDE: ACCEPT PAYMENTS ─── -->
+<div class="guide-content" id="guide-accept">
+<h2 id="accept-payments">Add Micropay to your payment gateway</h2>
+<p>Turn any REST API into a paid Micropay service in 4 steps. AI agents discover you through the Bazaar registry, call your API, and pay you in SOL on Solana Devnet automatically.</p>
 
 <div class="step" data-step="1">
-<div class="step-title">Get your API key</div>
-<p>All authenticated requests require a Bearer token. For hackathon testing, use the demo key:</p>
+<div class="step-title">Set up your wallet &amp; API key</div>
+<p>You need a Solana wallet to receive payments and an API key to register.</p>
+<ol style="margin:8px 0 12px 20px;color:var(--text-secondary);font-size:14px;line-height:2">
+  <li>Install <a href="https://phantom.app" target="_blank">Phantom wallet</a> browser extension</li>
+  <li>Open Phantom → Settings → Developer Settings → switch to <strong>Devnet</strong></li>
+  <li>Copy your wallet address (click the address at the top of Phantom)</li>
+  <li>Get free test SOL from <a href="https://faucet.solana.com" target="_blank">faucet.solana.com</a></li>
+</ol>
+<p>For authentication, use the demo key for all hackathon testing:</p>
 <pre><span class="label">Header</span><span class="kw">Authorization:</span> Bearer <span class="str">mp_live_demo_key</span></pre>
 </div>
 
 <div class="step" data-step="2">
 <div class="step-title">Register your service in the Bazaar</div>
-<p>Call the registry endpoint with your service details. Once registered, agents can find you via semantic search.</p>
-
+<p>Call the registry endpoint with your service details. Once registered, AI agents can find and pay for your API.</p>
 <div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/registry/register</span></div>
 
-<h3>Request body</h3>
 <div class="param-list">
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">name</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">name</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Human-readable name shown in discovery results.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>What this does:</strong> The display name shown to AI agents when they discover your service. It appears in search results and the agent's UI.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Non-empty string</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"My Weather API"</code></div></div><div class="pe-item"><div class="pe-label">Max length</div><div class="pe-val">~100 characters</div></div></div></div>
+      <div class="pe-error"><strong>400 if missing:</strong> <code>{"error":{"type":"invalid_request_error","message":"'name' is required and must be a non-empty string."}}</code></div>
     </div>
-    <div class="param-desc">Human-readable name for your service.</div>
-    <div class="param-expand"><strong>What this does:</strong> This is the display name shown to AI agents when they discover your service in the Bazaar. It appears in search results and the agent's UI. Keep it descriptive — e.g. <code>"My Weather API"</code> instead of <code>"api-v2"</code>. Max ~100 characters recommended.</div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">description</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">description</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
     <div class="param-desc">Detailed description used for agent semantic search.</div>
-    <div class="param-expand"><strong>Why this matters:</strong> When an AI agent asks <em>"find me a weather API"</em>, we run semantic search over descriptions. Write it like a tool description for an LLM — be specific about what data you return, what parameters you accept, and what format the response is in. Better descriptions = more discovery traffic to your API.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Why this matters:</strong> When an agent asks <em>"find me a weather API"</em>, we run semantic search over descriptions. Write it like a tool description for an LLM — be specific about what data you return, parameters you accept, and response format. Better descriptions = more discovery traffic.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Non-empty string</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"Real-time temperature, humidity, and wind speed for any city worldwide."</code></div></div></div></div>
+      <div class="pe-error"><strong>400 if missing:</strong> <code>{"error":{"type":"invalid_request_error","message":"'description' is required and must be a non-empty string."}}</code></div>
+    </div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">endpoint</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">endpoint</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Fully qualified URL where your API lives.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Format:</strong> Must include protocol. This is the URL Micropay hits when an agent pays for your service. Make sure it's publicly reachable and returns JSON.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">URL string</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"https://my-api.com/weather"</code></div></div></div></div>
+      <div class="pe-error"><strong>400 if missing:</strong> <code>{"error":{"type":"invalid_request_error","message":"'endpoint' is required and must be a non-empty string."}}</code></div>
     </div>
-    <div class="param-desc">The fully qualified URL where your service API lives.</div>
-    <div class="param-expand"><strong>Format:</strong> Must be a complete URL including protocol, e.g. <code>https://my-api.com/weather</code>. This is the URL that Micropay hits when an agent pays for your service. Make sure it's publicly reachable and returns JSON. If your API requires auth, include it in the endpoint path or document it in your description.</div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">cost_usd</span><span class="param-type">number</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">cost_usd</span><span class="param-type">number</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
     <div class="param-desc">Price per call in USD. Must be a positive number.</div>
-    <div class="param-expand"><strong>How pricing works:</strong> You set a fixed USD price (e.g. <code>0.05</code>). At charge time, we convert USD→SOL using a live oracle price feed. The agent always sees the USD cost upfront, but the actual SOL amount fluctuates with the market. Typical range: <code>$0.01</code> for basic data, <code>$0.05</code> for AI/search, <code>$0.10+</code> for premium APIs.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>How pricing works:</strong> You set a fixed USD price. At charge time, we convert USD→SOL using a live CoinGecko oracle feed. The agent always sees the USD cost upfront, but the SOL amount fluctuates with the market.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Positive number</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>0.01</code></div></div><div class="pe-item"><div class="pe-label">Valid range</div><div class="pe-val">&gt; 0 (typically $0.01 – $0.10)</div></div></div></div>
+      <div class="pe-error"><strong>400 if invalid:</strong> <code>{"error":{"type":"invalid_request_error","message":"'cost_usd' is required and must be a positive number."}}</code></div>
+    </div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">developer_wallet</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">developer_wallet</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
     <div class="param-desc">Your Solana base58 wallet address for receiving payments.</div>
-    <div class="param-expand"><strong>This is where you get paid.</strong> Every time an agent calls your service, the SOL payment is sent to this address on Solana Devnet. Use a Phantom wallet address — you can find it in the Phantom browser extension by clicking the wallet address at the top. Format: base58 string like <code>2Hn6ESeMRqfVDTpt...zv8</code>. Make sure this is a wallet you control.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>This is where you get paid.</strong> Every time an agent calls your service, SOL is transferred to this address on Solana Devnet. Get your address from Phantom by clicking the wallet address at the top of the extension. Must be a valid base58-encoded Solana public key — 32–44 characters of alphanumeric text.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Solana base58 public key</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8"</code></div></div></div></div>
+      <div class="pe-error"><strong>400 if missing:</strong> <code>{"error":{"type":"invalid_request_error","message":"'developer_wallet' is required and must be a non-empty string."}}</code></div>
+    </div>
   </div>
 </div>
 
@@ -301,12 +318,11 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{
     "name": "My Weather API",
-    "description": "Real-time temperature, humidity, and wind for any city worldwide.",
+    "description": "Real-time temperature, humidity, and wind for any city.",
     "endpoint": "https://my-api.com/weather",
     "cost_usd": 0.01,
-    "developer_wallet": "YOUR_SOLANA_WALLET_ADDRESS"
+    "developer_wallet": "YOUR_PHANTOM_WALLET_ADDRESS"
   }'</span></pre>
-
 <p>Response — <code>201 Created</code>:</p>
 <pre><span class="label">JSON</span>{
   <span class="kw">"id"</span>: <span class="str">"srv_a2k9xb3m7"</span>,
@@ -316,90 +332,97 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:
   <span class="kw">"description"</span>: <span class="str">"Real-time temperature, humidity..."</span>,
   <span class="kw">"endpoint"</span>: <span class="str">"https://my-api.com/weather"</span>,
   <span class="kw">"cost_usd"</span>: <span class="num">0.01</span>,
-  <span class="kw">"developer_wallet"</span>: <span class="str">"YOUR_SOLANA_WALLET_ADDRESS"</span>
+  <span class="kw">"developer_wallet"</span>: <span class="str">"YOUR_PHANTOM_WALLET_ADDRESS"</span>
 }</pre>
-<div class="callout callout-success"><strong>Save the <code>id</code> field.</strong> You'll need it when agents create charges against your service. This is your permanent service identifier in the Bazaar.</div>
+<div class="callout callout-success"><strong>Save the <code>id</code> field.</strong> This is your permanent service identifier. Agents use it when creating charges against your service.</div>
+</div>
 
 <div class="step" data-step="3">
 <div class="step-title">Verify your service is discoverable</div>
-<p>Search the Bazaar to confirm your service shows up:</p>
+<p>Search the Bazaar to confirm agents can find you:</p>
 <pre><span class="label">cURL</span><span class="fn">curl</span> "https://micropay.up.railway.app/api/v1/registry/discover?query=weather"</pre>
-<p>Your service will appear in the <code>data</code> array alongside the 26 prebuilt services. Agents search by keyword, so make sure your name and description are meaningful.</p>
+<p>Your service appears in the <code>data</code> array. You can also look it up directly:</p>
+<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/registry/services/srv_a2k9xb3m7</pre>
 </div>
 
 <div class="step" data-step="4">
-<div class="step-title">Receive payments on-chain</div>
-<p>When an agent pays for your service, the flow is automatic:</p>
-<ol style="margin:8px 0 12px 20px;color:var(--text-secondary);font-size:14px;line-height:1.8">
+<div class="step-title">Watch payments arrive on-chain</div>
+<p>When an agent pays for your service, the full flow is automatic:</p>
+<ol style="margin:8px 0 12px 20px;color:var(--text-secondary);font-size:14px;line-height:2">
   <li>Agent creates a charge with your <code>service_id</code></li>
   <li>Micropay builds an unsigned Solana transaction pointing to your <code>developer_wallet</code></li>
   <li>Agent signs with Phantom and broadcasts to Devnet</li>
   <li>SOL lands in your wallet — settled in &lt;1 second</li>
 </ol>
-<p>Check your earnings anytime:</p>
-<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/balance/YOUR_SOLANA_WALLET_ADDRESS</pre>
+<p>Check your balance and transaction history:</p>
+<pre><span class="label">cURL</span><span class="cmt"># Check SOL balance</span>
+<span class="fn">curl</span> https://micropay.up.railway.app/api/v1/balance/YOUR_WALLET_ADDRESS
+
+<span class="cmt"># See last 5 transactions</span>
+<span class="fn">curl</span> https://micropay.up.railway.app/api/v1/transactions/YOUR_WALLET_ADDRESS</pre>
+<div class="callout callout-info"><strong>Verify on-chain:</strong> Every transaction has a <code>signature</code>. Paste it into <a href="https://explorer.solana.com/?cluster=devnet" target="_blank">Solana Explorer (Devnet)</a> to see the on-chain proof.</div>
+</div>
 </div>
 
-</div>
-
-<!-- GUIDE: ACCESS APIS -->
+<!-- ─── GUIDE: ACCESS APIS ─── -->
 <div class="guide-content" id="guide-access">
-
-<h2 id="access-apis">Use Micropay to access APIs</h2>
-<p>Access 26 prebuilt data services — weather, stocks, crypto, NLP, news, sports, and more — by paying micro SOL amounts per call. No API keys, no subscriptions, no rate limits. Just pay and get data.</p>
+<h2 id="access-apis">Use Micropay API to access other APIs</h2>
+<p>Access 26 prebuilt data services — weather, stocks, crypto, NLP, news, sports, and more — by paying micro SOL amounts per call. No subscriptions, no API keys to each provider, no rate limits. Just pay and get data.</p>
 
 <div class="step" data-step="1">
-<div class="step-title">Get your API key and connect a wallet</div>
-<p>You need two things: an API key for authenticated endpoints, and a Solana wallet to pay from.</p>
+<div class="step-title">Set up Phantom wallet on Devnet</div>
+<p>You need a Solana wallet with test SOL to pay for API calls.</p>
+<ol style="margin:8px 0 12px 20px;color:var(--text-secondary);font-size:14px;line-height:2">
+  <li>Install <a href="https://phantom.app" target="_blank">Phantom wallet</a> browser extension</li>
+  <li>Open Phantom → Settings → Developer Settings → switch to <strong>Devnet</strong></li>
+  <li>Copy your wallet address (click the address at the top of Phantom)</li>
+  <li>Get free test SOL from <a href="https://faucet.solana.com" target="_blank">faucet.solana.com</a> (paste your address, request airdrop)</li>
+</ol>
+<p>For API authentication, use the demo key:</p>
 <pre><span class="label">Header</span><span class="kw">Authorization:</span> Bearer <span class="str">mp_live_demo_key</span></pre>
-<div class="callout callout-warn"><strong>Wallet setup:</strong> Install <a href="https://phantom.app" target="_blank">Phantom</a> and switch to <strong>Devnet</strong> in Settings → Developer Settings. Get free test SOL from <a href="https://faucet.solana.com" target="_blank">faucet.solana.com</a>.</div>
 </div>
 
 <div class="step" data-step="2">
 <div class="step-title">Browse available services</div>
-<p>Discover what's available in the Bazaar. You can search by keyword or get the full list:</p>
-
+<p>Discover what's in the Bazaar. 26 services are preloaded across 11 categories.</p>
 <div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/discover</span></div>
-
 <pre><span class="label">cURL</span><span class="cmt"># Get all 26 services</span>
 <span class="fn">curl</span> https://micropay.up.railway.app/api/v1/registry/discover
 
 <span class="cmt"># Search by intent</span>
 <span class="fn">curl</span> "https://micropay.up.railway.app/api/v1/registry/discover?query=stocks"</pre>
-
-<p>Each service has an <code>id</code> you'll use in the next step. See the <a href="#services-catalog">full service catalog</a> below for all 26 services and their prices.</p>
+<p>Each service has an <code>id</code> and a price category. See the <a href="#services-catalog">full catalog</a> for all 26 services. Note the <code>id</code> — you'll use it next.</p>
 </div>
 
 <div class="step" data-step="3">
 <div class="step-title">Create a charge</div>
-<p>This is the core payment step. Send your <span class="has-tooltip">service_id<span class="tooltip">The unique identifier for the service you want to pay for. Examples: <code>finance_stocks</code>, <code>weather_openmeteo</code>, <code>nlp_sentiment</code>. Get this from the discover endpoint.</span></span> and <span class="has-tooltip">source_wallet<span class="tooltip">Your Solana wallet address (base58). This becomes the <code>feePayer</code> on the transaction — the wallet that Phantom will sign with. Must match the connected Phantom wallet exactly.</span></span> to get an unsigned Solana transaction back.</p>
-
+<p>This is the core payment step. You send a <code>service_id</code> and your <code>source_wallet</code>, and get back an unsigned Solana transaction.</p>
 <div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/charges</span></div>
 
 <div class="param-list">
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">service_id</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">service_id</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
     <div class="param-desc">The registry service to pay for.</div>
-    <div class="param-expand"><strong>Where to find this:</strong> Call <code>GET /api/v1/registry/discover</code> and look at the <code>id</code> field in each service object. Examples: <code>finance_stocks</code> ($0.01), <code>search_web</code> ($0.05), <code>openai_chat</code> ($0.05). The backend automatically looks up the price by category — you never need to pass a cost. If the ID doesn't exist in the registry, you'll get a <code>404</code>.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Where to find this:</strong> Call <code>GET /api/v1/registry/discover</code> and use the <code>id</code> field. The backend auto-looks up the price by category — you never pass a cost.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Non-empty string</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"finance_stocks"</code></div></div><div class="pe-item"><div class="pe-label">Valid values</div><div class="pe-val">Any ID from the <a href="#services-catalog">service catalog</a></div></div></div></div>
+      <div class="pe-error"><strong>400 if empty:</strong> <code>{"error":{"type":"invalid_request_error","message":"'service_id' is required and must be a non-empty string."}}</code><br><strong>404 if not found:</strong> <code>{"error":{"type":"not_found_error","message":"Service 'bad_id' not found in registry."}}</code></div>
+    </div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Base58 Solana public key of the wallet paying.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Critical — must match Phantom.</strong> The backend sets this as <code>feePayer</code> on the Solana transaction. If this doesn't match the wallet connected in Phantom, the signature will be rejected. Get your address from Phantom by clicking the address at the top of the extension.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Solana base58 public key</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5"</code></div></div><div class="pe-item"><div class="pe-label">Format</div><div class="pe-val">32–44 alphanumeric characters</div></div></div></div>
+      <div class="pe-error"><strong>400 if empty:</strong> <code>{"error":{"type":"invalid_request_error","message":"'source_wallet' is required and must be a non-empty string."}}</code><br><strong>Runtime fail:</strong> If this doesn't match Phantom's connected wallet, <code>signTransaction()</code> throws "Transaction signature verification failure".</div>
     </div>
-    <div class="param-desc">Base58 Solana public key of the paying wallet.</div>
-    <div class="param-expand"><strong>Important:</strong> This must exactly match the wallet connected in Phantom. The backend sets this as the <code>feePayer</code> on the Solana transaction. If you pass a different wallet address than what's connected, the transaction will fail when signing. Get your address from Phantom by clicking the address at the top of the extension. Format: <code>AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</code></div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">Idempotency-Key</span><span class="param-type">string</span><span class="param-optional">header · optional</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">Idempotency-Key</span><span class="param-type">string</span><span class="param-optional">header · optional</span><span class="param-toggle">+</span></div>
     <div class="param-desc">Prevents duplicate charges on retry.</div>
-    <div class="param-expand"><strong>How it works:</strong> Pass a unique string (UUID recommended) in the <code>Idempotency-Key</code> header. If the same key is sent twice, the second call returns the cached response from the first — no new charge is created. This is critical for production agents that may retry on network failures. The key is stored in server memory and resets on restart.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>How it works:</strong> Pass a UUID in the <code>Idempotency-Key</code> request header. If the same key is sent twice, the second call returns the cached response — no new charge is created. Essential for production agents that retry on timeouts.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Any unique string (UUID recommended)</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"idemp_abc123"</code></div></div><div class="pe-item"><div class="pe-label">Stored</div><div class="pe-val">In-memory, resets on server restart</div></div></div></div>
+      <div class="pe-error"><strong>No error if omitted</strong> — the header is optional. But without it, retrying a failed request may create a duplicate charge.</div>
+    </div>
   </div>
 </div>
 
@@ -408,363 +431,109 @@ code{font-family:var(--mono);font-size:12.5px;background:var(--code-bg);padding:
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{
     "service_id": "finance_stocks",
-    "source_wallet": "YOUR_SOLANA_WALLET"
+    "source_wallet": "YOUR_PHANTOM_WALLET_ADDRESS"
   }'</span></pre>
 
-<p>Response — you get back the full charge object:</p>
+<p>Response — the full charge object:</p>
 <pre><span class="label">JSON</span>{
   <span class="kw">"id"</span>: <span class="str">"ch_wb4bedrhxh1q"</span>,
   <span class="kw">"object"</span>: <span class="str">"charge"</span>,
   <span class="kw">"status"</span>: <span class="str">"requires_signature"</span>,
   <span class="kw">"service_id"</span>: <span class="str">"finance_stocks"</span>,
+  <span class="kw">"service_name"</span>: <span class="str">"Stock Price Feed"</span>,
   <span class="kw">"amount_usd"</span>: <span class="num">0.01</span>,
   <span class="kw">"exchange_rate_sol_usd"</span>: <span class="num">148.32</span>,
   <span class="kw">"amount_sol"</span>: <span class="num">0.000067423</span>,
   <span class="kw">"network_fee_sol"</span>: <span class="num">0.000005</span>,
+  <span class="kw">"source_wallet"</span>: <span class="str">"AuofYo21...Nt5"</span>,
   <span class="kw">"destination_wallet"</span>: <span class="str">"2Hn6ESe...zv8"</span>,
-  <span class="kw">"transaction_payload"</span>: <span class="str">"AQAAAAAAAAAAAAAAAAAAAABAAQADb8d..."</span>
+  <span class="kw">"transaction_payload"</span>: <span class="str">"AQAAAAAAAAAAAABAAQADb8d..."</span>
 }</pre>
 
-<h3>What each field means</h3>
+<h3>Response fields explained</h3>
 <div class="param-list">
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">id</span><span class="param-type">string</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">id</span><span class="param-type">string</span><span class="param-toggle">+</span></div>
     <div class="param-desc">Unique charge ID, prefixed with <code>ch_</code>.</div>
-    <div class="param-expand"><strong>Usage:</strong> Reference this to look up a charge later with <code>GET /api/v1/charges/:id</code>. Auto-generated, globally unique within the server's memory. Resets on server restart since this is an in-memory store.</div>
+    <div class="param-expand"><div class="pe-body"><strong>Usage:</strong> Reference this to look up a charge later with <code>GET /api/v1/charges/:id</code>. Auto-generated, 12 random alphanumeric characters. Stored in-memory — resets on server restart.<div class="pe-row"><div class="pe-item"><div class="pe-label">Format</div><div class="pe-val"><code>ch_</code> + 12 chars</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"ch_wb4bedrhxh1q"</code></div></div></div></div></div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">status</span><span class="param-type">string</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Always <code>requires_signature</code> on creation.</div>
-    <div class="param-expand"><strong>Lifecycle:</strong> A charge starts as <code>requires_signature</code> — meaning the Solana transaction has been built but not yet signed and broadcast. After you sign with Phantom and broadcast, the settlement happens on-chain. The backend doesn't currently track post-broadcast status (it's a hackathon demo).</div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">transaction_payload</span><span class="param-type">string</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Base64-encoded unsigned Solana transaction. This is what you sign.</div>
+    <div class="param-expand"><div class="pe-body"><strong>What's inside:</strong> A serialized Solana <code>Transaction</code> containing a <code>SystemProgram.transfer</code> instruction. It moves <code>amount_sol</code> from your <code>source_wallet</code> (feePayer) to the developer's <code>destination_wallet</code>. The <code>recentBlockhash</code> is set at creation time but may expire — always refresh it before signing (see Step 4).<div class="pe-row"><div class="pe-item"><div class="pe-label">Format</div><div class="pe-val">Base64-encoded binary</div></div><div class="pe-item"><div class="pe-label">Decode with</div><div class="pe-val"><code>Buffer.from(payload, 'base64')</code></div></div></div></div><div class="pe-error"><strong>If you don't refresh the blockhash:</strong> The transaction may fail with "Blockhash not found" or "Transaction expired" because Solana blockhashes expire after ~60 seconds. Always call <code>getLatestBlockhash()</code> and overwrite <code>tx.recentBlockhash</code> before signing.</div></div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">transaction_payload</span><span class="param-type">string</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Base64-encoded unsigned Solana transaction.</div>
-    <div class="param-expand"><strong>What to do with this:</strong> Decode from Base64 → create a <code>Transaction</code> object → refresh the <code>recentBlockhash</code> (it may expire) → sign with Phantom → broadcast to Devnet. The transaction contains a SOL transfer from your <code>source_wallet</code> to the developer's <code>destination_wallet</code>. See the signing code in Step 4 below.</div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">exchange_rate_sol_usd</span><span class="param-type">number</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">SOL/USD rate from live CoinGecko oracle at charge time.</div>
+    <div class="param-expand"><div class="pe-body"><strong>How conversion works:</strong> <code>amount_sol = amount_usd / exchange_rate_sol_usd</code>. The USD cost is always fixed (set by category), but SOL amount changes with the market. This rate is recorded for transparency.<div class="pe-row"><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>148.32</code> (meaning 1 SOL = $148.32)</div></div></div></div></div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">exchange_rate_sol_usd</span><span class="param-type">number</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">SOL/USD rate used at charge time from live oracle.</div>
-    <div class="param-expand"><strong>How conversion works:</strong> The backend fetches the live SOL price from CoinGecko at the moment you create the charge. <code>amount_sol = amount_usd / exchange_rate_sol_usd</code>. The USD cost is always fixed (set by category), but the SOL amount changes with the market. This rate is recorded for transparency.</div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">destination_wallet</span><span class="param-type">string</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">The service developer's wallet — auto-fetched from the registry.</div>
+    <div class="param-expand"><div class="pe-body"><strong>You don't set this.</strong> The backend looks up the <code>developer_wallet</code> from the registry for the given <code>service_id</code> and uses it as the transfer recipient. You never send money to yourself. This is the wallet that receives the SOL when you sign and broadcast.</div></div>
   </div>
 </div>
 </div>
 
 <div class="step" data-step="4">
 <div class="step-title">Sign and broadcast the transaction</div>
-<p>Decode the <span class="has-tooltip">transaction_payload<span class="tooltip">A Base64-encoded unsigned Solana transaction. Contains a SOL transfer instruction with your wallet as feePayer. Decode it, refresh the blockhash, sign with Phantom, and broadcast to Devnet.</span></span>, refresh the blockhash, sign with Phantom, and broadcast:</p>
+<p>Decode the <code>transaction_payload</code>, refresh the blockhash (critical — it expires), sign with Phantom, and broadcast to Devnet.</p>
 
-<pre><span class="label">JavaScript</span><span class="kw">import</span> { Transaction, Connection } <span class="kw">from</span> <span class="str">'@solana/web3.js'</span>;
+<pre><span class="label">JavaScript — Full signing flow</span><span class="kw">import</span> { Transaction, Connection } <span class="kw">from</span> <span class="str">'@solana/web3.js'</span>;
 
+<span class="cmt">// Connect to Solana Devnet</span>
 <span class="kw">const</span> connection = <span class="kw">new</span> Connection(
   <span class="str">'https://api.devnet.solana.com'</span>, <span class="str">'confirmed'</span>
 );
 
-<span class="cmt">// 1. Decode the payload from the charge response</span>
+<span class="cmt">// Step 4a: Decode the base64 payload from the charge response</span>
 <span class="kw">const</span> tx = Transaction.from(
   Buffer.from(charge.transaction_payload, <span class="str">'base64'</span>)
 );
 
-<span class="cmt">// 2. Refresh blockhash (prevents expiry)</span>
-<span class="kw">const</span> { blockhash } = <span class="kw">await</span> connection.getLatestBlockhash(<span class="str">'confirmed'</span>);
+<span class="cmt">// Step 4b: CRITICAL — Refresh the blockhash</span>
+<span class="cmt">// The blockhash from charge creation expires in ~60s.</span>
+<span class="cmt">// If you skip this, you get "Blockhash not found".</span>
+<span class="kw">const</span> { blockhash, lastValidBlockHeight } =
+  <span class="kw">await</span> connection.getLatestBlockhash(<span class="str">'confirmed'</span>);
 tx.recentBlockhash = blockhash;
 
-<span class="cmt">// 3. Sign with Phantom (popup appears)</span>
+<span class="cmt">// Step 4c: Sign with Phantom (triggers wallet popup)</span>
 <span class="kw">const</span> signed = <span class="kw">await</span> window.phantom.solana.signTransaction(tx);
 
-<span class="cmt">// 4. Broadcast to Devnet</span>
+<span class="cmt">// Step 4d: Broadcast to Devnet</span>
 <span class="kw">const</span> signature = <span class="kw">await</span> connection.sendRawTransaction(
   signed.serialize()
 );
 
-console.log(<span class="str">`Settled: https://explorer.solana.com/tx/${signature}?cluster=devnet`</span>);</pre>
-<div class="callout callout-success"><strong>Done!</strong> Payment settles on Solana Devnet in under 1 second. The developer receives their SOL, and you can verify the transaction on <a href="https://explorer.solana.com/?cluster=devnet" target="_blank">Solana Explorer</a>.</div>
+<span class="cmt">// Step 4e: Confirm settlement</span>
+<span class="kw">await</span> connection.confirmTransaction(
+  { signature, blockhash, lastValidBlockHeight }, <span class="str">'confirmed'</span>
+);
+
+console.log(<span class="str">`Done! https://explorer.solana.com/tx/${signature}?cluster=devnet`</span>);</pre>
+<div class="callout callout-success"><strong>Payment settles in &lt;1 second.</strong> The developer receives their SOL, and you can verify the transaction on <a href="https://explorer.solana.com/?cluster=devnet" target="_blank">Solana Explorer</a>.</div>
 </div>
 
 <div class="step" data-step="5">
-<div class="step-title">Or let the AI agent handle it all</div>
-<p>Instead of manual charges, you can use the AI Chat Gateway. Send a natural language message, and the AI decides if it needs a paid tool or can answer directly.</p>
+<div class="step-title">Or use the AI Gateway (agentic flow)</div>
+<p>Instead of manual charges, send a natural language message to the AI Gateway. The AI decides if it needs a paid tool or can answer directly — then you handle the payment loop.</p>
 
+<h3>Step 5a — Send a message</h3>
+<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/completions</span></div>
 <pre><span class="label">cURL</span><span class="fn">curl</span> -X POST https://micropay.up.railway.app/api/v1/chat/completions \
   -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span> \
   -H <span class="str">"Content-Type: application/json"</span> \
   -d <span class="str">'{
     "message": "What is the current price of AAPL?",
-    "source_wallet": "YOUR_SOLANA_WALLET"
+    "source_wallet": "YOUR_PHANTOM_WALLET_ADDRESS"
   }'</span></pre>
 
-<p>If the AI needs paid data, it returns <code>type: "tool_call"</code> with the <code>service_id</code> and estimated cost. You then create a charge, sign it, fetch the data, and pass it back via <code>POST /api/v1/chat/tool-result</code>. See the <a href="#ai-gateway">AI Gateway reference</a> for the full flow.</p>
-</div>
-
-</div>
-
-<!-- ═══════════════════════════════════════ -->
-<!-- AUTHENTICATION -->
-<!-- ═══════════════════════════════════════ -->
-<h2 id="authentication">Authentication</h2>
-<p>Micropay uses API keys for authentication. Pass your key in the <code>Authorization</code> header as a Bearer token.</p>
-
-<pre><span class="label">Header</span><span class="kw">Authorization:</span> Bearer <span class="str">mp_live_demo_key</span></pre>
-
-<div class="callout callout-warn"><strong>Demo key:</strong> <code>mp_live_demo_key</code> — use this for all hackathon testing. Works on all authenticated endpoints.</div>
-
-<h3>Auth requirements by endpoint</h3>
-<div class="auth-grid">
-  <div class="auth-ep"><code>POST /api/v1/registry/register</code></div><div class="auth-status"><span class="pill pill-auth">Auth required</span></div>
-  <div class="auth-ep"><code>GET /api/v1/registry/discover</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
-  <div class="auth-ep"><code>GET /api/v1/registry/services/:id</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
-  <div class="auth-ep"><code>POST /api/v1/charges</code></div><div class="auth-status"><span class="pill pill-auth">Auth required</span></div>
-  <div class="auth-ep"><code>GET /api/v1/charges</code></div><div class="auth-status"><span class="pill pill-auth">Auth required</span></div>
-  <div class="auth-ep"><code>GET /api/v1/charges/:id</code></div><div class="auth-status"><span class="pill pill-auth">Auth required</span></div>
-  <div class="auth-ep"><code>POST /api/v1/chat/completions</code></div><div class="auth-status"><span class="pill pill-auth">Auth required</span></div>
-  <div class="auth-ep"><code>POST /api/v1/chat/tool-result</code></div><div class="auth-status"><span class="pill pill-auth">Auth required</span></div>
-  <div class="auth-ep"><code>POST /api/ai/chat</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
-  <div class="auth-ep"><code>GET /api/v1/balance/:wallet</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
-  <div class="auth-ep"><code>GET /api/v1/transactions/:wallet</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
-  <div class="auth-ep"><code>GET /api/v1/network/status</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
-  <div class="auth-ep"><code>GET /api/v1/health</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
-</div>
-
-<p>Missing or invalid keys return <code>401 Unauthorized</code>:</p>
-<pre><span class="label">JSON</span>{ <span class="kw">"error"</span>: <span class="str">"Unauthorized: Missing or invalid Authorization header format"</span> }</pre>
-
-<!-- ═══════════════════════════════════════ -->
-<!-- API REFERENCE: CHARGES -->
-<!-- ═══════════════════════════════════════ -->
-<h2 id="charges">Charges</h2>
-<p>Charges represent a payment for a registry service. Create one to get an unsigned Solana transaction, then sign and broadcast it.</p>
-
-<h3>Create a charge</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/charges</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
-<p>Returns an unsigned Solana transaction for a registry service. The backend automatically fetches the live SOL/USD price, calculates the exact SOL amount, looks up the developer's wallet, and builds the transaction. You just sign it.</p>
-
-<div class="param-list">
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">service_id</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">The registry service to pay for. Must exist in the Bazaar.</div>
-    <div class="param-expand"><strong>How to find valid IDs:</strong> Call <code>GET /api/v1/registry/discover</code> to browse all services. Use the <code>id</code> field from any service object. Prebuilt examples include: <code>finance_stocks</code>, <code>weather_openmeteo</code>, <code>nlp_sentiment</code>, <code>search_web</code>, <code>openai_chat</code>. If the ID doesn't exist, you get a <code>404 not_found_error</code>. See the <a href="#services-catalog">full catalog</a> for all 26 IDs.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Base58 Solana public key of the wallet paying.</div>
-    <div class="param-expand"><strong>Critical:</strong> This address is set as the <code>feePayer</code> on the Solana transaction. It <em>must</em> match the wallet you'll sign with in Phantom. If they don't match, the transaction will be rejected. Get your address from the Phantom extension. Example: <code>AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</code></div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">Idempotency-Key</span><span class="param-type">string</span><span class="param-optional">header · optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Unique string preventing duplicate charges on retry.</div>
-    <div class="param-expand"><strong>Usage:</strong> Pass a UUID in the <code>Idempotency-Key</code> header. If the same key is sent twice, the second call returns the first call's cached response — no double-charge. Essential for production agents that retry on timeouts. Stored in-memory, resets on server restart.</div>
-  </div>
-</div>
-
-<h3>Response fields</h3>
-<table class="resp-table">
-  <tr><th>Field</th><th>Description</th></tr>
-  <tr><td><code>id</code></td><td>Unique charge ID (prefix <code>ch_</code>)</td></tr>
-  <tr><td><code>status</code></td><td>Always <code>requires_signature</code> on creation</td></tr>
-  <tr><td><code>amount_usd</code></td><td>Fixed USD cost, determined by service category</td></tr>
-  <tr><td><code>exchange_rate_sol_usd</code></td><td>SOL/USD rate at charge time (live oracle)</td></tr>
-  <tr><td><code>amount_sol</code></td><td>Exact SOL to transfer</td></tr>
-  <tr><td><code>network_fee_sol</code></td><td>Solana fee: <code>0.000005</code> SOL</td></tr>
-  <tr><td><code>destination_wallet</code></td><td>Developer's wallet (auto-fetched from registry)</td></tr>
-  <tr><td><code>transaction_payload</code></td><td>Base64 unsigned Solana tx — decode, sign, broadcast</td></tr>
-</table>
-
-<h3>List charges</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
-<p>Returns a paginated list of all charges. Filter by wallet or status.</p>
-
-<div class="param-list">
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">limit</span><span class="param-type">integer</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Max records per page. Default: <code>10</code>, max: <code>100</code>.</div>
-    <div class="param-expand"><strong>Pagination:</strong> Use <code>limit</code> + <code>offset</code> together. Response includes <code>has_more: true</code> if more pages exist and <code>total_count</code> for total records. Example: <code>?limit=5&offset=10</code> returns records 11–15.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">offset</span><span class="param-type">integer</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Records to skip. Default: <code>0</code>.</div>
-    <div class="param-expand"><strong>Zero-indexed.</strong> Combine with <code>limit</code> to paginate through results. The response tells you <code>has_more</code> and <code>total_count</code> so you know when you've reached the end.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">status</span><span class="param-type">string</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Filter by charge status.</div>
-    <div class="param-expand"><strong>Available values:</strong> <code>requires_signature</code>. Only charges matching this status are returned. Currently the only status since the backend doesn't track post-broadcast state.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Filter to charges from a specific wallet.</div>
-    <div class="param-expand"><strong>Usage:</strong> Pass a base58 Solana address. Only charges where <code>source_wallet</code> matches are returned. Useful for showing a specific user their charge history.</div>
-  </div>
-</div>
-
-<pre><span class="label">cURL</span><span class="fn">curl</span> "https://micropay.up.railway.app/api/v1/charges?limit=5&offset=0" \
-  -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span></pre>
-
-<h3>Get a charge</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges/:id</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
-<p>Retrieve the full details of a single charge by its ID.</p>
-
-<div class="param-list">
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">id</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">The charge ID from <code>POST /api/v1/charges</code>. Prefix: <code>ch_</code>.</div>
-    <div class="param-expand"><strong>Where you got this:</strong> When you created a charge, the response included an <code>id</code> field like <code>ch_wb4bedrhxh1q</code>. Use that here. Returns <code>404</code> if not found.</div>
-  </div>
-</div>
-
-<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/charges/ch_wb4bedrhxh1q \
-  -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span></pre>
-
-<!-- ═══════════════════════════════════════ -->
-<!-- API REFERENCE: REGISTRY -->
-<!-- ═══════════════════════════════════════ -->
-<h2 id="registry">Registry</h2>
-<p>The registry is a discovery index of all paid services in the Bazaar. Register your own API or browse existing ones.</p>
-
-<h3>Register a service</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/registry/register</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
-<p>Add your API to the Bazaar. Once registered, AI agents can discover it and pay you per call.</p>
-
-<div class="param-list">
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">name</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Human-readable service name shown in discovery results.</div>
-    <div class="param-expand"><strong>Tip:</strong> Keep it clear and specific. <code>"Live Weather (Open-Meteo)"</code> is better than <code>"Weather API v2"</code>. This is what agents and users see first when browsing the Bazaar.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">description</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Detailed description used for semantic search matching.</div>
-    <div class="param-expand"><strong>Write this for an AI agent.</strong> Include: what data you return, what inputs you accept, what format the response is in. The discover endpoint searches across name, description, and tags — richer descriptions rank higher.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">endpoint</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Fully qualified URL of your API.</div>
-    <div class="param-expand"><strong>Must be publicly accessible</strong> and return JSON. Include the full URL with protocol: <code>https://my-api.com/weather</code>. This is where Micropay routes traffic when agents use your service.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">cost_usd</span><span class="param-type">number</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Price per call in USD. Must be positive.</div>
-    <div class="param-expand"><strong>Pricing guide:</strong> <code>$0.01</code> for basic data (weather, finance), <code>$0.02</code> for enriched data (news, sports), <code>$0.05</code> for AI/search. The USD price is fixed; SOL amount is calculated from live oracle at charge time.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">developer_wallet</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Solana base58 wallet where you receive payments.</div>
-    <div class="param-expand"><strong>Payments go here.</strong> When agents pay for your service, SOL transfers to this address. Use your Phantom wallet's public key. Switch Phantom to Devnet for testing. Get free SOL from <a href="https://faucet.solana.com" target="_blank">faucet.solana.com</a>.</div>
-  </div>
-</div>
-
-<h3>Discover services</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/discover</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
-<p>Search all registered services. 26 services are preloaded. No auth required.</p>
-
-<div class="param-list">
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">query</span><span class="param-type">string</span><span class="param-optional">query param · optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Search by intent. Matches name, description, and tags.</div>
-    <div class="param-expand"><strong>How search works:</strong> Case-insensitive substring match across <code>name</code>, <code>description</code>, and <code>tags</code> fields. Examples: <code>?query=weather</code> returns 3 weather services. <code>?query=crypto</code> returns the crypto price oracle. Omit to get all 26 services.</div>
-  </div>
-</div>
-
-<h3>Get a service</h3>
-<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/services/:id</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
-<p>Retrieve a single service by its exact ID. Returns <code>404</code> if not found.</p>
-
-<!-- ═══════════════════════════════════════ -->
-<!-- API REFERENCE: AI GATEWAY -->
-<!-- ═══════════════════════════════════════ -->
-<h2 id="ai-gateway">AI Gateway</h2>
-<p>The AI Gateway lets agents interact with the Bazaar using natural language. The AI decides whether to answer directly or request a paid tool call.</p>
-
-<h3>Chat completions</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/completions</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
-<p>Send a natural language message. The AI either answers directly (<code>type: "message"</code>) or requests a paid tool call (<code>type: "tool_call"</code>).</p>
-
-<div class="param-list">
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">message</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">The user's message to the AI.</div>
-    <div class="param-expand"><strong>What happens:</strong> The AI analyzes your message and decides if it can answer from its knowledge or if it needs live data from a Bazaar service. If it needs data, the response includes <code>type: "tool_call"</code> with the specific <code>service_id</code> and estimated cost. You then create a charge, pay, get the data, and send it back via <code>/chat/tool-result</code>.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">conversation_id</span><span class="param-type">string</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Continue an existing conversation.</div>
-    <div class="param-expand"><strong>How conversations work:</strong> Each call returns a <code>conversation_id</code>. Pass it back in the next call to continue the conversation with full context. Omit to start a new conversation (one is auto-generated). Server stores up to 20 messages per conversation in memory. Resets on restart.</div>
-  </div>
-  <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
-    </div>
-    <div class="param-desc">Informational only — not used to build the transaction here.</div>
-    <div class="param-expand"><strong>Why it's optional:</strong> The chat endpoint doesn't create charges. It only tells you <em>what</em> service to pay for. The actual charge is created separately via <code>POST /api/v1/charges</code> where <code>source_wallet</code> is required.</div>
-  </div>
-</div>
-
-<div class="callout callout-purple"><strong>Two response types:</strong> <code>type: "message"</code> = plain AI answer (no payment needed). <code>type: "tool_call"</code> = AI needs live data. Create a charge → sign → broadcast → send data back via <code>/chat/tool-result</code>.</div>
-
-<pre><span class="label">Tool call response</span>{
+<p>If the AI can answer from knowledge, you get <code>type: "message"</code> — you're done. But if it needs live data, you get <code>type: "tool_call"</code>:</p>
+<pre><span class="label">tool_call response</span>{
   <span class="kw">"type"</span>: <span class="str">"tool_call"</span>,
   <span class="kw">"conversation_id"</span>: <span class="str">"conv_a8f2k9x1b3"</span>,
-  <span class="kw">"message"</span>: <span class="str">"I need to access Stock Price Feed. This requires ~$0.01 in SOL."</span>,
+  <span class="kw">"message"</span>: <span class="str">"I need to access Stock Price Feed (~$0.01 in SOL)."</span>,
   <span class="kw">"tool_call"</span>: {
     <span class="kw">"id"</span>: <span class="str">"call_abc123"</span>,
     <span class="kw">"service_id"</span>: <span class="str">"finance_stocks"</span>,
@@ -773,266 +542,535 @@ console.log(<span class="str">`Settled: https://explorer.solana.com/tx/${signatu
   }
 }</pre>
 
-<h3>Submit tool result</h3>
-<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/tool-result</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
-<p>After paying for a tool call, send the real data back. The AI generates a natural language answer.</p>
+<h3>Step 5b — Create a charge + sign + broadcast</h3>
+<p>Use the <code>service_id</code> from the tool call to create a charge (Step 3 above), then sign and broadcast (Step 4). This is the payment.</p>
+
+<h3>Step 5c — Fetch data from the service endpoint</h3>
+<p>After payment, call the service's endpoint to get the actual data. The endpoint is in the registry.</p>
+
+<h3>Step 5d — Send the data back to the AI</h3>
+<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/tool-result</span></div>
 
 <div class="param-list">
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">conversation_id</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">conversation_id</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
     <div class="param-desc">The <code>conversation_id</code> from the tool_call response.</div>
-    <div class="param-expand"><strong>Must match exactly.</strong> This links the tool result to the original conversation context. The AI uses the conversation history to generate a contextual response. If mismatched, the AI won't have context about what data it asked for.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Must match exactly.</strong> This links the tool result to the original conversation context. The AI uses conversation history to generate a contextual response. Server stores up to 20 messages per conversation in memory.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">String (auto-generated)</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"conv_a8f2k9x1b3"</code></div></div><div class="pe-item"><div class="pe-label">Lifespan</div><div class="pe-val">In-memory, resets on server restart</div></div></div></div>
+      <div class="pe-error"><strong>If mismatched or missing:</strong> The AI loses context about what data it asked for. The response may be generic or nonsensical because the conversation thread is broken.</div>
+    </div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">tool_result</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">tool_result</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
     <div class="param-desc">The raw data from the service. JSON-stringified or plain text.</div>
-    <div class="param-expand"><strong>What to send:</strong> The actual response from the paid service, as a string. If the service returned JSON, stringify it: <code>JSON.stringify(serviceResponse)</code>. The AI will interpret and summarize the raw data into a natural language answer for the user.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>What to send:</strong> The actual response from the paid service, as a string. The AI interprets and summarizes the raw data into a natural language answer.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">String (usually JSON.stringify'd)</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"{\"AAPL\":{\"price\":189.42,\"change\":\"+1.2%\"}}"</code></div></div></div></div>
+      <div class="pe-error"><strong>If empty or missing:</strong> The AI has no data to work with and returns a vague response saying it couldn't retrieve the information.</div>
+    </div>
+  </div>
+</div>
+
+<pre><span class="label">cURL</span><span class="fn">curl</span> -X POST https://micropay.up.railway.app/api/v1/chat/tool-result \
+  -H <span class="str">"Authorization: Bearer mp_live_demo_key"</span> \
+  -H <span class="str">"Content-Type: application/json"</span> \
+  -d <span class="str">'{
+    "conversation_id": "conv_a8f2k9x1b3",
+    "tool_result": "{\"AAPL\":{\"price\":189.42,\"change\":\"+1.2%\",\"volume\":\"58M\"}}"
+  }'</span></pre>
+
+<p>Response — the AI gives a natural language answer:</p>
+<pre><span class="label">JSON</span>{
+  <span class="kw">"type"</span>: <span class="str">"message"</span>,
+  <span class="kw">"conversation_id"</span>: <span class="str">"conv_a8f2k9x1b3"</span>,
+  <span class="kw">"content"</span>: <span class="str">"Apple (AAPL) is currently trading at $189.42, up 1.2% today on volume of 58M shares."</span>,
+  <span class="kw">"model"</span>: <span class="str">"gpt-4o-mini"</span>
+}</pre>
+
+<h3>Full agentic flow in JavaScript</h3>
+<pre><span class="label">JavaScript — Complete AI agent loop</span><span class="kw">async function</span> <span class="fn">askAgent</span>(question, wallet) {
+  <span class="cmt">// 1. Ask the AI</span>
+  <span class="kw">const</span> chatRes = <span class="kw">await</span> fetch(<span class="str">'https://micropay.up.railway.app/api/v1/chat/completions'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>: <span class="str">'Bearer mp_live_demo_key'</span>,
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+    },
+    body: JSON.stringify({ message: question, source_wallet: wallet })
+  });
+  <span class="kw">const</span> chat = <span class="kw">await</span> chatRes.json();
+
+  <span class="cmt">// 2. If plain answer, we're done</span>
+  <span class="kw">if</span> (chat.type === <span class="str">'message'</span>) <span class="kw">return</span> chat.content;
+
+  <span class="cmt">// 3. AI needs paid data — create charge</span>
+  <span class="kw">const</span> chargeRes = <span class="kw">await</span> fetch(<span class="str">'https://micropay.up.railway.app/api/v1/charges'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>: <span class="str">'Bearer mp_live_demo_key'</span>,
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+    },
+    body: JSON.stringify({
+      service_id: chat.tool_call.service_id,
+      source_wallet: wallet
+    })
+  });
+  <span class="kw">const</span> charge = <span class="kw">await</span> chargeRes.json();
+
+  <span class="cmt">// 4. Sign + broadcast (see Step 4 above)</span>
+  <span class="kw">const</span> tx = Transaction.from(Buffer.from(charge.transaction_payload, <span class="str">'base64'</span>));
+  <span class="kw">const</span> { blockhash, lastValidBlockHeight } =
+    <span class="kw">await</span> connection.getLatestBlockhash(<span class="str">'confirmed'</span>);
+  tx.recentBlockhash = blockhash;
+  <span class="kw">const</span> signed = <span class="kw">await</span> phantom.signTransaction(tx);
+  <span class="kw">const</span> sig = <span class="kw">await</span> connection.sendRawTransaction(signed.serialize());
+  <span class="kw">await</span> connection.confirmTransaction(
+    { signature: sig, blockhash, lastValidBlockHeight }, <span class="str">'confirmed'</span>
+  );
+
+  <span class="cmt">// 5. Fetch real data from service (your app logic here)</span>
+  <span class="kw">const</span> serviceData = <span class="kw">await</span> fetchFromService(chat.tool_call.service_id, question);
+
+  <span class="cmt">// 6. Send data back to AI</span>
+  <span class="kw">const</span> resultRes = <span class="kw">await</span> fetch(<span class="str">'https://micropay.up.railway.app/api/v1/chat/tool-result'</span>, {
+    method: <span class="str">'POST'</span>,
+    headers: {
+      <span class="str">'Authorization'</span>: <span class="str">'Bearer mp_live_demo_key'</span>,
+      <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span>
+    },
+    body: JSON.stringify({
+      conversation_id: chat.conversation_id,
+      tool_result: JSON.stringify(serviceData)
+    })
+  });
+  <span class="kw">const</span> result = <span class="kw">await</span> resultRes.json();
+  <span class="kw">return</span> result.content;
+}
+
+<span class="cmt">// Usage</span>
+<span class="kw">const</span> answer = <span class="kw">await</span> askAgent(<span class="str">"What is the price of AAPL?"</span>, <span class="str">"YOUR_WALLET"</span>);
+console.log(answer);</pre>
+</div>
+</div>
+</div><!-- /guide-holder -->
+
+<!-- ═══════════════════════ AUTHENTICATION ═══════════════════════ -->
+<h2 id="authentication">Authentication</h2>
+<p>Pass your API key as a Bearer token in the <code>Authorization</code> header.</p>
+<pre><span class="label">Header</span><span class="kw">Authorization:</span> Bearer <span class="str">mp_live_demo_key</span></pre>
+<div class="callout callout-warn"><strong>Demo key:</strong> <code>mp_live_demo_key</code> — use this for all hackathon testing.</div>
+
+<h3>Auth requirements by endpoint</h3>
+<div class="auth-grid">
+  <div class="auth-ep"><code>POST /api/v1/registry/register</code></div><div class="auth-status"><span class="pill pill-auth">Auth</span></div>
+  <div class="auth-ep"><code>GET /api/v1/registry/discover</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
+  <div class="auth-ep"><code>GET /api/v1/registry/services/:id</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
+  <div class="auth-ep"><code>POST /api/v1/charges</code></div><div class="auth-status"><span class="pill pill-auth">Auth</span></div>
+  <div class="auth-ep"><code>GET /api/v1/charges</code></div><div class="auth-status"><span class="pill pill-auth">Auth</span></div>
+  <div class="auth-ep"><code>GET /api/v1/charges/:id</code></div><div class="auth-status"><span class="pill pill-auth">Auth</span></div>
+  <div class="auth-ep"><code>POST /api/v1/chat/completions</code></div><div class="auth-status"><span class="pill pill-auth">Auth</span></div>
+  <div class="auth-ep"><code>POST /api/v1/chat/tool-result</code></div><div class="auth-status"><span class="pill pill-auth">Auth</span></div>
+  <div class="auth-ep"><code>POST /api/ai/chat</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
+  <div class="auth-ep"><code>GET /api/v1/balance/:wallet</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
+  <div class="auth-ep"><code>GET /api/v1/transactions/:wallet</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
+  <div class="auth-ep"><code>GET /api/v1/network/status</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
+  <div class="auth-ep"><code>GET /api/v1/health</code></div><div class="auth-status"><span class="pill pill-public">Public</span></div>
+</div>
+<pre><span class="label">401 — Missing header</span>{ <span class="kw">"error"</span>: <span class="str">"Unauthorized: Missing or invalid Authorization header format"</span> }</pre>
+<pre><span class="label">401 — Invalid key</span>{ <span class="kw">"error"</span>: <span class="str">"Unauthorized: Invalid API Key"</span> }</pre>
+
+<!-- ═══════════════════════ CHARGES ═══════════════════════ -->
+<h2 id="charges">Charges</h2>
+<p>Charges represent a payment for a registry service. Create one to get an unsigned Solana transaction, then sign and broadcast it.</p>
+
+<h3>Create a charge</h3>
+<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/charges</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<p>Returns an unsigned Solana transaction. The backend fetches live SOL/USD price, calculates SOL amount, looks up the developer's wallet, and builds the transaction.</p>
+
+<div class="param-list">
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">service_id</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Registry service to pay for. Must exist in the Bazaar.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>How to find valid IDs:</strong> Call <code>GET /api/v1/registry/discover</code> and use the <code>id</code> field. See the <a href="#services-catalog">full catalog</a> for all 26 IDs.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Non-empty string</div></div><div class="pe-item"><div class="pe-label">Examples</div><div class="pe-val"><code>"finance_stocks"</code>, <code>"weather_openmeteo"</code>, <code>"openai_chat"</code></div></div></div></div>
+      <div class="pe-error"><strong>400:</strong> <code>"'service_id' is required and must be a non-empty string."</code><br><strong>404:</strong> <code>"Service 'bad_id' not found in registry."</code></div>
+    </div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">service_id</span><span class="param-type">string</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Solana public key of the wallet paying. Set as <code>feePayer</code>.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Must match Phantom exactly.</strong> The backend embeds this as <code>feePayer</code> in the Solana transaction. If it doesn't match, Phantom rejects the signature.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Base58 Solana public key</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5"</code></div></div></div></div>
+      <div class="pe-error"><strong>400:</strong> <code>"'source_wallet' is required and must be a non-empty string."</code><br><strong>Phantom error:</strong> "Transaction signature verification failure" if wallet mismatch.</div>
     </div>
-    <div class="param-desc">Fallback tool call ID if conversation history is missing.</div>
-    <div class="param-expand"><strong>When needed:</strong> If for some reason the conversation context was lost (e.g. server restart), passing <code>service_id</code> helps the AI understand what tool was called. Under normal operation, the <code>conversation_id</code> carries this context.</div>
+  </div>
+</div>
+
+<h3>List charges</h3>
+<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<p>Paginated list of all charges. Filter by wallet or status.</p>
+<div class="param-list">
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">limit</span><span class="param-type">integer</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Max records per page. Default: <code>10</code>, max: <code>100</code>.</div>
+    <div class="param-expand"><div class="pe-body">Use <code>limit</code> + <code>offset</code> together. Response includes <code>has_more: true</code> if more pages exist.<div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Integer, 1–100</div></div><div class="pe-item"><div class="pe-label">Default</div><div class="pe-val"><code>10</code></div></div></div></div></div>
+  </div>
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">offset</span><span class="param-type">integer</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Records to skip. Default: <code>0</code>.</div>
+    <div class="param-expand"><div class="pe-body">Zero-indexed. <code>?limit=5&offset=10</code> returns records 11–15.</div></div>
+  </div>
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">status</span><span class="param-type">string</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Filter by charge status.</div>
+    <div class="param-expand"><div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Valid values</div><div class="pe-val"><code>"requires_signature"</code></div></div></div></div></div>
+  </div>
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Filter to charges from a specific wallet address.</div>
+    <div class="param-expand"><div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Type</div><div class="pe-val">Base58 Solana address</div></div></div></div></div>
+  </div>
+</div>
+
+<h3>Get a charge</h3>
+<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/charges/:id</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<p>Retrieve full details of a single charge.</p>
+<div class="param-list">
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">id</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Charge ID from <code>POST /api/v1/charges</code>. Prefix: <code>ch_</code>.</div>
+    <div class="param-expand"><div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"ch_wb4bedrhxh1q"</code></div></div></div></div><div class="pe-error"><strong>404:</strong> <code>"Charge 'ch_badid' not found."</code></div></div>
+  </div>
+</div>
+
+<!-- ═══════════════════════ REGISTRY ═══════════════════════ -->
+<h2 id="registry">Registry</h2>
+<p>The registry is the discovery index for all paid services in the Bazaar.</p>
+
+<h3>Register a service</h3>
+<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/registry/register</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<p>See the <a href="#accept-payments">Accept Payments guide</a> for complete instructions and all 5 required parameters with error details.</p>
+
+<h3>Discover services</h3>
+<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/discover</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<p>Search all registered services. 26 preloaded. No auth required.</p>
+<div class="param-list">
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">query</span><span class="param-type">string</span><span class="param-optional">query param · optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Search by intent. Matches name, description, and tags.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>How search works:</strong> Case-insensitive substring match across <code>name</code>, <code>description</code>, and <code>tags</code>. Omit to get all 26 services.<div class="pe-row"><div class="pe-item"><div class="pe-label">Examples</div><div class="pe-val"><code>?query=weather</code> → 3 results. <code>?query=crypto</code> → 1 result.</div></div></div></div>
+    </div>
+  </div>
+</div>
+
+<h3>Get a service</h3>
+<div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/registry/services/:id</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
+<p>Retrieve a single service by exact ID. Returns <code>404</code> if not found.</p>
+
+<!-- ═══════════════════════ AI GATEWAY ═══════════════════════ -->
+<h2 id="ai-gateway">AI Gateway</h2>
+<p>Natural language interface to the Bazaar. The AI decides whether to answer directly or request a paid tool call. See the <a href="#access-apis">Access APIs guide</a> Step 5 for the full agentic flow with code.</p>
+
+<h3>Chat completions</h3>
+<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/completions</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<div class="param-list">
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">message</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Natural language message to the AI.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>What happens:</strong> The AI analyzes your message and decides if it needs live data from a Bazaar service. If yes → <code>type: "tool_call"</code> with the <code>service_id</code>. If no → <code>type: "message"</code> with a plain answer.<div class="pe-row"><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"What is the current price of AAPL?"</code></div></div></div></div>
+      <div class="pe-error"><strong>400 if missing:</strong> <code>{"error":"message is required"}</code></div>
+    </div>
+  </div>
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">conversation_id</span><span class="param-type">string</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Continue an existing conversation. Omit to start a new one.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>How conversations work:</strong> Each response returns a <code>conversation_id</code>. Pass it back to continue with full context. Up to 20 messages per conversation. Stored in-memory — resets on server restart.<div class="pe-row"><div class="pe-item"><div class="pe-label">Format</div><div class="pe-val"><code>conv_</code> + random ID</div></div><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"conv_a8f2k9x1b3"</code></div></div></div></div>
+      <div class="pe-error"><strong>If wrong/expired:</strong> AI starts a fresh conversation without any prior context. The response will be valid but may lack the context from previous messages.</div>
+    </div>
+  </div>
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Informational only — not used to build the transaction.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Why optional:</strong> The chat endpoint doesn't create charges. It only tells you <em>what</em> service to pay for. The actual charge (where <code>source_wallet</code> is required) is created via <code>POST /api/v1/charges</code>.</div>
+    </div>
+  </div>
+</div>
+
+<h3>Submit tool result</h3>
+<div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/v1/chat/tool-result</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Auth required</span></div>
+<p>After paying for a tool call, send the real data back. AI generates a natural language answer.</p>
+<div class="param-list">
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">conversation_id</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Must match the <code>conversation_id</code> from the tool_call response.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Links the data to the AI's request.</strong> Without a matching conversation context, the AI doesn't know what question it asked or what tool was called.<div class="pe-row"><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"conv_a8f2k9x1b3"</code></div></div></div></div>
+      <div class="pe-error"><strong>If mismatched:</strong> AI loses context about what it asked for. Response will be vague or nonsensical.</div>
+    </div>
+  </div>
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">tool_result</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Raw data from the service. JSON-stringified or plain text.</div>
+    <div class="param-expand">
+      <div class="pe-body">The AI interprets and summarizes this into a human-readable answer.<div class="pe-row"><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"{\"AAPL\":{\"price\":189.42}}"</code></div></div></div></div>
+      <div class="pe-error"><strong>If empty:</strong> AI returns a generic "I couldn't retrieve the data" response.</div>
+    </div>
+  </div>
+  <div class="param">
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">service_id</span><span class="param-type">string</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Fallback if conversation context was lost (e.g. server restart).</div>
+    <div class="param-expand"><div class="pe-body">Under normal operation, <code>conversation_id</code> carries all the context needed. Only pass this if the server restarted and the conversation was lost.</div></div>
   </div>
 </div>
 
 <h3>Direct AI chat</h3>
 <div class="endpoint"><span class="method method-post">POST</span><span class="ep-path">/api/ai/chat</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
-<p>Simple pass-through to OpenAI. No tools, no registry, no conversation history. One-shot message → reply.</p>
-
+<p>One-shot pass-through to OpenAI. No tools, no registry, no conversation state.</p>
 <div class="param-list">
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">message</span><span class="param-type">string</span><span class="param-required">required</span>
-      <span class="param-toggle">+</span>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">message</span><span class="param-type">string</span><span class="param-required">required</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Prompt to send to OpenAI.</div>
+    <div class="param-expand">
+      <div class="pe-body"><strong>Behavior:</strong> Fires a tiny on-chain Devnet transaction as proof-of-payment, then forwards your prompt to OpenAI. Response includes the reply, model, token usage, and the Solana tx signature.</div>
+      <div class="pe-error"><strong>400:</strong> <code>{"error":"message is required"}</code></div>
     </div>
-    <div class="param-desc">The prompt to send to OpenAI.</div>
-    <div class="param-expand"><strong>Behavior:</strong> Fires a real on-chain Devnet transaction (tiny amount) as proof-of-payment, then forwards your prompt to OpenAI. The response includes the AI reply, model used, token usage, and the Solana transaction signature as proof.</div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">model</span><span class="param-type">string</span><span class="param-optional">optional</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">model</span><span class="param-type">string</span><span class="param-optional">optional</span><span class="param-toggle">+</span></div>
     <div class="param-desc">OpenAI model. Default: <code>gpt-4o-mini</code>.</div>
-    <div class="param-expand"><strong>Available models:</strong> <code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>o1-mini</code>, <code>o3-mini</code>. If you pass an unsupported model name, it silently falls back to <code>gpt-4o-mini</code>.</div>
+    <div class="param-expand">
+      <div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Valid values</div><div class="pe-val"><code>gpt-4o</code>, <code>gpt-4o-mini</code>, <code>o1-mini</code>, <code>o3-mini</code></div></div><div class="pe-item"><div class="pe-label">Default</div><div class="pe-val"><code>gpt-4o-mini</code></div></div></div></div>
+      <div class="pe-error"><strong>Invalid model:</strong> Silently falls back to <code>gpt-4o-mini</code>. No error thrown.</div>
+    </div>
   </div>
 </div>
 
-<!-- ═══════════════════════════════════════ -->
-<!-- API REFERENCE: NETWORK -->
-<!-- ═══════════════════════════════════════ -->
+<!-- ═══════════════════════ NETWORK ═══════════════════════ -->
 <h2 id="network">Network</h2>
-<p>Public endpoints for checking wallet balances, transaction history, and Solana Devnet health.</p>
+<p>Public endpoints for wallet balances, transaction history, and Devnet health.</p>
 
 <h3>Get balance</h3>
 <div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/balance/:wallet</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
-<p>Returns real-time SOL balance for any Solana wallet on Devnet.</p>
-<pre><span class="label">cURL</span><span class="fn">curl</span> https://micropay.up.railway.app/api/v1/balance/YOUR_WALLET_ADDRESS</pre>
+<p>Real-time SOL balance for any Solana wallet on Devnet.</p>
 
 <h3>Get transactions</h3>
 <div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/transactions/:wallet</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
-<p>Returns the last 5 Solana transactions for a wallet on Devnet. Paste <code>signature</code> into <a href="https://explorer.solana.com/?cluster=devnet" target="_blank">Solana Explorer</a> to verify on-chain.</p>
+<p>Last 5 Solana transactions for a wallet. Each has a <code>signature</code> verifiable on <a href="https://explorer.solana.com/?cluster=devnet" target="_blank">Solana Explorer</a>.</p>
 
 <h3>Network status</h3>
 <div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/network/status</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
-<p>Returns current Solana Devnet status — slot height, block height, SOL price, and RPC health.</p>
+<p>Devnet status — slot height, block height, SOL price, RPC health.</p>
 
 <h3>Health check</h3>
 <div class="endpoint"><span class="method method-get">GET</span><span class="ep-path">/api/v1/health</span><span style="margin-left:auto;font-size:10px;color:var(--text-muted)">Public</span></div>
-<p>Ping to verify the server is running. Returns <code>200</code> if up.</p>
+<p>Returns <code>200</code> if the server is up.</p>
 <pre><span class="label">JSON</span>{ <span class="kw">"status"</span>: <span class="str">"ok"</span>, <span class="kw">"version"</span>: <span class="str">"1.0.0"</span> }</pre>
 
-<!-- ═══════════════════════════════════════ -->
-<!-- SERVICE CATALOG -->
-<!-- ═══════════════════════════════════════ -->
+<!-- ═══════════════════════ SERVICE CATALOG ═══════════════════════ -->
 <h2 id="services-catalog">Service catalog</h2>
-<p>26 services are preloaded in the Bazaar. Click any service to see its full details, endpoint, tags, and description.</p>
-
-<div class="callout callout-info"><strong>Pricing is by category.</strong> The backend automatically looks up the category when you create a charge — you never pass a price. USD is converted to SOL at live oracle price.</div>
+<p>26 preloaded services. Click any to see details. Pricing is by category — the backend auto-resolves the price when you create a charge.</p>
 
 <div class="svc-cat">
   <div class="svc-cat-header">Weather <span class="svc-cat-price">$0.01 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">weather_openmeteo</span><span class="svc-name">Live Weather (Open-Meteo)</span></div>
   <div class="svc-detail"><p><strong>Description:</strong> Real-time temperature, humidity, and precipitation data from Open-Meteo for any city worldwide.</p><p><strong>Endpoint:</strong> <code>GET /tools/weather/openmeteo</code></p><div class="svc-meta"><span class="svc-tag">weather</span><span class="svc-tag">temperature</span><span class="svc-tag">humidity</span><span class="svc-tag">precipitation</span><span class="svc-tag">open-meteo</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">weather_openweather</span><span class="svc-name">Live Weather (OpenWeather)</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Real-time weather conditions including wind speed, visibility, and UV index via OpenWeather API.</p><p><strong>Endpoint:</strong> <code>GET /tools/weather/openweather</code></p><div class="svc-meta"><span class="svc-tag">weather</span><span class="svc-tag">temperature</span><span class="svc-tag">wind</span><span class="svc-tag">uv</span><span class="svc-tag">openweather</span></div></div>
-  <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">weather_forecast</span><span class="svc-name">7-Day Weather Forecast</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Extended 7-day weather forecast with daily highs, lows, and precipitation probability.</p><p><strong>Endpoint:</strong> <code>GET /tools/weather/forecast</code></p><div class="svc-meta"><span class="svc-tag">forecast</span><span class="svc-tag">weekly</span><span class="svc-tag">weather</span><span class="svc-tag">7day</span><span class="svc-tag">prediction</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Real-time weather including wind speed, visibility, and UV index via OpenWeather API.</p><p><strong>Endpoint:</strong> <code>GET /tools/weather/openweather</code></p><div class="svc-meta"><span class="svc-tag">weather</span><span class="svc-tag">wind</span><span class="svc-tag">uv</span><span class="svc-tag">openweather</span></div></div>
+  <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">weather_forecast</span><span class="svc-name">7-Day Forecast</span></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Extended 7-day forecast with daily highs, lows, and precipitation probability.</p><p><strong>Endpoint:</strong> <code>GET /tools/weather/forecast</code></p><div class="svc-meta"><span class="svc-tag">forecast</span><span class="svc-tag">weekly</span><span class="svc-tag">7day</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">Finance <span class="svc-cat-price">$0.01 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">finance_stocks</span><span class="svc-name">Stock Price Feed</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Live equity prices, volume, and market cap from NYSE and NASDAQ.</p><p><strong>Endpoint:</strong> <code>GET /tools/finance/stocks</code></p><div class="svc-meta"><span class="svc-tag">stocks</span><span class="svc-tag">equity</span><span class="svc-tag">market</span><span class="svc-tag">trading</span><span class="svc-tag">NYSE</span><span class="svc-tag">NASDAQ</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Live equity prices, volume, and market cap from NYSE and NASDAQ.</p><p><strong>Endpoint:</strong> <code>GET /tools/finance/stocks</code></p><div class="svc-meta"><span class="svc-tag">stocks</span><span class="svc-tag">equity</span><span class="svc-tag">NYSE</span><span class="svc-tag">NASDAQ</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">finance_crypto</span><span class="svc-name">Crypto Price Oracle</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Live SOL/USD, BTC/USD, ETH/USD price feeds with 1-minute granularity.</p><p><strong>Endpoint:</strong> <code>GET /tools/finance/crypto</code></p><div class="svc-meta"><span class="svc-tag">crypto</span><span class="svc-tag">bitcoin</span><span class="svc-tag">solana</span><span class="svc-tag">ethereum</span><span class="svc-tag">price</span><span class="svc-tag">defi</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Live SOL/USD, BTC/USD, ETH/USD price feeds with 1-minute granularity.</p><p><strong>Endpoint:</strong> <code>GET /tools/finance/crypto</code></p><div class="svc-meta"><span class="svc-tag">crypto</span><span class="svc-tag">bitcoin</span><span class="svc-tag">solana</span><span class="svc-tag">ethereum</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">finance_forex</span><span class="svc-name">Forex Exchange Rates</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Real-time foreign exchange rates for 170+ currency pairs.</p><p><strong>Endpoint:</strong> <code>GET /tools/finance/forex</code></p><div class="svc-meta"><span class="svc-tag">forex</span><span class="svc-tag">currency</span><span class="svc-tag">exchange</span><span class="svc-tag">USD</span><span class="svc-tag">EUR</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Real-time foreign exchange rates for 170+ currency pairs.</p><p><strong>Endpoint:</strong> <code>GET /tools/finance/forex</code></p><div class="svc-meta"><span class="svc-tag">forex</span><span class="svc-tag">currency</span><span class="svc-tag">USD</span><span class="svc-tag">EUR</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">NLP <span class="svc-cat-price">$0.01 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">nlp_sentiment</span><span class="svc-name">Sentiment Analysis</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Analyze the sentiment of any text. Returns positive, negative, or neutral with confidence score.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/sentiment</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">sentiment</span><span class="svc-tag">analysis</span><span class="svc-tag">text</span><span class="svc-tag">opinion</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Analyze sentiment of any text. Returns positive, negative, or neutral with confidence.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/sentiment</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">sentiment</span><span class="svc-tag">analysis</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">nlp_summarize</span><span class="svc-name">Text Summarizer</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Summarize long articles, documents, or web pages into concise key points.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/summarize</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">summarize</span><span class="svc-tag">text</span><span class="svc-tag">abstract</span><span class="svc-tag">tldr</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Summarize long articles into concise key points.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/summarize</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">summarize</span><span class="svc-tag">tldr</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">nlp_translate</span><span class="svc-name">Language Translator</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Translate text between 100+ languages with auto-detection of source language.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/translate</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">translate</span><span class="svc-tag">language</span><span class="svc-tag">localization</span><span class="svc-tag">i18n</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Translate between 100+ languages with auto-detection.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/translate</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">translate</span><span class="svc-tag">i18n</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">nlp_extract</span><span class="svc-name">Entity Extractor</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Extract named entities (people, places, organizations, dates) from unstructured text.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/extract</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">entities</span><span class="svc-tag">extraction</span><span class="svc-tag">ner</span><span class="svc-tag">text</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Extract named entities (people, places, orgs, dates) from text.</p><p><strong>Endpoint:</strong> <code>GET /tools/nlp/extract</code></p><div class="svc-meta"><span class="svc-tag">nlp</span><span class="svc-tag">entities</span><span class="svc-tag">ner</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">Food <span class="svc-cat-price">$0.01 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">food_recipes</span><span class="svc-name">Recipe Search</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Search thousands of recipes by ingredient, cuisine, dietary restriction, or meal type.</p><p><strong>Endpoint:</strong> <code>GET /tools/food/recipes</code></p><div class="svc-meta"><span class="svc-tag">food</span><span class="svc-tag">recipes</span><span class="svc-tag">cooking</span><span class="svc-tag">cuisine</span><span class="svc-tag">meals</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Search recipes by ingredient, cuisine, or dietary restriction.</p><p><strong>Endpoint:</strong> <code>GET /tools/food/recipes</code></p><div class="svc-meta"><span class="svc-tag">food</span><span class="svc-tag">recipes</span><span class="svc-tag">cooking</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">food_nutrition</span><span class="svc-name">Nutrition Data</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Detailed nutritional information for any food item including macros, vitamins, and minerals.</p><p><strong>Endpoint:</strong> <code>GET /tools/food/nutrition</code></p><div class="svc-meta"><span class="svc-tag">food</span><span class="svc-tag">nutrition</span><span class="svc-tag">calories</span><span class="svc-tag">macros</span><span class="svc-tag">health</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Nutritional info including macros, vitamins, and minerals.</p><p><strong>Endpoint:</strong> <code>GET /tools/food/nutrition</code></p><div class="svc-meta"><span class="svc-tag">food</span><span class="svc-tag">nutrition</span><span class="svc-tag">calories</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">Blockchain <span class="svc-cat-price">$0.01 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">blockchain_wallet</span><span class="svc-name">Wallet Balance Checker</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Check SOL, ETH, and major token balances for any wallet address across chains.</p><p><strong>Endpoint:</strong> <code>GET /tools/blockchain/wallet</code></p><div class="svc-meta"><span class="svc-tag">blockchain</span><span class="svc-tag">wallet</span><span class="svc-tag">balance</span><span class="svc-tag">solana</span><span class="svc-tag">ethereum</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Check SOL, ETH, and major token balances across chains.</p><p><strong>Endpoint:</strong> <code>GET /tools/blockchain/wallet</code></p><div class="svc-meta"><span class="svc-tag">blockchain</span><span class="svc-tag">wallet</span><span class="svc-tag">balance</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">blockchain_nft</span><span class="svc-name">NFT Metadata Lookup</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Fetch metadata, ownership history, and floor price for any NFT by mint address.</p><p><strong>Endpoint:</strong> <code>GET /tools/blockchain/nft</code></p><div class="svc-meta"><span class="svc-tag">blockchain</span><span class="svc-tag">nft</span><span class="svc-tag">metadata</span><span class="svc-tag">collectibles</span><span class="svc-tag">mint</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Metadata, ownership history, and floor price for any NFT.</p><p><strong>Endpoint:</strong> <code>GET /tools/blockchain/nft</code></p><div class="svc-meta"><span class="svc-tag">nft</span><span class="svc-tag">metadata</span><span class="svc-tag">mint</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">blockchain_defi</span><span class="svc-name">DeFi Protocol Stats</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> TVL, APY, and pool data for major DeFi protocols on Solana and Ethereum.</p><p><strong>Endpoint:</strong> <code>GET /tools/blockchain/defi</code></p><div class="svc-meta"><span class="svc-tag">blockchain</span><span class="svc-tag">defi</span><span class="svc-tag">tvl</span><span class="svc-tag">apy</span><span class="svc-tag">yield</span><span class="svc-tag">solana</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> TVL, APY, and pool data for DeFi protocols on Solana and Ethereum.</p><p><strong>Endpoint:</strong> <code>GET /tools/blockchain/defi</code></p><div class="svc-meta"><span class="svc-tag">defi</span><span class="svc-tag">tvl</span><span class="svc-tag">apy</span><span class="svc-tag">yield</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">News <span class="svc-cat-price">$0.02 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">news_breaking</span><span class="svc-name">Breaking News Headlines</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Breaking news and top headlines across 50+ categories and 30+ countries.</p><p><strong>Endpoint:</strong> <code>GET /tools/news/breaking</code></p><div class="svc-meta"><span class="svc-tag">news</span><span class="svc-tag">breaking</span><span class="svc-tag">headlines</span><span class="svc-tag">world</span><span class="svc-tag">current events</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Breaking news across 50+ categories and 30+ countries.</p><p><strong>Endpoint:</strong> <code>GET /tools/news/breaking</code></p><div class="svc-meta"><span class="svc-tag">news</span><span class="svc-tag">breaking</span><span class="svc-tag">headlines</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">news_search</span><span class="svc-name">News Search</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Search millions of news articles by keyword, date range, and source.</p><p><strong>Endpoint:</strong> <code>GET /tools/news/search</code></p><div class="svc-meta"><span class="svc-tag">news</span><span class="svc-tag">search</span><span class="svc-tag">articles</span><span class="svc-tag">journalism</span><span class="svc-tag">media</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Search millions of articles by keyword, date range, and source.</p><p><strong>Endpoint:</strong> <code>GET /tools/news/search</code></p><div class="svc-meta"><span class="svc-tag">news</span><span class="svc-tag">search</span><span class="svc-tag">articles</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">Sports <span class="svc-cat-price">$0.02 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">sports_scores</span><span class="svc-name">Live Sports Scores</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Live scores and game status for NFL, NBA, MLB, NHL, and Premier League.</p><p><strong>Endpoint:</strong> <code>GET /tools/sports/scores</code></p><div class="svc-meta"><span class="svc-tag">sports</span><span class="svc-tag">scores</span><span class="svc-tag">live</span><span class="svc-tag">nfl</span><span class="svc-tag">nba</span><span class="svc-tag">mlb</span></div></div>
-  <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">sports_stats</span><span class="svc-name">Player & Team Stats</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Historical and season statistics for players and teams across major leagues.</p><p><strong>Endpoint:</strong> <code>GET /tools/sports/stats</code></p><div class="svc-meta"><span class="svc-tag">sports</span><span class="svc-tag">stats</span><span class="svc-tag">players</span><span class="svc-tag">teams</span><span class="svc-tag">analytics</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Live scores for NFL, NBA, MLB, NHL, Premier League.</p><p><strong>Endpoint:</strong> <code>GET /tools/sports/scores</code></p><div class="svc-meta"><span class="svc-tag">sports</span><span class="svc-tag">scores</span><span class="svc-tag">live</span></div></div>
+  <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">sports_stats</span><span class="svc-name">Player &amp; Team Stats</span></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Historical and season statistics for players and teams.</p><p><strong>Endpoint:</strong> <code>GET /tools/sports/stats</code></p><div class="svc-meta"><span class="svc-tag">sports</span><span class="svc-tag">stats</span><span class="svc-tag">analytics</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">Data <span class="svc-cat-price">$0.02 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">data_demographics</span><span class="svc-name">Demographics Data</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Population, income, education, and age distribution data for any US zip code or city.</p><p><strong>Endpoint:</strong> <code>GET /tools/data/demographics</code></p><div class="svc-meta"><span class="svc-tag">data</span><span class="svc-tag">demographics</span><span class="svc-tag">population</span><span class="svc-tag">census</span><span class="svc-tag">statistics</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Population, income, education data for any US zip code.</p><p><strong>Endpoint:</strong> <code>GET /tools/data/demographics</code></p><div class="svc-meta"><span class="svc-tag">demographics</span><span class="svc-tag">population</span><span class="svc-tag">census</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">data_github</span><span class="svc-name">GitHub Repo Analytics</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Stars, forks, contributors, commit frequency, and language breakdown for any GitHub repo.</p><p><strong>Endpoint:</strong> <code>GET /tools/data/github</code></p><div class="svc-meta"><span class="svc-tag">data</span><span class="svc-tag">github</span><span class="svc-tag">repos</span><span class="svc-tag">analytics</span><span class="svc-tag">developers</span><span class="svc-tag">open-source</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Stars, forks, contributors, and language breakdown for any repo.</p><p><strong>Endpoint:</strong> <code>GET /tools/data/github</code></p><div class="svc-meta"><span class="svc-tag">github</span><span class="svc-tag">repos</span><span class="svc-tag">analytics</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">Search <span class="svc-cat-price">$0.05 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">search_web</span><span class="svc-name">Web Search API</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Returns top 10 search results for any query with titles, URLs, and snippets.</p><p><strong>Endpoint:</strong> <code>GET /tools/search/web</code></p><div class="svc-meta"><span class="svc-tag">search</span><span class="svc-tag">web</span><span class="svc-tag">google</span><span class="svc-tag">results</span><span class="svc-tag">internet</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Top 10 search results with titles, URLs, and snippets.</p><p><strong>Endpoint:</strong> <code>GET /tools/search/web</code></p><div class="svc-meta"><span class="svc-tag">search</span><span class="svc-tag">web</span><span class="svc-tag">google</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">search_images</span><span class="svc-name">Image Search API</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Search for images across the web with size, color, and license filters.</p><p><strong>Endpoint:</strong> <code>GET /tools/search/images</code></p><div class="svc-meta"><span class="svc-tag">search</span><span class="svc-tag">images</span><span class="svc-tag">photos</span><span class="svc-tag">visual</span><span class="svc-tag">media</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Image search with size, color, and license filters.</p><p><strong>Endpoint:</strong> <code>GET /tools/search/images</code></p><div class="svc-meta"><span class="svc-tag">search</span><span class="svc-tag">images</span><span class="svc-tag">photos</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">Travel <span class="svc-cat-price">$0.05 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">travel_flights</span><span class="svc-name">Flight Search</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Search for flights between any two airports with real-time pricing and availability.</p><p><strong>Endpoint:</strong> <code>GET /tools/travel/flights</code></p><div class="svc-meta"><span class="svc-tag">travel</span><span class="svc-tag">flights</span><span class="svc-tag">airlines</span><span class="svc-tag">booking</span><span class="svc-tag">airports</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Flight search with real-time pricing and availability.</p><p><strong>Endpoint:</strong> <code>GET /tools/travel/flights</code></p><div class="svc-meta"><span class="svc-tag">flights</span><span class="svc-tag">airlines</span><span class="svc-tag">booking</span></div></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">travel_hotels</span><span class="svc-name">Hotel Search</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Search for hotels by city, dates, and guest count with live pricing and ratings.</p><p><strong>Endpoint:</strong> <code>GET /tools/travel/hotels</code></p><div class="svc-meta"><span class="svc-tag">travel</span><span class="svc-tag">hotels</span><span class="svc-tag">accommodation</span><span class="svc-tag">booking</span><span class="svc-tag">lodging</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> Hotel search by city, dates, and guest count.</p><p><strong>Endpoint:</strong> <code>GET /tools/travel/hotels</code></p><div class="svc-meta"><span class="svc-tag">hotels</span><span class="svc-tag">accommodation</span><span class="svc-tag">booking</span></div></div>
 </div>
-
 <div class="svc-cat">
   <div class="svc-cat-header">AI <span class="svc-cat-price">$0.05 / call</span></div>
   <div class="svc-item" onclick="toggleSvc(this)"><span class="svc-id">openai_chat</span><span class="svc-name">OpenAI Chat Completions</span></div>
-  <div class="svc-detail"><p><strong>Description:</strong> Access GPT-4o chat completions for any prompt. Pay per request, no subscription needed.</p><p><strong>Endpoint:</strong> <code>POST /tools/openai-chat</code></p><div class="svc-meta"><span class="svc-tag">openai</span><span class="svc-tag">gpt</span><span class="svc-tag">chat</span><span class="svc-tag">ai</span><span class="svc-tag">llm</span><span class="svc-tag">completions</span></div></div>
+  <div class="svc-detail"><p><strong>Description:</strong> GPT-4o chat completions. Pay per request, no subscription.</p><p><strong>Endpoint:</strong> <code>POST /tools/openai-chat</code></p><div class="svc-meta"><span class="svc-tag">openai</span><span class="svc-tag">gpt</span><span class="svc-tag">chat</span><span class="svc-tag">ai</span><span class="svc-tag">llm</span></div></div>
 </div>
 
-<!-- ═══════════════════════════════════════ -->
-<!-- ERRORS -->
-<!-- ═══════════════════════════════════════ -->
+<!-- ═══════════════════════ ERRORS ═══════════════════════ -->
 <h2 id="errors">Errors</h2>
-<p>All errors return a consistent JSON object with a machine-readable <code>type</code> and a human-readable <code>message</code>.</p>
-
-<h3>Error object</h3>
+<p>All errors return a consistent JSON object.</p>
 <div class="param-list">
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">error.type</span><span class="param-type">string</span>
-      <span class="param-toggle">+</span>
-    </div>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">error.type</span><span class="param-type">string</span><span class="param-toggle">+</span></div>
     <div class="param-desc">Machine-readable error category.</div>
-    <div class="param-expand"><strong>Possible values:</strong><br><code>invalid_request_error</code> — missing or invalid parameters (400)<br><code>not_found_error</code> — resource doesn't exist (404)<br><code>api_error</code> — unexpected server failure (500)<br><code>gateway_error</code> — upstream AI service unavailable (502)</div>
+    <div class="param-expand">
+      <div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Valid values</div><div class="pe-val"><code>invalid_request_error</code> (400), <code>not_found_error</code> (404), <code>api_error</code> (500), <code>gateway_error</code> (502)</div></div></div></div>
+    </div>
   </div>
   <div class="param">
-    <div class="param-header" onclick="toggleParam(this)">
-      <span class="param-name">error.message</span><span class="param-type">string</span>
-      <span class="param-toggle">+</span>
+    <div class="param-header" onclick="toggleParam(this)"><span class="param-name">error.message</span><span class="param-type">string</span><span class="param-toggle">+</span></div>
+    <div class="param-desc">Human-readable description. Safe to display to users.</div>
+    <div class="param-expand">
+      <div class="pe-body"><div class="pe-row"><div class="pe-item"><div class="pe-label">Example</div><div class="pe-val"><code>"'service_id' is required and must be a non-empty string."</code></div></div></div></div>
     </div>
-    <div class="param-desc">Human-readable description. Safe to display to end users.</div>
-    <div class="param-expand"><strong>Usage:</strong> Show this directly in your UI or logs. Always a clear English sentence describing what went wrong and often hinting at what to fix. Example: <code>"'service_id' is required and must be a non-empty string."</code></div>
   </div>
 </div>
-
 <h3>HTTP status codes</h3>
 <table class="resp-table">
   <tr><th>Code</th><th>Meaning</th></tr>
-  <tr><td><code>200</code></td><td>Success — request completed normally</td></tr>
-  <tr><td><code>201</code></td><td>Created — service successfully registered</td></tr>
+  <tr><td><code>200</code></td><td>Success</td></tr>
+  <tr><td><code>201</code></td><td>Created — service registered</td></tr>
   <tr><td><code>400</code></td><td>Bad Request — missing or invalid parameters</td></tr>
   <tr><td><code>401</code></td><td>Unauthorized — missing or invalid API key</td></tr>
-  <tr><td><code>404</code></td><td>Not Found — service or charge doesn't exist</td></tr>
-  <tr><td><code>500</code></td><td>Internal Server Error — unexpected failure</td></tr>
-  <tr><td><code>502</code></td><td>Gateway Error — upstream AI service down, retry</td></tr>
+  <tr><td><code>404</code></td><td>Not Found — resource doesn't exist</td></tr>
+  <tr><td><code>500</code></td><td>Internal Server Error</td></tr>
+  <tr><td><code>502</code></td><td>Gateway Error — upstream AI down, retry</td></tr>
 </table>
-
-<pre><span class="label">400 example</span>{
-  <span class="kw">"error"</span>: {
-    <span class="kw">"type"</span>: <span class="str">"invalid_request_error"</span>,
-    <span class="kw">"message"</span>: <span class="str">"'service_id' is required and must be a non-empty string."</span>
-  }
-}</pre>
 
 <div style="height:120px"></div>
 </section>
-
 </div>
 </main>
 
+<!-- MODAL STRUCTURE -->
+<div class="modal-overlay" id="modal-overlay" onclick="closeModal()"></div>
+<div class="modal-panel" id="modal-panel">
+  <div class="modal-header">
+    <div class="modal-title" id="modal-title"></div>
+    <button class="modal-close" onclick="closeModal()">✕ <kbd>esc</kbd></button>
+  </div>
+  <div class="modal-body" id="modal-body"></div>
+</div>
+
 <script>
-// PATH CARD SELECTION
+const GUIDE_TITLES = {
+  accept: 'Add Micropay to your payment gateway',
+  access: 'Use Micropay API to access other APIs'
+};
+
 function showGuide(type) {
   document.querySelectorAll('.path-card').forEach(c => c.classList.remove('active'));
-  document.querySelectorAll('.guide-content').forEach(g => g.classList.remove('visible'));
-
   document.getElementById('card-' + type).classList.add('active');
-  document.getElementById('guide-' + type).classList.add('visible');
 
-  setTimeout(() => {
-    const el = document.getElementById('guide-' + type);
-    el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  }, 50);
+  const guide = document.getElementById('guide-' + type);
+  const body = document.getElementById('modal-body');
+  const title = document.getElementById('modal-title');
+
+  guide.classList.add('in-modal');
+  body.innerHTML = '';
+  body.appendChild(guide);
+  title.textContent = GUIDE_TITLES[type] || '';
+
+  document.getElementById('modal-overlay').classList.add('open');
+  document.getElementById('modal-panel').classList.add('open');
+  document.getElementById('modal-panel').scrollTop = 0;
+  document.body.style.overflow = 'hidden';
+
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const navLink = document.querySelector('nav a[onclick*="' + type + '"]');
+  if (navLink) navLink.classList.add('active');
 }
 
-// PARAMETER EXPAND/COLLAPSE
+function closeModal() {
+  document.getElementById('modal-overlay').classList.remove('open');
+  document.getElementById('modal-panel').classList.remove('open');
+  document.querySelectorAll('.path-card').forEach(c => c.classList.remove('active'));
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const overviewLink = document.querySelector('nav a[href="#overview"]');
+  if (overviewLink) overviewLink.classList.add('active');
+
+  setTimeout(() => {
+    const guides = document.querySelectorAll('.guide-content.in-modal');
+    const holder = document.getElementById('guide-holder');
+    guides.forEach(g => {
+      g.classList.remove('in-modal');
+      holder.appendChild(g);
+    });
+    document.body.style.overflow = '';
+  }, 300);
+}
+
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+function openGuideFromNav(type) {
+  const card = document.getElementById('card-' + type);
+  if (card) card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
+  const navLink = document.querySelector('nav a[onclick*="' + type + '"]');
+  if (navLink) navLink.classList.add('active');
+  setTimeout(() => showGuide(type), 350);
+}
 function toggleParam(header) {
   const expand = header.parentElement.querySelector('.param-expand');
   const toggle = header.querySelector('.param-toggle');
-  if (expand) {
-    const isOpen = expand.classList.contains('open');
-    expand.classList.toggle('open');
-    if (toggle) toggle.textContent = isOpen ? '+' : '−';
-  }
+  if (!expand) return;
+  const isOpen = expand.classList.contains('open');
+  expand.classList.toggle('open');
+  if (toggle) toggle.textContent = isOpen ? '+' : '−';
 }
-
-// SERVICE CATALOG EXPAND/COLLAPSE
 function toggleSvc(item) {
   const detail = item.nextElementSibling;
   if (detail && detail.classList.contains('svc-detail')) {
@@ -1041,23 +1079,17 @@ function toggleSvc(item) {
     if (!isOpen) detail.classList.add('open');
   }
 }
-
-// SIDEBAR ACTIVE STATE
 const observer = new IntersectionObserver(entries => {
   entries.forEach(entry => {
     if (entry.isIntersecting) {
-      const id = entry.target.id;
       document.querySelectorAll('nav a').forEach(a => a.classList.remove('active'));
-      const link = document.querySelector('nav a[href="#' + id + '"]');
+      const link = document.querySelector('nav a[href="#' + entry.target.id + '"]');
       if (link) link.classList.add('active');
     }
   });
 }, { threshold: 0.15, rootMargin: '-5% 0px -70% 0px' });
-
 document.querySelectorAll('[id]').forEach(el => {
-  if (el.id && document.querySelector('nav a[href="#' + el.id + '"]')) {
-    observer.observe(el);
-  }
+  if (el.id && document.querySelector('nav a[href="#' + el.id + '"]')) observer.observe(el);
 });
 </script>
 </body>
