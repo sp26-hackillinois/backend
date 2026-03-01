@@ -109,6 +109,41 @@ async function callOpenRouter(messages, tools) {
 }
 
 // ─────────────────────────────────────────
+// GET /api/v1/chat/:conversation_id
+// Retrieve conversation history (auth required)
+// ─────────────────────────────────────────
+router.get('/:conversation_id', verifyApiKey, (req, res) => {
+    const convId = req.params.conversation_id;
+
+    if (!convId || typeof convId !== 'string' || convId.trim() === '') {
+        return res.status(400).json({
+            error: {
+                type: 'invalid_request_error',
+                message: "'conversation_id' is required.",
+            },
+        });
+    }
+
+    const history = getHistory(convId.trim());
+
+    if (!history || history.length === 0) {
+        return res.status(404).json({
+            error: {
+                type: 'not_found_error',
+                message: `Conversation '${convId}' not found or has no messages.`,
+            },
+        });
+    }
+
+    return res.status(200).json({
+        object: 'conversation',
+        conversation_id: convId.trim(),
+        messages: history,
+        message_count: history.length,
+    });
+});
+
+// ─────────────────────────────────────────
 // POST /api/v1/chat/completions
 // Main AI gateway: message → AI reasoning → plain reply OR tool call
 // ─────────────────────────────────────────
