@@ -24,16 +24,15 @@ function getConsumerKeypair() {
     return Keypair.fromSecretKey(decoded);
 }
 
-// Destination: send back to the same wallet (self-transfer for demo)
-// Or replace DESTINATION_WALLET with another wallet if preferred
 const DESTINATION_WALLET = process.env.AI_CONSUMER_WALLET || 'AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5';
 
 // Cost per playground query in SOL (tiny amount for demo)
 const QUERY_COST_SOL = 0.000001;
 
 /**
- * Signs and submits a real devnet SOL transaction.
- * Returns the transaction signature.
+ * Fires a real devnet SOL transaction — fire and forget.
+ * Does NOT wait for confirmation to avoid 429 rate limit errors.
+ * Transaction still hits the chain a few seconds later.
  */
 async function fireOnChainTransaction() {
     const keypair = getConsumerKeypair();
@@ -41,7 +40,7 @@ async function fireOnChainTransaction() {
     const recipient = new PublicKey(DESTINATION_WALLET);
     const lamports = Math.round(QUERY_COST_SOL * LAMPORTS_PER_SOL);
 
-    const { blockhash } = await connection.getLatestBlockhash({ commitment: 'confirmed' });
+    const { blockhash } = await connection.getLatestBlockhash({ commitment: 'finalized' });
 
     const transaction = new Transaction({
         recentBlockhash: blockhash,
@@ -58,9 +57,12 @@ async function fireOnChainTransaction() {
 
     transaction.sign(keypair);
 
-    const signature = await connection.sendRawTransaction(transaction.serialize());
-    await connection.confirmTransaction(signature, 'confirmed');
+    // Send but do NOT await confirmation — avoids 429 rate limit retries
+    const signature = await connection.sendRawTransaction(transaction.serialize(), {
+        skipPreflight: true,
+    });
 
+    console.log(`[AI Chat] On-chain tx submitted: ${signature}`);
     return signature;
 }
 
@@ -78,11 +80,10 @@ router.post('/chat', async (req, res) => {
 
         const selectedModel = ALLOWED_MODELS.includes(model) ? model : 'gpt-4o-mini';
 
-        // Step 1: Fire on-chain transaction
+        // Step 1: Fire on-chain transaction (fire and forget — no confirmation wait)
         let tx_signature = null;
         try {
             tx_signature = await fireOnChainTransaction();
-            console.log(`[AI Chat] On-chain tx confirmed: ${tx_signature}`);
         } catch (txErr) {
             console.error('[AI Chat] Transaction failed:', txErr.message);
             // Don't block the query if tx fails — just log it
