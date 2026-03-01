@@ -1,515 +1,443 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Micropay Bazaar API</title>
-    <script src="https://unpkg.com/react@18/umd/react.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" crossorigin></script>
-    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <style>
-        html { scroll-behavior: smooth; }
-        body { margin: 0; font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; -webkit-font-smoothing: antialiased; }
-    </style>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Micropay Bazaar API Docs</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;font-size:15px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#fff;color:#0f172a;display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+aside{width:260px;flex-shrink:0;border-right:1px solid #e2e8f0;background:#f8fafc;display:flex;flex-direction:column;overflow-y:auto}
+.sb-brand{padding:24px;border-bottom:1px solid #e2e8f0;position:sticky;top:0;background:#f8fafc;z-index:10}
+.sb-logo{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.sb-icon{width:24px;height:24px;background:#4f46e5;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:12px}
+.sb-name{font-weight:700;font-size:18px}
+.sb-version{font-size:11px;color:#94a3b8}
+nav{padding:24px;flex:1}
+.nav-group{margin-bottom:28px}
+.nav-group-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;margin-bottom:8px}
+nav a{display:block;padding:6px 0;font-size:13.5px;color:#64748b;text-decoration:none;transition:color .15s}
+nav a:hover,nav a.active{color:#0f172a;font-weight:600}
+
+/* MAIN */
+main{flex:1;overflow-y:auto}
+
+/* SECTION */
+.doc-section{display:flex;border-bottom:1px solid #e2e8f0}
+.doc-left{width:55%;padding:64px 48px;background:#fff;flex-shrink:0}
+.doc-right{width:45%;padding:64px 40px;background:#0f172a;flex-shrink:0}
+@media(max-width:900px){.doc-section{flex-direction:column}.doc-left,.doc-right{width:100%}}
+
+h1{font-size:32px;font-weight:800;letter-spacing:-.02em;margin-bottom:8px}
+h2{font-size:22px;font-weight:700;letter-spacing:-.01em;margin-bottom:12px}
+.section-desc{color:#475569;line-height:1.7;margin-bottom:28px}
+
+/* METHOD BADGE */
+.badge{display:inline-block;padding:2px 10px;border-radius:999px;font-size:10px;font-weight:700;font-family:monospace;letter-spacing:.05em}
+.badge-get{background:#dbeafe;color:#1d4ed8}
+.badge-post{background:#d1fae5;color:#065f46}
+.endpoint-row{display:flex;align-items:center;gap:10px;margin-bottom:24px}
+.endpoint-path{font-family:monospace;font-size:13px;color:#475569;background:#f8fafc;padding:3px 8px;border-radius:4px;border:1px solid #e2e8f0}
+
+/* PARAMS */
+.param-label{font-size:10px;font-weight:700;color:#94a3b8;text-transform:uppercase;letter-spacing:.1em;border-bottom:1px solid #f1f5f9;padding-bottom:10px;margin-bottom:0}
+.param{padding:14px 0;border-bottom:1px solid #f1f5f9}
+.param:last-child{border:none}
+.param-name{font-family:monospace;font-size:13px;font-weight:700;color:#0f172a}
+.param-type{font-family:monospace;font-size:11px;color:#64748b;background:#f1f5f9;padding:2px 6px;border-radius:3px;margin-left:6px}
+.param-req{font-size:9px;font-weight:700;text-transform:uppercase;color:#e11d48;background:#fff1f2;padding:2px 6px;border-radius:3px;margin-left:4px;letter-spacing:.05em}
+.param-desc{font-size:13px;color:#475569;margin-top:6px;line-height:1.6}
+
+/* CODE BLOCKS */
+.code-label{font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:.1em;margin-bottom:10px}
+.code-block{background:#020617;border:1px solid #1e293b;border-radius:10px;padding:18px;font-family:'SFMono-Regular',Menlo,Monaco,monospace;font-size:12px;color:#cbd5e1;overflow-x:auto;line-height:1.7;margin-bottom:24px;white-space:pre}
+.t-pink{color:#f472b6}
+.t-sky{color:#38bdf8}
+.t-green{color:#86efac}
+.t-amber{color:#fde68a}
+.t-orange{color:#fdba74}
+.t-muted{color:#64748b}
+
+/* OVERVIEW GRID */
+.overview-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;margin-top:0}
+.overview-col h3{font-size:14px;font-weight:700;margin-bottom:14px}
+.overview-col a{display:block;font-size:13px;color:#4f46e5;text-decoration:none;margin-bottom:10px}
+.overview-col a:hover{color:#3730a3;text-decoration:underline}
+.hero-btns{display:flex;gap:16px;align-items:center;margin-bottom:48px}
+.btn-primary{background:#4f46e5;color:#fff;padding:10px 20px;border-radius:999px;font-size:14px;font-weight:600;text-decoration:none;transition:background .15s}
+.btn-primary:hover{background:#4338ca}
+.btn-ghost{font-size:14px;font-weight:600;color:#475569;text-decoration:none}
+.btn-ghost:hover{color:#0f172a}
+.hero-sub{font-size:18px;color:#64748b;font-weight:300;margin-bottom:28px}
+
+/* TERMINAL */
+.terminal{background:#020617;border:1px solid #1e293b;border-radius:10px;overflow:hidden;margin-bottom:12px}
+.terminal-bar{background:#1e293b;padding:10px 16px;display:flex;gap:6px;align-items:center}
+.dot{width:10px;height:10px;border-radius:50%}
+.dot-r{background:rgba(239,68,68,.6)}
+.dot-y{background:rgba(234,179,8,.6)}
+.dot-g{background:rgba(34,197,94,.6)}
+.terminal-label{font-size:11px;color:#64748b;font-family:monospace;margin-left:8px}
+.terminal-body{padding:18px;font-family:monospace;font-size:12px;color:#94a3b8;line-height:1.8}
+.cursor{display:inline-block;width:8px;height:14px;background:#4f46e5;animation:blink 1s step-end infinite;vertical-align:middle}
+@keyframes blink{50%{opacity:0}}
+
+/* ALERT */
+.alert-amber{background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:16px;font-size:13px;color:#78350f;line-height:1.6}
+.alert-amber code{background:#fef3c7;padding:2px 6px;border-radius:3px;font-family:monospace}
+
+/* DIVIDER */
+.divider{height:1px;background:#f1f5f9}
+
+/* FOOTER SPACE */
+.footer-space{height:128px;background:#f8fafc}
+</style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="text/babel">
-        const { useState, useEffect, useRef } = React;
 
-        const MethodBadge = ({ method }) => {
-            const isGet = method === 'GET';
-            const colorClass = isGet ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
-            return (
-                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide ${colorClass}`}>
-                    {method}
-                </span>
-            );
-        };
+<aside>
+  <div class="sb-brand">
+    <div class="sb-logo">
+      <div class="sb-icon">M</div>
+      <span class="sb-name">Micropay</span>
+    </div>
+    <div class="sb-version">Bazaar API v1.0.0</div>
+  </div>
+  <nav>
+    <div class="nav-group">
+      <div class="nav-group-label">Getting Started</div>
+      <a href="#overview">Overview</a>
+      <a href="#authentication">Authentication</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Registry</div>
+      <a href="#register-a-service">Register a Service</a>
+      <a href="#discover-services">Discover Services</a>
+      <a href="#get-a-service">Get a Service</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Charges</div>
+      <a href="#create-a-charge">Create a Charge</a>
+      <a href="#list-charges">List Charges</a>
+      <a href="#get-a-charge">Get a Charge</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">AI Gateway</div>
+      <a href="#chat-completions">Chat Completions</a>
+      <a href="#direct-ai-chat">Direct AI Chat</a>
+    </div>
+    <div class="nav-group">
+      <div class="nav-group-label">Network</div>
+      <a href="#get-balance">Get Balance</a>
+      <a href="#health-check">Health Check</a>
+    </div>
+  </nav>
+</aside>
 
-        const ParamRow = ({ name, type: paramType, required, desc }) => (
-            <div className="py-4 border-b border-slate-100 last:border-0">
-                <div className="flex items-center gap-2 mb-1.5">
-                    <span className="font-mono text-sm font-bold text-slate-900">{name}</span>
-                    <span className="font-mono text-xs text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">{paramType}</span>
-                    {required && (
-                        <span className="text-[10px] uppercase font-bold tracking-wider text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded">
-                            Required
-                        </span>
-                    )}
-                </div>
-                <div className="text-sm text-slate-600 leading-relaxed">{desc}</div>
-            </div>
-        );
+<main>
 
-        const NavLink = ({ title, isActive }) => {
-            const linkClass = isActive ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-900';
-            return (
-            <a
-                href={`#${title.toLowerCase().replace(/\s+/g, '-')}`}
-                className={`block py-1.5 text-sm ${linkClass} transition-colors duration-150`}
-            >
-                {title}
-            </a>
-            );
-        };
+  <!-- OVERVIEW -->
+  <div class="doc-section" id="overview">
+    <div class="doc-left">
+      <h1>Documentation</h1>
+      <p class="hero-sub">Explore guides and examples to integrate Micropay Bazaar.</p>
+      <div class="hero-btns">
+        <a href="#create-a-charge" class="btn-primary">Get started →</a>
+        <a href="#discover-services" class="btn-ghost">Explore all services</a>
+      </div>
+      <div class="overview-grid">
+        <div class="overview-col">
+          <h3>Payments</h3>
+          <a href="#create-a-charge">Accept x402 payments</a>
+          <a href="#list-charges">Verify blockchain transactions</a>
+          <a href="#get-balance">Check wallet balances</a>
+        </div>
+        <div class="overview-col">
+          <h3>AI Gateway</h3>
+          <a href="#chat-completions">Build agents with tools</a>
+          <a href="#register-a-service">Monetize AI skills</a>
+          <a href="#discover-services">Discover registry services</a>
+        </div>
+        <div class="overview-col">
+          <h3>Developers</h3>
+          <a href="#authentication">Set up API keys</a>
+          <a href="#health-check">Monitor network health</a>
+          <a href="#discover-services">26 prebuilt services</a>
+        </div>
+      </div>
+    </div>
+    <div class="doc-right" style="display:flex;flex-direction:column;justify-content:center">
+      <div style="font-size:13px;font-weight:700;color:#f1f5f9;margin-bottom:14px">Quick Start</div>
+      <div class="terminal">
+        <div class="terminal-bar">
+          <div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div>
+          <span class="terminal-label">terminal</span>
+        </div>
+        <div class="terminal-body">
+<span class="t-muted"># 1. Create a charge</span>
+<span class="t-green">curl -X POST https://micropay.up.railway.app/api/v1/charges \</span>
+  -H <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
+  -d <span class="t-amber">'{"service_id":"finance_stocks","source_wallet":"YOUR_WALLET","amount_usd":0.05}'</span>
 
-        const Section = ({ id: sectionId, title, method, path, children, codePanel }) => (
-            <>
-                <section id={sectionId} className="flex flex-col lg:flex-row w-full border-b border-slate-200 lg:border-none">
-                    <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                        <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">{title}</h2>
-                        {method && path && (
-                            <div className="flex items-center gap-3 mb-6">
-                                <MethodBadge method={method} />
-                                <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">{path}</code>
-                            </div>
-                        )}
-                        {children}
-                    </div>
-                    <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                        {codePanel}
-                    </div>
-                </section>
-                <div className="w-full h-px bg-slate-100 hidden lg:block" />
-            </>
-        );
+<span class="t-muted"># 2. Sign returned transaction_payload with Phantom</span>
+<span class="t-muted"># 3. Done — payment settled on Solana Devnet ✓</span>
+$ <span class="cursor"></span></div>
+      </div>
+      <a href="#create-a-charge" style="text-align:right;font-size:11px;font-weight:600;color:#818cf8;text-decoration:none">Learn more about Charges →</a>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-        const CodeBlock = ({ label, code }) => (
-            <div className="mb-8">
-                {label && <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">{label}</div>}
-                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800 overflow-x-auto leading-loose">
-                    <pre className="text-slate-300 whitespace-pre-wrap">{code}</pre>
-                </div>
-            </div>
-        );
+  <!-- AUTHENTICATION -->
+  <div class="doc-section" id="authentication">
+    <div class="doc-left">
+      <h1 style="font-size:26px">Authentication</h1>
+      <p class="section-desc">Micropay Bazaar uses API keys for authentication. Protected routes require your key in the <code style="background:#f1f5f9;padding:2px 6px;border-radius:3px;font-family:monospace;font-size:13px">Authorization</code> header.</p>
+      <div class="alert-amber">
+        <strong>Demo key:</strong> <code>mp_live_demo_key</code> — use this for all hackathon testing.
+      </div>
+    </div>
+    <div class="doc-right" style="padding-top:100px">
+      <div class="code-label">Header</div>
+      <div class="code-block"><span class="t-sky">Authorization:</span> Bearer <span class="t-green">mp_live_demo_key</span></div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-        function MicropayDocs() {
-            return (
-                <div className="flex h-screen w-full bg-white text-slate-900 font-sans overflow-hidden antialiased">
-
-                    {/* Sidebar */}
-                    <aside className="w-[260px] flex-shrink-0 border-r border-slate-200 overflow-y-auto hidden md:flex flex-col bg-slate-50">
-                        <div className="p-6 sticky top-0 bg-slate-50/90 backdrop-blur-md z-10 border-b border-slate-100">
-                            <div className="flex items-center gap-2 mb-1">
-                                <div className="w-6 h-6 bg-indigo-600 rounded-md flex items-center justify-center">
-                                    <span className="text-white font-bold text-xs">M</span>
-                                </div>
-                                <span className="font-bold text-lg tracking-tight">Micropay</span>
-                            </div>
-                            <p className="text-xs text-slate-500 font-medium">Bazaar API v1.0.0</p>
-                        </div>
-
-                        <nav className="flex-1 px-6 pt-6 pb-8 space-y-8">
-                            <div>
-                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Getting Started</div>
-                                <div className="space-y-1">
-                                    <NavLink title="Overview" />
-                                    <NavLink title="Authentication" />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Registry</div>
-                                <div className="space-y-1">
-                                    <NavLink title="Register a Service" />
-                                    <NavLink title="Discover Services" />
-                                    <NavLink title="Get a Service" />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Charges</div>
-                                <div className="space-y-1">
-                                    <NavLink title="Create a Charge" />
-                                    <NavLink title="List Charges" />
-                                    <NavLink title="Get a Charge" />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">AI Gateway</div>
-                                <div className="space-y-1">
-                                    <NavLink title="Chat Completions" />
-                                    <NavLink title="Direct AI Chat" />
-                                </div>
-                            </div>
-                            <div>
-                                <div className="text-[11px] font-bold text-slate-400 uppercase tracking-widest mb-3">Network</div>
-                                <div className="space-y-1">
-                                    <NavLink title="Get Balance" />
-                                    <NavLink title="Health Check" />
-                                </div>
-                            </div>
-                        </nav>
-                    </aside>
-
-                    {/* Main */}
-                    <main className="flex-1 overflow-y-auto">
-
-                        {/* ── OVERVIEW ── */}
-                        <section id="overview" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h1 className="text-4xl font-extrabold tracking-tight text-slate-900 mb-2">Documentation</h1>
-                                <p className="text-xl text-slate-500 mb-8 font-light">
-                                    Explore guides and examples to integrate Micropay Bazaar.
-                                </p>
-                                <div className="flex items-center mb-16 gap-4">
-                                    <a href="#create-a-charge" className="bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-full font-semibold text-sm transition-colors flex items-center gap-2 shadow-sm">
-                                        Get started →
-                                    </a>
-                                    <a href="#discover-services" className="text-slate-600 hover:text-slate-900 font-semibold text-sm transition-colors">
-                                        Explore all services
-                                    </a>
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                                    <div>
-                                        <h3 className="font-bold text-slate-900 mb-4 text-base">Payments</h3>
-                                        <div className="space-y-3">
-                                            <a href="#create-a-charge" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Accept x402 payments</a>
-                                            <a href="#list-charges" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Verify blockchain transactions</a>
-                                            <a href="#get-balance" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Check wallet balances</a>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-slate-900 mb-4 text-base">AI Gateway</h3>
-                                        <div className="space-y-3">
-                                            <a href="#chat-completions" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Build agents with tools</a>
-                                            <a href="#register-a-service" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Monetize AI skills</a>
-                                            <a href="#discover-services" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Discover registry services</a>
-                                        </div>
-                                    </div>
-                                    <div>
-                                        <h3 className="font-bold text-slate-900 mb-4 text-base">Developers</h3>
-                                        <div className="space-y-3">
-                                            <a href="#authentication" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Set up API keys</a>
-                                            <a href="#health-check" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">Monitor network health</a>
-                                            <a href="#discover-services" className="block text-indigo-600 hover:text-indigo-800 text-sm font-medium">26 prebuilt services</a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0 flex flex-col justify-center">
-                                <div className="text-sm font-bold text-slate-100 mb-4">Quick Start</div>
-                                <div className="bg-slate-950 rounded-xl overflow-hidden border border-slate-800 shadow-2xl">
-                                    <div className="bg-slate-800 px-4 py-3 flex items-center gap-1.5">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-red-500/70"></div>
-                                        <div className="w-2.5 h-2.5 rounded-full bg-yellow-500/70"></div>
-                                        <div className="w-2.5 h-2.5 rounded-full bg-green-500/70"></div>
-                                        <span className="text-slate-400 text-xs ml-2 font-mono">terminal</span>
-                                    </div>
-                                    <div className="p-5 font-mono text-[13px] text-slate-300 leading-relaxed">
-                                        <div className="text-slate-500 mb-3"># 1. Create a charge</div>
-                                        <div className="mb-4 text-emerald-300">curl -X POST https://micropay.up.railway.app/api/v1/charges \</div>
-                                        <div className="pl-4 text-slate-400 mb-4">  -H "Authorization: Bearer mp_live_demo_key" \{"\n"}  -d '&#123;"service_id":"finance_stocks","source_wallet":"YOUR_WALLET","amount_usd":0.05&#125;'</div>
-                                        <div className="text-slate-500 mb-2"># 2. Sign the returned transaction_payload with Phantom</div>
-                                        <div className="text-slate-500"># 3. Done — payment settled on Solana Devnet ✓</div>
-                                        <div className="flex items-center gap-2 mt-4">
-                                            <span className="text-slate-500">$</span>
-                                            <span className="w-2 h-4 bg-indigo-500 animate-pulse block"></span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <a href="#create-a-charge" className="text-right mt-3 text-xs font-semibold text-indigo-400 hover:text-indigo-300 transition-colors">
-                                    Learn more about Charges →
-                                </a>
-                            </div>
-                        </section>
-
-                        <div className="w-full h-px bg-slate-100" />
-
-                        {/* ── AUTHENTICATION ── */}
-                        <section id="authentication" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h1 className="text-3xl font-extrabold tracking-tight text-slate-900 mb-4">Authentication</h1>
-                                <p className="text-slate-600 mb-6 leading-relaxed">
-                                    Micropay Bazaar uses API keys for authentication. Protected routes require your API key in the <code className="bg-slate-100 px-1.5 py-0.5 rounded font-mono text-sm">Authorization</code> header.
-                                </p>
-                                <div className="bg-amber-50 rounded-lg p-5 border border-amber-200">
-                                    <p className="text-sm text-amber-900 leading-relaxed">
-                                        <strong>Demo key:</strong> <code className="font-mono bg-amber-100 px-1.5 py-0.5 rounded">mp_live_demo_key</code> — use this for all hackathon testing.
-                                    </p>
-                                </div>
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0 pt-28">
-                                <div className="text-xs font-semibold text-slate-400 mb-3 uppercase tracking-wider">Header</div>
-                                <div className="bg-slate-950 rounded-xl p-5 font-mono text-[13px] shadow-2xl border border-slate-800">
-                                    <span className="text-sky-400">Authorization:</span> Bearer <span className="text-emerald-300">mp_live_demo_key</span>
-                                </div>
-                            </div>
-                        </section>
-
-                        <div className="w-full h-px bg-slate-100" />
-
-                        {/* ── REGISTER A SERVICE ── */}
-                        <section id="register-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Register a Service</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="POST" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/register</code>
-                                </div>
-                                <p className="text-slate-600 mb-8 leading-relaxed">
-                                    Registers an AI tool into the global Micropay Bazaar discovery index. Agents can dynamically discover your service and pay via x402 protocols.
-                                </p>
-                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Body Parameters</h3>
-                                <ParamRow name="name" type="string" required={true} desc="The human-readable name of your service." />
-                                <ParamRow name="description" type="string" required={true} desc="Detailed description used for agent semantic search." />
-                                <ParamRow name="endpoint" type="string" required={true} desc="The fully qualified URL where your service API resides." />
-                                <ParamRow name="cost_usd" type="number" required={true} desc="The exact cost per execution in USD." />
-                                <ParamRow name="developer_wallet" type="string" required={true} desc="Your Solana base58 wallet address for settlement." />
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/v1/registry/register \\
-  -H "Authorization: Bearer mp_live_demo_key" \\
-  -H "Content-Type: application/json" \\
-  -d '{
+  <!-- REGISTER A SERVICE -->
+  <div class="doc-section" id="register-a-service">
+    <div class="doc-left">
+      <h2>Register a Service</h2>
+      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/v1/registry/register</code></div>
+      <p class="section-desc">Registers an AI tool into the global Micropay Bazaar discovery index. Agents can dynamically discover your service and pay via x402 protocols.</p>
+      <div class="param-label">Body Parameters</div>
+      <div class="param"><span class="param-name">name</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">The human-readable name of your service.</div></div>
+      <div class="param"><span class="param-name">description</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">Detailed description used for agent semantic search.</div></div>
+      <div class="param"><span class="param-name">endpoint</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">The fully qualified URL where your service API resides.</div></div>
+      <div class="param"><span class="param-name">cost_usd</span><span class="param-type">number</span><span class="param-req">required</span><div class="param-desc">The exact cost per execution in USD.</div></div>
+      <div class="param"><span class="param-name">developer_wallet</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">Your Solana base58 wallet address for settlement.</div></div>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/v1/registry/register \
+  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
+  <span class="t-sky">-d</span> <span class="t-amber">'{
     "name": "Weather Oracle",
     "description": "Real-time meteorological data.",
     "endpoint": "https://api.example.com/weather",
     "cost_usd": 0.05,
     "developer_wallet": "2Hn6ES...xG9"
-  }'`} />
-                                <CodeBlock label="Response" code={`{
-  "id": "srv_ak392nf9d21",
-  "object": "service",
-  "created_at": "2026-02-28T12:00:00Z",
-  "name": "Weather Oracle",
-  "cost_usd": 0.05
-}`} />
-                            </div>
-                        </section>
+  }'</span></div>
+      <div class="code-label">Response</div>
+      <div class="code-block">{
+  <span class="t-sky">"id"</span>: <span class="t-green">"srv_ak392nf9d21"</span>,
+  <span class="t-sky">"object"</span>: <span class="t-green">"service"</span>,
+  <span class="t-sky">"created_at"</span>: <span class="t-green">"2026-02-28T12:00:00Z"</span>,
+  <span class="t-sky">"name"</span>: <span class="t-green">"Weather Oracle"</span>,
+  <span class="t-sky">"cost_usd"</span>: <span class="t-orange">0.05</span>
+}</div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        <div className="w-full h-px bg-slate-100" />
-
-                        {/* ── DISCOVER SERVICES ── */}
-                        <section id="discover-services" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Discover Services</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="GET" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/discover</code>
-                                </div>
-                                <p className="text-slate-600 mb-8 leading-relaxed">
-                                    Returns all registered services. Unauthenticated. Use the <code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-xs">query</code> param to search by intent or keyword. 26 services preloaded covering weather, finance, news, sports, AI, blockchain, and more.
-                                </p>
-                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Query Parameters</h3>
-                                <ParamRow name="query" type="string" desc="Optional. Search by intent (e.g., 'weather', 'crypto', 'stocks')." />
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/registry/discover?query=finance`} />
-                                <CodeBlock label="Response" code={`[
+  <!-- DISCOVER SERVICES -->
+  <div class="doc-section" id="discover-services">
+    <div class="doc-left">
+      <h2>Discover Services</h2>
+      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/registry/discover</code></div>
+      <p class="section-desc">Returns all registered services. Unauthenticated. 26 services preloaded covering weather, finance, news, sports, AI, blockchain, and more. Use <code style="font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">query</code> to search by intent.</p>
+      <div class="param-label">Query Parameters</div>
+      <div class="param"><span class="param-name">query</span><span class="param-type">string</span><div class="param-desc">Optional. Search by intent (e.g., 'weather', 'crypto', 'stocks').</div></div>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/registry/discover?query=finance</div>
+      <div class="code-label">Response</div>
+      <div class="code-block">[
   {
-    "id": "finance_stocks",
-    "name": "Stock Price Feed",
-    "category": "Finance",
-    "description": "Live equity prices from NYSE and NASDAQ.",
-    "endpoint": "GET /tools/finance/stocks",
-    "developer_wallet": "2Hn6ES...zv8"
+    <span class="t-sky">"id"</span>: <span class="t-green">"finance_stocks"</span>,
+    <span class="t-sky">"name"</span>: <span class="t-green">"Stock Price Feed"</span>,
+    <span class="t-sky">"category"</span>: <span class="t-green">"Finance"</span>,
+    <span class="t-sky">"description"</span>: <span class="t-green">"Live equity prices from NYSE and NASDAQ."</span>,
+    <span class="t-sky">"developer_wallet"</span>: <span class="t-green">"2Hn6ES...zv8"</span>
   },
   ...
-]`} />
-                            </div>
-                        </section>
+]</div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        <div className="w-full h-px bg-slate-100" />
+  <!-- GET A SERVICE -->
+  <div class="doc-section" id="get-a-service">
+    <div class="doc-left">
+      <h2>Get a Service</h2>
+      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/registry/services/:id</code></div>
+      <p class="section-desc">Retrieves a single service by its ID. Use IDs from the discover endpoint (e.g., <code style="font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">finance_stocks</code>, <code style="font-family:monospace;background:#f1f5f9;padding:1px 5px;border-radius:3px;font-size:12px">weather_openmeteo</code>).</p>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/registry/services/finance_stocks</div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        {/* ── GET A SERVICE ── */}
-                        <section id="get-a-service" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get a Service</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="GET" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/registry/services/:id</code>
-                                </div>
-                                <p className="text-slate-600">Retrieves a single service by its ID. Use IDs from the discover endpoint (e.g., <code className="font-mono bg-slate-100 px-1 rounded text-xs">finance_stocks</code>, <code className="font-mono bg-slate-100 px-1 rounded text-xs">weather_openmeteo</code>).</p>
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/registry/services/finance_stocks`} />
-                            </div>
-                        </section>
-
-                        <div className="w-full h-px bg-slate-100" />
-
-                        {/* ── CREATE A CHARGE ── */}
-                        <section id="create-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Create a Charge</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="POST" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges</code>
-                                </div>
-                                <p className="text-slate-600 mb-8 leading-relaxed">
-                                    Initiates an x402 payment flow. Returns a Base64-encoded unsigned Solana transaction ready for a wallet (e.g. Phantom) to sign and broadcast. The developer_wallet is pulled automatically from the service registry.
-                                </p>
-                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Headers</h3>
-                                <ParamRow name="Idempotency-Key" type="string" desc="Optional. Prevents duplicate charges on retry." />
-                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3 mt-8">Body Parameters</h3>
-                                <ParamRow name="service_id" type="string" required={true} desc="ID of the service to consume (e.g., finance_stocks, weather_openmeteo)." />
-                                <ParamRow name="source_wallet" type="string" required={true} desc="Public Solana address of the wallet paying the charge." />
-                                <ParamRow name="amount_usd" type="number" required={true} desc="Amount to charge in USD (e.g., 0.05). Converted to SOL at live oracle price." />
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/v1/charges \\
-  -H "Authorization: Bearer mp_live_demo_key" \\
-  -H "Content-Type: application/json" \\
-  -d '{
+  <!-- CREATE A CHARGE -->
+  <div class="doc-section" id="create-a-charge">
+    <div class="doc-left">
+      <h2>Create a Charge</h2>
+      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/v1/charges</code></div>
+      <p class="section-desc">Initiates an x402 payment flow. Returns a Base64-encoded unsigned Solana transaction ready for Phantom to sign and broadcast. The <code style="font-family:monospace;font-size:12px">developer_wallet</code> is pulled automatically from the service registry.</p>
+      <div class="param-label">Headers</div>
+      <div class="param"><span class="param-name">Idempotency-Key</span><span class="param-type">string</span><div class="param-desc">Optional. Prevents duplicate charges on retry.</div></div>
+      <div class="param-label" style="margin-top:24px">Body Parameters</div>
+      <div class="param"><span class="param-name">service_id</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">ID of the service to consume (e.g., <code style="font-family:monospace">finance_stocks</code>, <code style="font-family:monospace">weather_openmeteo</code>).</div></div>
+      <div class="param"><span class="param-name">source_wallet</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">Public Solana address of the wallet paying the charge.</div></div>
+      <div class="param"><span class="param-name">amount_usd</span><span class="param-type">number</span><span class="param-req">required</span><div class="param-desc">Amount in USD (e.g., 0.05). Converted to SOL at live oracle price.</div></div>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/v1/charges \
+  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
+  <span class="t-sky">-d</span> <span class="t-amber">'{
     "service_id": "finance_stocks",
     "source_wallet": "AuofYo21...Nt5",
     "amount_usd": 0.05
-  }'`} />
-                                <CodeBlock label="Response" code={`{
-  "id": "ch_wb4bedrhxh1q",
-  "object": "charge",
-  "status": "requires_signature",
-  "service_id": "finance_stocks",
-  "service_name": "Stock Price Feed",
-  "amount_usd": 0.05,
-  "exchange_rate_sol_usd": 150.0,
-  "amount_sol": 0.000333,
-  "source_wallet": "AuofYo21...Nt5",
-  "destination_wallet": "2Hn6ES...zv8",
-  "transaction_payload": "AQAAAAAAAAAA..."
-}`} />
-                            </div>
-                        </section>
+  }'</span></div>
+      <div class="code-label">Response</div>
+      <div class="code-block">{
+  <span class="t-sky">"id"</span>: <span class="t-green">"ch_wb4bedrhxh1q"</span>,
+  <span class="t-sky">"object"</span>: <span class="t-green">"charge"</span>,
+  <span class="t-sky">"status"</span>: <span class="t-green">"requires_signature"</span>,
+  <span class="t-sky">"service_id"</span>: <span class="t-green">"finance_stocks"</span>,
+  <span class="t-sky">"service_name"</span>: <span class="t-green">"Stock Price Feed"</span>,
+  <span class="t-sky">"amount_usd"</span>: <span class="t-orange">0.05</span>,
+  <span class="t-sky">"exchange_rate_sol_usd"</span>: <span class="t-orange">150.0</span>,
+  <span class="t-sky">"amount_sol"</span>: <span class="t-orange">0.000333</span>,
+  <span class="t-sky">"source_wallet"</span>: <span class="t-green">"AuofYo21...Nt5"</span>,
+  <span class="t-sky">"destination_wallet"</span>: <span class="t-green">"2Hn6ES...zv8"</span>,
+  <span class="t-sky">"transaction_payload"</span>: <span class="t-green">"AQAAAAAAAAAA..."</span>
+}</div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        <div className="w-full h-px bg-slate-100" />
+  <!-- LIST CHARGES -->
+  <div class="doc-section" id="list-charges">
+    <div class="doc-left">
+      <h2>List Charges</h2>
+      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/charges</code></div>
+      <p class="section-desc">Returns a paginated list of charges, optionally filtered.</p>
+      <div class="param-label">Query Parameters</div>
+      <div class="param"><span class="param-name">limit</span><span class="param-type">int</span><div class="param-desc">Max records to return (1–100, default 10).</div></div>
+      <div class="param"><span class="param-name">offset</span><span class="param-type">int</span><div class="param-desc">Pagination offset.</div></div>
+      <div class="param"><span class="param-name">status</span><span class="param-type">string</span><div class="param-desc">Filter by status: requires_signature, confirmed, failed.</div></div>
+      <div class="param"><span class="param-name">source_wallet</span><span class="param-type">string</span><div class="param-desc">Filter by payer wallet address.</div></div>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> "https://micropay.up.railway.app/api/v1/charges?limit=5" \
+  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span></div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        {/* ── LIST CHARGES ── */}
-                        <section id="list-charges" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">List Charges</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="GET" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges</code>
-                                </div>
-                                <p className="text-slate-600 mb-8 leading-relaxed">Returns a paginated list of charges, optionally filtered.</p>
-                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Query Parameters</h3>
-                                <ParamRow name="limit" type="int" desc="Max records to return (1–100, default 10)." />
-                                <ParamRow name="offset" type="int" desc="Pagination offset." />
-                                <ParamRow name="status" type="string" desc="Filter by status: requires_signature, confirmed, failed." />
-                                <ParamRow name="source_wallet" type="string" desc="Filter by payer wallet address." />
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/charges?limit=5 \\
-  -H "Authorization: Bearer mp_live_demo_key"`} />
-                            </div>
-                        </section>
+  <!-- GET A CHARGE -->
+  <div class="doc-section" id="get-a-charge">
+    <div class="doc-left">
+      <h2>Get a Charge</h2>
+      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/charges/:id</code></div>
+      <p class="section-desc">Retrieves the full details of a previously created charge by its ID.</p>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/charges/ch_wb4bedrhxh1q \
+  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span></div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        <div className="w-full h-px bg-slate-100" />
-
-                        {/* ── GET A CHARGE ── */}
-                        <section id="get-a-charge" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get a Charge</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="GET" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/charges/:id</code>
-                                </div>
-                                <p className="text-slate-600">Retrieves the full details of a previously created charge by its ID.</p>
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/charges/ch_wb4bedrhxh1q \\
-  -H "Authorization: Bearer mp_live_demo_key"`} />
-                            </div>
-                        </section>
-
-                        <div className="w-full h-px bg-slate-100" />
-
-                        {/* ── CHAT COMPLETIONS ── */}
-                        <section id="chat-completions" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Chat Completions</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="POST" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/chat/completions</code>
-                                </div>
-                                <p className="text-slate-600 leading-relaxed">
-                                    OpenRouter proxy with Micropay Bazaar tools auto-injected. Agents use this to discover and invoke registry services dynamically. Compatible with the OpenAI Chat Completions API format.
-                                </p>
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/v1/chat/completions \\
-  -H "Authorization: Bearer mp_live_demo_key" \\
-  -H "Content-Type: application/json" \\
-  -d '{
+  <!-- CHAT COMPLETIONS -->
+  <div class="doc-section" id="chat-completions">
+    <div class="doc-left">
+      <h2>Chat Completions</h2>
+      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/v1/chat/completions</code></div>
+      <p class="section-desc">OpenRouter proxy with Micropay Bazaar tools auto-injected. Agents use this to discover and invoke registry services dynamically. Compatible with the OpenAI Chat Completions API format.</p>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/v1/chat/completions \
+  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
+  <span class="t-sky">-d</span> <span class="t-amber">'{
     "model": "gpt-4o-mini",
     "messages": [
       {"role": "user", "content": "What is the price of AAPL?"}
     ]
-  }'`} />
-                            </div>
-                        </section>
+  }'</span></div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        <div className="w-full h-px bg-slate-100" />
+  <!-- DIRECT AI CHAT -->
+  <div class="doc-section" id="direct-ai-chat">
+    <div class="doc-left">
+      <h2>Direct AI Chat</h2>
+      <div class="endpoint-row"><span class="badge badge-post">POST</span><code class="endpoint-path">/api/ai/chat</code></div>
+      <p class="section-desc">Passthrough plain-text chat to the underlying AI layer.</p>
+      <div class="param-label">Body Parameters</div>
+      <div class="param"><span class="param-name">message</span><span class="param-type">string</span><span class="param-req">required</span><div class="param-desc">The text message for the assistant.</div></div>
+      <div class="param"><span class="param-name">model</span><span class="param-type">string</span><div class="param-desc">Defaults to 'gpt-4o-mini'.</div></div>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> -X POST https://micropay.up.railway.app/api/ai/chat \
+  <span class="t-sky">-H</span> <span class="t-amber">"Authorization: Bearer mp_live_demo_key"</span> \
+  <span class="t-sky">-H</span> <span class="t-amber">"Content-Type: application/json"</span> \
+  <span class="t-sky">-d</span> <span class="t-amber">'{"message": "Summarize the Micropay x402 protocol"}'</span></div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        {/* ── DIRECT AI CHAT ── */}
-                        <section id="direct-ai-chat" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Direct AI Chat</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="POST" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/ai/chat</code>
-                                </div>
-                                <p className="text-slate-600 mb-8 leading-relaxed">Passthrough plain-text chat to the underlying AI layer.</p>
-                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-400 mb-2 border-b border-slate-100 pb-3">Body Parameters</h3>
-                                <ParamRow name="message" type="string" required={true} desc="The text message for the assistant." />
-                                <ParamRow name="model" type="string" desc="Defaults to 'gpt-4o-mini'." />
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl -X POST https://micropay.up.railway.app/api/ai/chat \\
-  -H "Authorization: Bearer mp_live_demo_key" \\
-  -H "Content-Type: application/json" \\
-  -d '{"message": "Summarize the Micropay x402 protocol"}'`} />
-                            </div>
-                        </section>
+  <!-- GET BALANCE -->
+  <div class="doc-section" id="get-balance">
+    <div class="doc-left">
+      <h2>Get Balance</h2>
+      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/balance/:wallet</code></div>
+      <p class="section-desc">Returns the real-time SOL balance for any Solana wallet address via Devnet RPC.</p>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/balance/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5</div>
+    </div>
+  </div>
+  <div class="divider"></div>
 
-                        <div className="w-full h-px bg-slate-100" />
+  <!-- HEALTH CHECK -->
+  <div class="doc-section" id="health-check">
+    <div class="doc-left">
+      <h2>Health Check</h2>
+      <div class="endpoint-row"><span class="badge badge-get">GET</span><code class="endpoint-path">/api/v1/health</code></div>
+      <p class="section-desc">Public endpoint. Returns server uptime, version, and current time. No authentication required.</p>
+    </div>
+    <div class="doc-right">
+      <div class="code-label">Request</div>
+      <div class="code-block"><span class="t-pink">curl</span> https://micropay.up.railway.app/api/v1/health</div>
+      <div class="code-label">Response</div>
+      <div class="code-block">{
+  <span class="t-sky">"status"</span>: <span class="t-green">"ok"</span>,
+  <span class="t-sky">"version"</span>: <span class="t-green">"1.0.0"</span>,
+  <span class="t-sky">"timestamp"</span>: <span class="t-green">"2026-02-28T18:00:00Z"</span>
+}</div>
+    </div>
+  </div>
 
-                        {/* ── GET BALANCE ── */}
-                        <section id="get-balance" className="flex flex-col lg:flex-row w-full border-b border-slate-200">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Get Balance</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="GET" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/balance/:wallet</code>
-                                </div>
-                                <p className="text-slate-600">Returns the real-time SOL balance for any Solana wallet address via Devnet RPC.</p>
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/balance/AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5`} />
-                            </div>
-                        </section>
+  <div class="footer-space"></div>
+</main>
 
-                        <div className="w-full h-px bg-slate-100" />
-
-                        {/* ── HEALTH CHECK ── */}
-                        <section id="health-check" className="flex flex-col lg:flex-row w-full">
-                            <div className="w-full lg:w-[55%] py-16 px-8 lg:px-12 xl:px-16 bg-white shrink-0">
-                                <h2 className="text-2xl font-bold tracking-tight text-slate-900 mb-3">Health Check</h2>
-                                <div className="flex items-center gap-3 mb-6">
-                                    <MethodBadge method="GET" />
-                                    <code className="text-[13px] font-mono font-medium text-slate-600 bg-slate-50 px-2 py-0.5 rounded border border-slate-200">/api/v1/health</code>
-                                </div>
-                                <p className="text-slate-600">Public endpoint. Returns server uptime, version, and current time. No authentication required.</p>
-                            </div>
-                            <div className="w-full lg:w-[45%] py-16 px-8 lg:px-10 xl:px-12 bg-slate-900 shrink-0">
-                                <CodeBlock label="Request" code={`curl https://micropay.up.railway.app/api/v1/health`} />
-                                <CodeBlock label="Response" code={`{
-  "status": "ok",
-  "version": "1.0.0",
-  "timestamp": "2026-02-28T18:00:00Z"
-}`} />
-                            </div>
-                        </section>
-
-                        <div className="w-full h-32 bg-slate-50" />
-                    </main>
-                </div>
-            );
-        }
-
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(<MicropayDocs />);
-    </script>
 </body>
 </html>
