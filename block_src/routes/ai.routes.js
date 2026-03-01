@@ -9,7 +9,7 @@ const {
     Keypair,
     LAMPORTS_PER_SOL,
 } = require('@solana/web3.js');
-const bs58 = require('bs58');
+const { decode } = require('bs58');
 
 const ALLOWED_MODELS = ['gpt-4o', 'gpt-4o-mini', 'o1-mini', 'o3-mini'];
 
@@ -20,7 +20,7 @@ const connection = new Connection('https://api.devnet.solana.com', 'confirmed');
 function getConsumerKeypair() {
     const secret = process.env.AI_CONSUMER_WALLET_PRIVATE;
     if (!secret) throw new Error('AI_CONSUMER_WALLET_PRIVATE not configured.');
-    const decoded = bs58.decode(secret);
+    const decoded = decode(secret);
     return Keypair.fromSecretKey(decoded);
 }
 
