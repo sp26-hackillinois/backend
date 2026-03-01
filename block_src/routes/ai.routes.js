@@ -24,7 +24,8 @@ function getConsumerKeypair() {
     return Keypair.fromSecretKey(decoded);
 }
 
-const DESTINATION_WALLET = process.env.AI_CONSUMER_WALLET || 'AuofYo21iiX8NQtgWBXLRFMiWfv83z2CbnhPNen6WNt5';
+// Developer wallet — receives all playground payments, shows up in dashboard transactions
+const DESTINATION_WALLET = process.env.AI_DEVELOPER_WALLET || '2Hn6ESeMRqfVDTptanXgK6vDEpgJGnp4rG6Ls3dzszv8';
 
 // Cost per playground query in SOL (tiny amount for demo)
 const QUERY_COST_SOL = 0.000001;
