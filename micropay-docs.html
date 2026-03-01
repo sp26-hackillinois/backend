@@ -69,7 +69,7 @@
             const isGet = method === 'GET';
             const colorClass = isGet ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700';
             return (
-                <span className={\`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide \${colorClass}\`}>
+                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold font-mono tracking-wide ${colorClass}`}>
           {method}
         </span>
       );
@@ -92,8 +92,8 @@
 
     const NavLink = ({ title, isActive }) => (
       <a
-        href={\`#\${title.toLowerCase().replace(/\\s+/g, '-')}\`}
-        className={\`block py-1.5 text-sm \${isActive ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-900'} transition-colors duration-150\`}
+        href={`#${title.toLowerCase().replace(/\s+/g, '-')}`}
+        className={`block py-1.5 text-sm ${isActive ? 'text-slate-900 font-semibold' : 'text-slate-500 hover:text-slate-900'} transition-colors duration-150`}
       >
         {title}
       </a>
@@ -102,7 +102,7 @@
     function MicropayDocs() {
       // Dynamic Services Injection (handled by server.js string replacement)
       // This will be replaced by the server before serving HTML
-      const DYNAMIC_SERVICES_HTML = \`<!-- DYNAMIC_SERVICES_PLACEHOLDER -->\`;
+      const DYNAMIC_SERVICES_HTML = `<!-- DYNAMIC_SERVICES_PLACEHOLDER -->`;
 
       return (
         <div className="flex h-screen w-full bg-slate-900 text-slate-900 font-sans overflow-hidden antialiased selection:bg-blue-100 selection:text-blue-900">
